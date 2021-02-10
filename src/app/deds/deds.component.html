@@ -1,0 +1,33 @@
+<a routerLink="./novo">
+  <span class="material-icons md-24" matTooltip="Novo">create_new_folder</span>
+</a>
+
+<table mat-table [dataSource]="deds" class="mat-elevation-z8">
+  <!-- Ded Column -->
+  <ng-container matColumnDef="ded">
+    <th mat-header-cell *matHeaderCellDef>DED nº</th>
+    <td mat-cell *matCellDef="let ded">{{ ded.ded }}</td>
+  </ng-container>
+
+  <!-- Desc Column -->
+  <ng-container matColumnDef="descricao">
+    <th mat-header-cell *matHeaderCellDef>Descrição</th>
+    <td mat-cell *matCellDef="let ded">{{ ded.descricao }}</td>
+  </ng-container>
+
+  <!-- Desc Column -->
+  <ng-container matColumnDef="acao">
+    <th mat-header-cell *matHeaderCellDef>Ação</th>
+    <td mat-cell *matCellDef="let ded">
+      <a routerLink="./{{ded.id}}"  >
+        <span class="material-icons md-24" matTooltip="Ver">folder_open</span>
+      </a>
+      <a (click)="apagar(ded.id)" routerLink=".">
+        <span class="material-icons md-24" matTooltip="Apagar">delete</span>
+      </a>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

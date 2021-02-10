@@ -56,7 +56,13 @@
  * Zone JS is required by default for Angular itself.
  */
 import 'zone.js/dist/zone';  // Included with Angular CLI.
+import { BehaviorSubject } from 'rxjs';
 
+Object.defineProperty(BehaviorSubject.prototype, 'value', {
+    set: function(v) {
+        return this.next(v);
+    }
+});
 
 /***************************************************************************************************
  * APPLICATION IMPORTS

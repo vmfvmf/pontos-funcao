@@ -1,0 +1,45 @@
+<a routerLink="./novo" >
+  <span class="material-icons md-24" matTooltip="Novo">create_new_folder</span>
+</a>
+<table mat-table [dataSource]="sprints" class="mat-elevation-z8">
+
+<!-- Ded Column -->
+<ng-container matColumnDef="numero">
+  <th mat-header-cell *matHeaderCellDef> Número </th>
+  <td mat-cell *matCellDef="let sprint"> {{sprint.numero}} </td>
+</ng-container>
+
+<!-- Ded Column -->
+<ng-container matColumnDef="dataInicio">
+  <th mat-header-cell *matHeaderCellDef> Data do Início </th>
+  <td mat-cell *matCellDef="let sprint"> {{sprint.dataInicio | date:'dd/MM/yyyy'}} </td>
+</ng-container>
+
+<!-- Ded Column -->
+<ng-container matColumnDef="dataFim">
+  <th mat-header-cell *matHeaderCellDef> Data do Fim </th>
+  <td mat-cell *matCellDef="let sprint"> {{sprint.dataFim | date:'dd/MM/yyyy'}} </td>
+</ng-container>
+
+<!-- DiasUteis Column -->
+<ng-container matColumnDef="diasUteis">
+  <th mat-header-cell *matHeaderCellDef> Dias úteis </th>
+  <td mat-cell *matCellDef="let sprint"> {{sprint.diasUteis}} </td>
+</ng-container>
+
+<!-- Desc Column -->
+<ng-container matColumnDef="acao">
+  <th mat-header-cell *matHeaderCellDef> Ação </th>
+  <td mat-cell *matCellDef="let sprint">
+    <a [routerLink]="['./', sprint.id]"  >
+      <span class="material-icons md-24" matTooltip="Ver">folder_open</span>
+    </a>
+    <button (click)="apagar(sprint.id)" routerLink="." >
+      <span class="material-icons md-24" matTooltip="Apagar">delete</span>
+    </button>
+  </td>
+</ng-container>
+
+<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

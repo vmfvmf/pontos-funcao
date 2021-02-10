@@ -1,0 +1,14 @@
+<form class="example-form">
+  <mat-form-field class="example-full-width">
+    <mat-label>Nome</mat-label>
+    <input matInput placeholder="Nome" name="nome" [(ngModel)]="sistema.nome">
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Versão</mat-label>
+    <input matInput placeholder="Versão" name="versao" [(ngModel)]="sistema.versao">
+  </mat-form-field>
+
+
+  <button (click)="salvar()">Salvar</button>
+</form>
