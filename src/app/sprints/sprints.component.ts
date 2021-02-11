@@ -1,13 +1,12 @@
-import { AppSharedService } from './../app-shared.service';
-import { DedsService } from './../deds/deds.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { SprintsService } from './sprints.service';
-
+import { AppSharedService } from './../app-shared.service';
 import { MessageService } from './../shared/message-service';
-import { Component, OnInit } from '@angular/core';
-import { FiltroSprint } from './filtro-sprint';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Sprint } from './sprint';
 import { Ded } from '../deds/ded';
+import { MatDialog } from '@angular/material/dialog';
+import { SprintsCadastroComponent } from './sprints-cadastro/sprints-cadastro.component';
 
 @Component({
   selector: 'app-sprints',
@@ -22,33 +21,61 @@ export class SprintsComponent implements OnInit {
     'diasUteis',
     'acao',
   ];
-  sprints: Sprint[] = [];
+
+  @Input()
   ded: Ded = {};
 
   constructor(
-    private msgService: MessageService,
+    public dialog: MatDialog,
     private sprintService: SprintsService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private shared: AppSharedService
+    private msgService: MessageService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.shared.selectedDed.subscribe((ded) => {
-      this.ded = ded;
-      this.sprintService
-      .listar({ded: ded})
-      .subscribe((sprints) => {
-        this.sprints = sprints;
-        this.ded.sprints = sprints;
-      });
+  }
+
+  novoEditar(sprint: Sprint){
+    const dialogRef = this.dialog.open(SprintsCadastroComponent, {
+      width: '300px',
+      data: {ded: this.ded, sprint: sprint}
     });
 
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.salvar(result);
+    });
   }
 
-  ver(sprintId) {
-    this.router.navigate(['/deds/' + this.ded.id + '/sprints/' + sprintId]);
+  salvar(sprint: Sprint) {
+    if (sprint.id == undefined) {
+      sprint.ded = this.ded;
+      this.sprintService.novo(sprint).subscribe(
+        (response) => {
+          this.msgService.success('Registro salvo com sucesso!');
+          this.ded.sprints.push(sprint);
+          console.log(response);
+        },
+        (error) => {
+          this.msgService.error('Ocorreu um erro ao salvar!');
+          console.log(error);
+        }
+      );
+    } else {
+      this.sprintService.editar(sprint).subscribe(
+        (response) => {
+          this.msgService.success('Registro salvo com sucesso!');
+          console.log(response);
+        },
+        (error) => {
+          this.msgService.error('Ocorreu um erro ao salvar!');
+          console.log(error);
+        }
+      );
+    }
+    window.location.reload();
   }
+
 
   apagar(sprintId: number) {
     if (confirm('Confirmar. Apagar o registro?') != true) {
@@ -57,11 +84,15 @@ export class SprintsComponent implements OnInit {
     this.sprintService.apagar(sprintId).subscribe(
       (msg) => {
         this.msgService.success('Registro apagado com sucesso.');
-        this.ngOnInit();
+        window.location.reload();
       },
       (erro) => {
         this.msgService.error('Ocorreu um erro ao apagar registro.');
       }
     );
+  }
+
+  ver(sprint: Sprint){
+    this.router.navigate(['/contagens/' + sprint.id]);
   }
 }

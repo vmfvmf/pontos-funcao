@@ -1,4 +1,5 @@
 import { HttpParams } from '@angular/common/http';
+import { Contagem } from '../contagens/contagem';
 import { Ded } from './../deds/ded';
 
 export interface ISprint{
@@ -8,6 +9,7 @@ export interface ISprint{
   dataInicio?: Date;
   dataFim?: Date;
   diasUteis?: number;
+  contagens?: Contagem[];
 }
 
 export class Sprint  {
@@ -17,6 +19,7 @@ export class Sprint  {
   dataInicio?: Date;
   dataFim?: Date;
   diasUteis?: number;
+  contagens?: Contagem[];
 
   constructor(iSprint: ISprint){
     if(iSprint.id) this.id = iSprint.id;
@@ -34,7 +37,7 @@ export class Sprint  {
       if (s.id !== undefined) {
         httpParams = httpParams.set('id', s.id.toString());
       }
-      if (s.ded !== undefined) {
+      if (s.ded !== undefined && s.ded.id !== undefined) {
         httpParams = httpParams.set('ded.id', s.ded.id.toString());
       }
       return httpParams;

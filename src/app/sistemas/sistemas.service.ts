@@ -1,10 +1,8 @@
 
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
-import { ConsultaPaginada } from "../shared/consulta-paginada";
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { FiltroSistema } from "./filtro-sistema";
 import { Sistema } from "./sistema";
 
 @Injectable()
@@ -15,8 +13,8 @@ export class SistemasService {
   constructor(private httpClient: HttpClient) {
   }
 
-  listar(filtro: FiltroSistema): Observable<Sistema[]> {
-    return this.httpClient.get<Sistema[]>(`${SistemasService.URL_API}`, {params: filtro.toHttpParams()});
+  listar(filtro: Sistema): Observable<Sistema[]> {
+    return this.httpClient.get<Sistema[]>(`${SistemasService.URL_API}`, {params: Sistema.toHttpParams(filtro)});
   }
 
   novo(novoSistema: Sistema): Observable<Sistema> {

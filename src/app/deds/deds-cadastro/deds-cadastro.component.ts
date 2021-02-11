@@ -1,7 +1,8 @@
+import { SprintsComponent } from './../../sprints/sprints.component';
 import { MessageService } from './../../shared/message-service';
 import { DedsService } from './../deds.service';
 import { Ded } from './../ded';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -12,6 +13,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class DedsCadastroComponent implements OnInit {
   ded: Ded = new Ded({});
   novoCadastro: boolean= true;
+
+  @ViewChild(SprintsComponent)
+  sprintComponent: SprintsComponent;
 
   constructor(
     private dService: DedsService,
@@ -26,7 +30,10 @@ export class DedsCadastroComponent implements OnInit {
           this.ded.id = +params['id'];
           this.novoCadastro = false;
           this.dService.ver(this.ded.id).subscribe(
-            ded => this.ded = ded
+            ded => {
+              this.ded = ded;
+              this.sprintComponent.ded = ded;
+            }
           );
         }
     });

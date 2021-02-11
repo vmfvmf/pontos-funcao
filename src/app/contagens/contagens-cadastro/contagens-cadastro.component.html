@@ -1,0 +1,30 @@
+<div mat-dialog-content>
+  <form class="example-form">
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Sistema</mat-label>
+      <mat-select name="sistema" [(ngModel)]="contagem.sistema" >
+        <mat-option *ngFor="let sistema of sistemas;" [value]="sistema" >{{ sistema.nome }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Contador</mat-label>
+      <input matInput placeholder="Contador" name="contador" [(ngModel)]="contagem.contador">
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Data contagem</mat-label>
+      <input matInput [matDatepicker]="picker" name="dataContagem" [(ngModel)]="contagem.dataContagem">
+      <mat-datepicker-toggle matSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+  </form>
+  </div>
+    <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+    <button mat-button [mat-dialog-close]="contagem" cdkFocusInitial>Ok</button>
+  </div>

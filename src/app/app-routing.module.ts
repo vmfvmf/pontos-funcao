@@ -1,3 +1,4 @@
+import { ContagensComponent } from './contagens/contagens.component';
 import { SprintsCadastroComponent } from './sprints/sprints-cadastro/sprints-cadastro.component';
 import { SprintsComponent } from './sprints/sprints.component';
 import { SistemasComponent } from './sistemas/sistemas.component';
@@ -9,14 +10,14 @@ import { SistemasCadastroComponent } from './sistemas/sistemas-cadastro/sistemas
 
 const routes: Routes = [
   { path: 'deds/:id/sprints', component: SprintsComponent },
-  { path: 'deds/:id/sprints/novo', component: SprintsCadastroComponent },
+  { path: 'deds/:idDed/sprints/novo', component: SprintsCadastroComponent },
   { path: 'deds', component: DedsComponent },
   { path: 'deds/novo', component: DedsCadastroComponent },
   { path: 'deds/:id', component: DedsCadastroComponent },
+  { path: 'contagens/:sprintId', component: ContagensComponent },
   { path: 'sistemas', component: SistemasComponent },
   { path: 'sistemas/novo', component: SistemasCadastroComponent },
-  { path: 'sistemas/editar/:id', component: SistemasCadastroComponent },
-  { path: 'sprints', component: SprintsComponent }
+  { path: 'sistemas/editar/:id', component: SistemasCadastroComponent }
 ];
 
 @NgModule({

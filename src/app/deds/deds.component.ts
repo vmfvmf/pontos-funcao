@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class DedsComponent implements OnInit {
   deds: Ded[];
-  displayedColumns: string[] = ['ded', 'descricao', 'acao'];
+  displayedColumns: string[] = ['numero', 'descricao', 'acao'];
 
   constructor(
     private mservice: MessageService,
@@ -26,9 +26,6 @@ export class DedsComponent implements OnInit {
      });
   }
 
-  mostra(){
-    this.mservice.error("teste");
-  }
 
   apagar(ded_id: number){
     if(confirm("Confirmar. Apagar o registro?") != true){

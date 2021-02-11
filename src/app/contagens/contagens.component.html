@@ -1,0 +1,50 @@
+
+
+<table mat-table  [dataSource]="sprint.contagens" class="mat-elevation-z8">
+  <!-- Sprint Column -->
+  <ng-container matColumnDef="sprint">
+    <th mat-header-cell *matHeaderCellDef> Sprint </th>
+    <td mat-cell *matCellDef="let contagem"> {{sprint.numero}} </td>
+  </ng-container>
+
+  <!-- Sistema Column -->
+  <ng-container matColumnDef="sistema">
+    <th mat-header-cell *matHeaderCellDef> Sistema </th>
+    <td mat-cell *matCellDef="let contagem"> {{ contagem.sistema ? contagem.sistema.nome : "" }} </td>
+  </ng-container>
+
+  <!-- Contador Column -->
+  <ng-container matColumnDef="contador">
+    <th mat-header-cell *matHeaderCellDef> Contador </th>
+    <td mat-cell *matCellDef="let contagem"> {{contagem.contador}} </td>
+  </ng-container>
+
+  <!-- Data Contagem Column -->
+  <ng-container matColumnDef="dataContagem">
+    <th mat-header-cell *matHeaderCellDef> Data contagem </th>
+    <td mat-cell *matCellDef="let contagem"> {{contagem.dataContagem | date:'dd/MM/yyyy'}} </td>
+  </ng-container>
+
+  <!-- Act Column -->
+  <ng-container matColumnDef="acao">
+    <th mat-header-cell *matHeaderCellDef> Ação </th>
+    <td mat-cell *matCellDef="let contagem">
+      <button (click)="novoEditar(contagem)" >
+        <span class="material-icons md-24" matTooltip="Ver">folder_open</span>
+      </button>
+      <button (click)="apagar(contagem.id)" routerLink="." >
+        <span class="material-icons md-24" matTooltip="Apagar">delete</span>
+      </button>
+      <button (click)="ver(contagem)" >
+        <span class="material-icons md-24" matTooltip="Contagem">analytics</span>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <button (click)="novoEditar({ })" >
+    <span class="material-icons md-24" matTooltip="Novo">create_new_folder</span>
+  </button>

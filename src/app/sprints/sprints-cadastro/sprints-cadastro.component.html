@@ -1,9 +1,35 @@
+<div mat-dialog-content>
 <form class="example-form">
   <mat-form-field class="example-full-width">
     <mat-label>Número</mat-label>
     <input matInput placeholder="Número" name="numero" [(ngModel)]="sprint.numero">
   </mat-form-field>
 
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Data de início</mat-label>
+    <input matInput [matDatepicker]="picker" name="inicio" [(ngModel)]="sprint.dataInicio">
+    <mat-datepicker-toggle matSuffix [for]="picker">
+      <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+    </mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
 
-  <button (click)="salvar()">Salvar</button>
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Data do fim</mat-label>
+    <input matInput [matDatepicker]="picker2" name="fim" [(ngModel)]="sprint.dataFim">
+    <mat-datepicker-toggle matSuffix [for]="picker2">
+      <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+    </mat-datepicker-toggle>
+    <mat-datepicker #picker2></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Dias úteis</mat-label>
+    <input matInput placeholder="Dias úteis" name="diasUteis" [(ngModel)]="sprint.diasUteis">
+  </mat-form-field>
 </form>
+</div>
+  <div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="sprint" cdkFocusInitial>Ok</button>
+</div>

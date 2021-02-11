@@ -2,20 +2,20 @@ import { Sprint } from "../sprints/sprint";
 
 export interface IDed{
   id?: number;
-  ded?: number;
+  numero?: number;
   descricao?: string;
   sprints?: Sprint[];
 }
 
 export class Ded implements IDed{
   id?: number;
-  ded?: number;
+  numero?: number;
   descricao?: string;
   sprints?: Sprint[];
 
   constructor(iDed: IDed){
     this.id = iDed.id;
-    this.ded = iDed.ded;
+    this.numero = iDed.numero;
     this.descricao = iDed.descricao;
     this.sprints = iDed.sprints;
   }

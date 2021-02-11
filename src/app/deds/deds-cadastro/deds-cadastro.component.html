@@ -1,13 +1,16 @@
 <form class="example-form">
   <mat-form-field class="example-full-width">
     <mat-label>DED</mat-label>
-    <input matInput placeholder="DED" name="ded" [(ngModel)]="ded.ded">
+    <input matInput placeholder="DED Nº" name="numero" [(ngModel)]="ded.numero">
   </mat-form-field>
 
   <mat-form-field class="example-full-width">
     <mat-label>Descrição</mat-label>
     <textarea matInput placeholder="Descrição" name="descricao" [(ngModel)]="ded.descricao"></textarea>
   </mat-form-field>
-
   <button (click)="salvar()">Salvar</button>
+
+  <app-sprints *ngIf="ded.id" >
+
+  </app-sprints>
 </form>

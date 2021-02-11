@@ -17,8 +17,8 @@ export class FiltroDeds extends Ded {
     public toHttpParams(): HttpParams {
         let httpParams = this.paginacao.toHttpParams();
 
-        if (this.ded !== undefined) {
-          httpParams = httpParams.set('nome', this.ded.toString());
+        if (this.numero !== undefined) {
+          httpParams = httpParams.set('nome', this.numero.toString());
         }
 
         if (this.descricao !== undefined) {

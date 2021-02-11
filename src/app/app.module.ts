@@ -1,3 +1,4 @@
+import { ContagensService } from './contagens/contagens.service';
 import { SprintsService } from './sprints/sprints.service';
 import { SistemasCadastroComponent } from './sistemas/sistemas-cadastro/sistemas-cadastro.component';
 import { SistemasService } from './sistemas/sistemas.service';
@@ -17,6 +18,9 @@ import { FormsModule } from '@angular/forms';
 import { SistemasComponent } from './sistemas/sistemas.component';
 import { SprintsComponent } from './sprints/sprints.component';
 import { SprintsCadastroComponent } from './sprints/sprints-cadastro/sprints-cadastro.component';
+import { ContagensComponent } from './contagens/contagens.component';
+import { ContagensCadastroComponent } from './contagens/contagens-cadastro/contagens-cadastro.component';
+import { TabelasComponent } from './tabelas/tabelas.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +30,10 @@ import { SprintsCadastroComponent } from './sprints/sprints-cadastro/sprints-cad
     SistemasComponent,
     SistemasCadastroComponent,
     SprintsComponent,
-    SprintsCadastroComponent
+    SprintsCadastroComponent,
+    ContagensComponent,
+    ContagensCadastroComponent,
+    TabelasComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +43,7 @@ import { SprintsCadastroComponent } from './sprints/sprints-cadastro/sprints-cad
     HttpClientModule,
     FormsModule
   ],
-  providers: [ MessageService, DedsService, SistemasService, SprintsService, HttpClient ],
+  providers: [ MessageService, DedsService, SistemasService, SprintsService, HttpClient, ContagensService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,4 +1,3 @@
-import { FiltroSistema } from './filtro-sistema';
 import { SistemasService } from './sistemas.service';
 import { MessageService } from './../shared/message-service';
 import { Sistema } from './sistema';
@@ -20,7 +19,7 @@ export class SistemasComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    this.sService.listar(new FiltroSistema({})).subscribe(sistemas => { this.sistemas = sistemas });
+    this.sService.listar({}).subscribe(sistemas => { this.sistemas = sistemas });
   }
 
   apagar(sistema_id: number){
