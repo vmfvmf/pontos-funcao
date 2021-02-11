@@ -1,3 +1,7 @@
+import { ColunasCadastroComponent } from './tabelas/colunas-cadastro/colunas-cadastro.component';
+import { TabelasCadastroComponent } from './tabelas/tabelas-cadastro/tabelas-cadastro.component';
+import { ColunasService } from './tabelas/colunas.service';
+import { TabelasService } from './tabelas/tabelas.service';
 import { ContagensService } from './contagens/contagens.service';
 import { SprintsService } from './sprints/sprints.service';
 import { SistemasCadastroComponent } from './sistemas/sistemas-cadastro/sistemas-cadastro.component';
@@ -33,7 +37,9 @@ import { TabelasComponent } from './tabelas/tabelas.component';
     SprintsCadastroComponent,
     ContagensComponent,
     ContagensCadastroComponent,
-    TabelasComponent
+    TabelasComponent,
+    TabelasCadastroComponent,
+    ColunasCadastroComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +49,7 @@ import { TabelasComponent } from './tabelas/tabelas.component';
     HttpClientModule,
     FormsModule
   ],
-  providers: [ MessageService, DedsService, SistemasService, SprintsService, HttpClient, ContagensService ],
+  providers: [ MessageService, DedsService, SistemasService, SprintsService, HttpClient, ContagensService, TabelasService, ColunasService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

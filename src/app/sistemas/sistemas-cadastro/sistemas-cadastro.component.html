@@ -11,4 +11,8 @@
 
 
   <button (click)="salvar()">Salvar</button>
+
+   <app-tabelas *ngIf="sistema.id" [selectedSistema]="sistema" >
+
+   </app-tabelas>
 </form>
