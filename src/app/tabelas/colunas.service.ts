@@ -21,8 +21,12 @@ export class ColunasService {
     return this.httpClient.post<Coluna>(`${ColunasService.URL_API}`, novoColuna);
   }
 
-  ver(sitema_id: number): Observable<Coluna> {
-    return this.httpClient.get<Coluna>(`${ColunasService.URL_API}/${sitema_id}`);
+  salvaEmLote(novasColunas: Coluna[]): Observable<Coluna[]> {
+    return this.httpClient.post<Coluna[]>(`${ColunasService.URL_API}/emlote`, novasColunas);
+  }
+
+  ver(coluna_id: number): Observable<Coluna> {
+    return this.httpClient.get<Coluna>(`${ColunasService.URL_API}/${coluna_id}`);
   }
 
   editar(colunaModificado: Coluna): Observable<Coluna> {

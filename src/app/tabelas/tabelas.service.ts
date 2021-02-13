@@ -14,11 +14,15 @@ export class TabelasService {
   }
 
   listar(filtro: Tabela): Observable<Tabela[]> {
-    return this.httpClient.get<Tabela[]>(`${TabelasService.URL_API}`, {params: Tabela.toHttpParams(filtro)});
+    return this.httpClient.get<Tabela[]>(`${TabelasService.URL_API}`, {params: filtro.toHttpParams()});
   }
 
-  novo(novoTabela: Tabela): Observable<Tabela> {
-    return this.httpClient.post<Tabela>(`${TabelasService.URL_API}`, novoTabela);
+  novo(novaTabela: Tabela): Observable<Tabela> {
+    return this.httpClient.post<Tabela>(`${TabelasService.URL_API}`, novaTabela);
+  }
+
+  salvaEmLote(novasTabelas: Tabela[]): Observable<Tabela[]> {
+    return this.httpClient.post<Tabela[]>(`${TabelasService.URL_API}/emlote`, novasTabelas);
   }
 
   ver(sitema_id: number): Observable<Tabela> {

@@ -14,8 +14,8 @@ import { ColunasCadastroComponent } from './colunas-cadastro/colunas-cadastro.co
   styleUrls: ['./tabelas.component.css']
 })
 export class TabelasComponent implements OnInit {
-  tabelas: Tabela[] = [];
-  colunas: Tabela[] = [];
+  tabelas: Tabela[];
+  colunas: Coluna[];
   selectedTabela: Tabela;
 
   @Input()
@@ -27,7 +27,7 @@ export class TabelasComponent implements OnInit {
     private colunaService: ColunasService) { }
 
   ngOnInit(): void {
-    this.tabelaService.listar({sistema: this.selectedSistema}).subscribe(
+    this.tabelaService.listar(new Tabela({})).subscribe(
       lista => this.tabelas = lista
     );
   }
@@ -35,7 +35,7 @@ export class TabelasComponent implements OnInit {
   novoEditarColuna(coluna: Coluna){
     const dialogRef = this.dialog.open(ColunasCadastroComponent, {
       width: '300px',
-      data: {coluna: coluna, tabela: this.selectedTabela}
+      data: {coluna: coluna, tabela: this.selectedTabela[0]}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -45,14 +45,13 @@ export class TabelasComponent implements OnInit {
   }
 
   showColunas(){
-    this.colunaService.listar({tabela: this.selectedTabela}).subscribe(
+    this.colunaService.listar({tabela: this.selectedTabela[0]}).subscribe(
       lista => this.colunas = lista
     );
   }
 
   salvarColuna(coluna: Coluna) {
     if (coluna.id == undefined) {
-      coluna.tabela = this.selectedTabela;
       this.colunaService.novo(coluna).subscribe(
         (response) => {
           this.msgService.success('Registro salvo com sucesso!');
@@ -93,7 +92,6 @@ export class TabelasComponent implements OnInit {
 
   salvar(tabela: Tabela) {
     if (tabela.id == undefined) {
-      tabela.sistema = this.selectedSistema;
       this.tabelaService.novo(tabela).subscribe(
         (response) => {
           this.msgService.success('Registro salvo com sucesso!');

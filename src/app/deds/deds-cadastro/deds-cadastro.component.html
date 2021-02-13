@@ -8,7 +8,7 @@
     <mat-label>Descrição</mat-label>
     <textarea matInput placeholder="Descrição" name="descricao" [(ngModel)]="ded.descricao"></textarea>
   </mat-form-field>
-  <button (click)="salvar()">Salvar</button>
+  <button style="float: right; margin-bottom: 10px;" (click)="salvar()">Salvar</button>
 
   <app-sprints *ngIf="ded.id" >
 

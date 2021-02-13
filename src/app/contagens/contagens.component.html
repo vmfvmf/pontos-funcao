@@ -1,4 +1,9 @@
-
+<h2>
+  Contagens
+  <button (click)="novoEditar(null)" >
+    <span class="material-icons md-24" matTooltip="Novo">create_new_folder</span>
+  </button>
+</h2>
 
 <table mat-table  [dataSource]="sprint.contagens" class="mat-elevation-z8">
   <!-- Sprint Column -->
@@ -35,7 +40,7 @@
       <button (click)="apagar(contagem.id)" routerLink="." >
         <span class="material-icons md-24" matTooltip="Apagar">delete</span>
       </button>
-      <button (click)="ver(contagem)" >
+      <button routerLink="/contagens/detalhe/{{contagem.id}}" routerLinkActive="router-link-active" >
         <span class="material-icons md-24" matTooltip="Contagem">analytics</span>
       </button>
     </td>
@@ -45,6 +50,4 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <button (click)="novoEditar({ })" >
-    <span class="material-icons md-24" matTooltip="Novo">create_new_folder</span>
-  </button>
+

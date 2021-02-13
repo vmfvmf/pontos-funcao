@@ -10,7 +10,7 @@
   role="list"
   [multiple]="false"
 >
-  <mat-list-option *ngFor="let tabela of tabelas">
+  <mat-list-option *ngFor="let tabela of tabelas" [value]="tabela">
     {{ tabela.nome }}
   </mat-list-option>
 </mat-selection-list>

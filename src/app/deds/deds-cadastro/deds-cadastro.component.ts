@@ -19,7 +19,6 @@ export class DedsCadastroComponent implements OnInit {
 
   constructor(
     private dService: DedsService,
-    private router: Router,
     private route: ActivatedRoute,
     private mService: MessageService
     ) { }

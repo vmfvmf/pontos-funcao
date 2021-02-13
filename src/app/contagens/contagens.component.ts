@@ -44,7 +44,7 @@ export class ContagensComponent implements OnInit {
   novoEditar(contagem: Contagem) {
     const dialogRef = this.dialog.open(ContagensCadastroComponent, {
       width: '300px',
-      data: { contagem: contagem },
+      data: { contagem: contagem ? contagem : new Contagem({})},
     });
 
     dialogRef.afterClosed().subscribe((result) => {

@@ -1,0 +1,72 @@
+<div mat-dialog-content>
+  <form class="example-form">
+    <mat-form-field class="example-full-width">
+      <mat-label>Nome</mat-label>
+      <input
+        matInput
+        placeholder="Nome"
+        name="nome"
+        [(ngModel)]="funcaoDados.nome"
+      />
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Tipo</mat-label>
+      <mat-select name="subtipo" [(ngModel)]="funcaoDados.subtipo">
+        <mat-option *ngFor="let subtipo of subtipos" [value]="subtipo">{{
+          subtipo
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+    <h2>
+      TRs - [{{ funcaoDados.tabelas.length }}]
+      <mat-form-field style="margin-left: 50px;" appearance="legacy" >
+        <mat-label>Novo TR</mat-label>
+        <input  matInput [(ngModel)]="novoTr.nome" placeholder="Ex. Tabela Projetos" />
+        <mat-icon
+          style="cursor: pointer;"
+          (click)="teste()"
+          matTooltip="clique aqui para adicionar"
+          matSuffix
+          >download</mat-icon
+        >
+      </mat-form-field>
+    </h2>
+    <mat-tab-group [(selectedIndex)]="selectedTrIndex">
+      <mat-tab *ngFor="let t of funcaoDados.tabelas">
+        <ng-template mat-tab-label>
+          {{t.nome}}
+          <mat-icon matTooltip="Apagar?" style="cursor: pointer;" (click)="apagarTabela(t)" >
+            delete
+          </mat-icon>
+        </ng-template>
+        <h2>
+          TDs - [{{ t.colunas.length }}]
+          <mat-form-field style="margin-left: 50px;" appearance="legacy" >
+            <mat-label>Novo TD</mat-label>
+            <input  matInput [(ngModel)]="novoTd.nome" placeholder="Ex. Coluna Nome" />
+            <mat-icon
+              style="cursor: pointer;"
+              (click)="teste2()"
+              matTooltip="clique aqui para adicionar"
+              matSuffix
+              >download</mat-icon
+            >
+          </mat-form-field>
+          <!-- {{ t.colunas.length }} -->
+        </h2>
+          <mat-list role="list" *ngIf="t && t.colunas">
+            <mat-list-item *ngFor="let c of t.colunas">{{ c.nome }} <mat-icon matTooltip="Apagar?" style="cursor: pointer;" (click)="apagarColuna(c)" >
+              delete
+            </mat-icon> </mat-list-item>
+          </mat-list>
+      </mat-tab>
+    </mat-tab-group>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button (click)="onOkClick()" [mat-dialog-close]="funcaoDados" cdkFocusInitial>
+    Ok
+  </button>
+</div>

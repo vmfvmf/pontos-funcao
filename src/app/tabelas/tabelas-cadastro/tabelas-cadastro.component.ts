@@ -10,11 +10,10 @@ import { Tabela } from '../tabela';
 })
 export class TabelasCadastroComponent implements OnInit {
 
-  tabela: Tabela = {};
+  tabela: Tabela = new Tabela({});
   constructor(public dialogRef: MatDialogRef<TabelasCadastroComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {tabela: Tabela, sistema: Sistema}) {
       this.tabela = data.tabela;
-      this.tabela.sistema = data.sistema;
     }
 
   ngOnInit(): void {

@@ -1,40 +1,47 @@
+import { FuncaoDados } from './../contagens/contagens-detalhes/contagens-funcao-dados/funcao-dados';
 import { HttpParams } from "@angular/common/http";
 import { Sistema } from "../sistemas/sistema";
 
 export interface ITabela{
-  id?: string;
+  id?: number;
   nome?: string;
-  sistema?: Sistema;
+  colunas?: Coluna[];
 }
 
 export class Tabela {
-  id?: string;
+  id?: number;
   nome?: string;
-  sistema?: Sistema;
+  colunas?: Coluna[];
+  funcaoDados?: FuncaoDados;
 
-  public static toHttpParams(s: ITabela): HttpParams {
+  constructor(t: ITabela){
+    this.id = t.id;
+    this.nome = t.nome;
+    this.colunas = t.colunas;
+  }
+  toHttpParams(): HttpParams {
     let httpParams = new HttpParams();
 
-      if (s.id !== undefined) {
-        httpParams = httpParams.set('id', s.id.toString());
+      if (this.id !== undefined) {
+        httpParams = httpParams.set('id', this.id.toString());
       }
-      if (s.nome !== undefined) {
-        httpParams = httpParams.set('number', s.nome.toString());
+      if (this.nome !== undefined) {
+        httpParams = httpParams.set('number', this.nome.toString());
       }
-      if (s.sistema !== undefined) {
-        httpParams = httpParams.set('sistema_id', s.sistema.id.toString());
+      if (this.funcaoDados !== undefined) {
+        httpParams = httpParams.set('funcaoDados_id', this.funcaoDados.id.toString());
       }
       return httpParams;
     }
 }
 export interface IColuna{
-  id?: string;
+  id?: number;
   nome?: string;
   tabela?: Tabela;
 }
 
 export class Coluna {
-  id?: string;
+  id?: number;
   nome?: string;
   tabela?: Tabela;
 
@@ -46,6 +53,9 @@ export class Coluna {
       }
       if (c.nome !== undefined) {
         httpParams = httpParams.set('number', c.nome.toString());
+      }
+      if (c.tabela !== undefined) {
+        httpParams = httpParams.set('tabela.id', c.tabela.id.toString());
       }
       return httpParams;
     }

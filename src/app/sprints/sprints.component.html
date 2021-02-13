@@ -1,27 +1,32 @@
-
+<h2 style="margin-top: 20px;">
+  Sprints
+  <button (click)="novoEditar({ })" >
+    <span class="material-icons md-24" matTooltip="Novo">create_new_folder</span>
+  </button>
+</h2>
 
 <table mat-table [dataSource]="ded.sprints" class="mat-elevation-z8">
 <!-- Número Column -->
 <ng-container matColumnDef="numero">
-  <th mat-header-cell *matHeaderCellDef> Número </th>
+  <th mat-header-cell *matHeaderCellDef> Nº </th>
   <td mat-cell *matCellDef="let sprint"> {{sprint.numero}} </td>
 </ng-container>
 
 <!-- Data Início Column -->
 <ng-container matColumnDef="dataInicio">
-  <th mat-header-cell *matHeaderCellDef> Data do Início </th>
+  <th mat-header-cell *matHeaderCellDef> Início </th>
   <td mat-cell *matCellDef="let sprint"> {{sprint.dataInicio | date:'dd/MM/yyyy'}} </td>
 </ng-container>
 
 <!-- Data Fim Column -->
 <ng-container matColumnDef="dataFim">
-  <th mat-header-cell *matHeaderCellDef> Data do Fim </th>
+  <th mat-header-cell *matHeaderCellDef> Fim </th>
   <td mat-cell *matCellDef="let sprint"> {{sprint.dataFim | date:'dd/MM/yyyy'}} </td>
 </ng-container>
 
 <!-- DiasUteis Column -->
 <ng-container matColumnDef="diasUteis">
-  <th mat-header-cell *matHeaderCellDef> Dias úteis </th>
+  <th mat-header-cell *matHeaderCellDef> Dias </th>
   <td mat-cell *matCellDef="let sprint"> {{sprint.diasUteis}} </td>
 </ng-container>
 
@@ -45,6 +50,4 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
-<button (click)="novoEditar({ })" >
-  <span class="material-icons md-24" matTooltip="Novo">create_new_folder</span>
-</button>
+
