@@ -15,8 +15,9 @@ import { FuncoesArquivoLogico } from '../../item-contagem';
 export class ContagensFuncaoDadosComponent implements OnInit {
   funcaoDados: FuncaoDados;
   subtipos: string[] = FuncoesArquivoLogico;
+  trTotal = 0;
+  tdTotal = 0;
 
-  typesOfShoes = ["testes", 'poms', "foo"];
   novoTr: Tabela = new Tabela({});
   novoTd: Coluna = {nome: ""};
   selectedTrIndex: number;
@@ -30,6 +31,7 @@ export class ContagensFuncaoDadosComponent implements OnInit {
     }
 
   ngOnInit(): void {
+    this.atualizaContagemTDs();
   }
 
   onNoClick(){
@@ -43,13 +45,26 @@ export class ContagensFuncaoDadosComponent implements OnInit {
     if(this.novoTr.nome.length > 0){
       this.funcaoDados.tabelas.push(new Tabela({nome: this.novoTr.nome, colunas: []}));
       this.novoTr.nome = "";
+      this.atualizaContagemTDs();
     }
+  }
+
+  atualizaContagemTDs(){
+    let i = 0;
+    this.funcaoDados.tabelas.forEach( t => {
+      t.colunas.forEach( c => {
+        i++;
+      });
+    });
+    this.trTotal = this.funcaoDados.tabelas.length;
+    this.tdTotal = i;
   }
 
   teste2(){
     if(this.novoTd.nome.length > 0){
       this.funcaoDados.tabelas[this.selectedTrIndex?this.selectedTrIndex:0].colunas.push({nome: this.novoTd.nome});
       this.novoTd = {nome: ""};
+      this.atualizaContagemTDs();
     }
   }
   apagarTabela(tr: Tabela){
@@ -61,6 +76,7 @@ export class ContagensFuncaoDadosComponent implements OnInit {
         (msg) => {
           this.msgService.success('Registro apagado com sucesso.');
           window.location.reload();
+          this.atualizaContagemTDs();
         },
         (erro) => {
           this.msgService.error('Ocorreu um erro ao apagar registro.');
@@ -70,6 +86,7 @@ export class ContagensFuncaoDadosComponent implements OnInit {
         const index = this.funcaoDados.tabelas.indexOf(tr, 0);
         if (index > -1) {
           this.funcaoDados.tabelas.splice(index, 1);
+          this.atualizaContagemTDs();
         }
       }
   }
@@ -92,6 +109,7 @@ export class ContagensFuncaoDadosComponent implements OnInit {
       const index = this.funcaoDados[this.selectedTrIndex].colunas.indexOf(td, 0);
       if (index > -1) {
         this.funcaoDados[this.selectedTrIndex].colunas.splice(index, 1);
+        this.atualizaContagemTDs();
       }
     }
 }
