@@ -1,0 +1,47 @@
+<div mat-dialog-content>
+  <form class="example-form">
+    <mat-form-field class="example-full-width">
+      <mat-label>Nome</mat-label>
+      <input
+        matInput
+        placeholder="Nome"
+        name="nome"
+        [(ngModel)]="transacao.nome"
+      />
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Tipo</mat-label>
+      <mat-select name="subtipo" [(ngModel)]="transacao.subtipo">
+        <mat-option *ngFor="let subtipo of subtipos" [value]="subtipo">{{
+          subtipo
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <h2>TDs {{ transacao.td }}</h2>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Grupo</mat-label>
+      <mat-select name="grupo" [(ngModel)]="transacao.grupo">
+        <mat-option *ngFor="let grupo of grupos" [value]="grupo">{{
+          grupo.nome
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <h2>
+      Mensagens Tela
+    </h2>
+    <mat-selection-list #list [(ngModel)]="selectedMsgsTela" name="selectedsMsgs" (ngModelChange)="checkMsgTelaValue($event)">
+      <mat-list-option  *ngFor="let msg of msgsTela" [value]="msg" >
+        {{msg.nome}}
+      </mat-list-option>
+    </mat-selection-list>
+  </form>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button (click)="onOkClick()">
+    Ok
+  </button>
+</div>

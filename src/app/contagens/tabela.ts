@@ -1,4 +1,4 @@
-import { FuncaoDados } from './../contagens/contagens-detalhes/contagens-funcao-dados/funcao-dados';
+import { FuncaoDados } from './contagens-detalhes/contagens-funcao-dados/funcao-dados';
 import { HttpParams } from "@angular/common/http";
 import { Sistema } from "../sistemas/sistema";
 
@@ -6,6 +6,7 @@ export interface ITabela{
   id?: number;
   nome?: string;
   colunas?: Coluna[];
+  funcaoDados?: FuncaoDados;
 }
 
 export class Tabela {
@@ -18,6 +19,7 @@ export class Tabela {
     this.id = t.id;
     this.nome = t.nome;
     this.colunas = t.colunas;
+    this.funcaoDados = t.funcaoDados;
   }
   toHttpParams(): HttpParams {
     let httpParams = new HttpParams();
@@ -44,6 +46,12 @@ export class Coluna {
   id?: number;
   nome?: string;
   tabela?: Tabela;
+
+  constructor(i: IColuna){
+    this.id = i.id;
+    this.nome = i.nome;
+    this.tabela = i.tabela;
+  }
 
   public static toHttpParams(c: IColuna): HttpParams {
     let httpParams = new HttpParams();

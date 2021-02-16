@@ -2,6 +2,8 @@ import { HttpParams } from "@angular/common/http";
 import { Sistema } from "../sistemas/sistema";
 import { Sprint } from "../sprints/sprint";
 import { FuncaoDados } from "./contagens-detalhes/contagens-funcao-dados/funcao-dados";
+import { Transacao } from "./contagens-detalhes/contagens-transacoes/transacao";
+import { ItemContagem } from "./item-contagem";
 
 export enum EscopoContagemEnum{
   SISTEMA,
@@ -16,7 +18,8 @@ export class IContagem {
   dataContagem?: Date;
   contador?: String;
   escopo?: EscopoContagemEnum;
-  funcaoDados?: FuncaoDados[];
+  totalPf?: number;
+  itens?: ItemContagem[];
 }
 
 export class Contagem {
@@ -26,14 +29,16 @@ export class Contagem {
   dataContagem?: Date;
   contador?: String;
   escopo?: EscopoContagemEnum;
-  funcaoDados?: FuncaoDados[];
+  totalPf?: number;
+  itens?: ItemContagem[];
 
   constructor(i: IContagem){
     this.id = i.id;
     this.sistema = i.sistema;
     this.sprint = i.sprint;
-    this.funcaoDados = [];
+    this.itens = i.itens;
     this.escopo = i.escopo;
+    this.totalPf = i.totalPf;
     this.dataContagem = i.dataContagem;
     this.contador = i.contador;
   }

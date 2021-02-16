@@ -1,8 +1,10 @@
+import { TransacaoTDMensagemTelaService } from './contagens/contagens-detalhes/contagens-transacoes/transacaotdmensagemtela.service';
+import { TransacaoService } from './contagens/contagens-detalhes/contagens-transacoes/transacao.service';
+import { MensagemTelaService } from './contagens/contagens-detalhes/contagens-transacoes/contagens-mensagens-telas/mensagem-tela.service';
+import { GrupoTransacaoService } from './contagens/contagens-detalhes/contagens-transacoes/contagens-grupo-transacoes/grupo_transacao.service';
 import { FuncaoDadosService } from './contagens/contagens-detalhes/contagens-funcao-dados/funcao-dados.service';
-import { ColunasCadastroComponent } from './tabelas/colunas-cadastro/colunas-cadastro.component';
-import { TabelasCadastroComponent } from './tabelas/tabelas-cadastro/tabelas-cadastro.component';
-import { ColunasService } from './tabelas/colunas.service';
-import { TabelasService } from './tabelas/tabelas.service';
+import { ColunasService } from './contagens/colunas.service';
+import { TabelasService } from './contagens/tabelas.service';
 import { ContagensService } from './contagens/contagens.service';
 import { SprintsService } from './sprints/sprints.service';
 import { SistemasCadastroComponent } from './sistemas/sistemas-cadastro/sistemas-cadastro.component';
@@ -29,9 +31,11 @@ import { SprintsComponent } from './sprints/sprints.component';
 import { SprintsCadastroComponent } from './sprints/sprints-cadastro/sprints-cadastro.component';
 import { ContagensComponent } from './contagens/contagens.component';
 import { ContagensCadastroComponent } from './contagens/contagens-cadastro/contagens-cadastro.component';
-import { TabelasComponent } from './tabelas/tabelas.component';
 import { ContagensDetalhesComponent } from './contagens/contagens-detalhes/contagens-detalhes.component';
 import { ContagensFuncaoDadosComponent } from './contagens/contagens-detalhes/contagens-funcao-dados/contagens-funcao-dados.component';
+import { ContagensTransacoesComponent } from './contagens/contagens-detalhes/contagens-transacoes/contagens-transacoes.component';
+import { ContagensGrupoTransacoesComponent } from './contagens/contagens-detalhes/contagens-transacoes/contagens-grupo-transacoes/contagens-grupo-transacoes.component';
+import { ContagensMensagensTelasComponent } from './contagens/contagens-detalhes/contagens-transacoes/contagens-mensagens-telas/contagens-mensagens-telas.component';
 
 @NgModule({
   declarations: [
@@ -44,11 +48,11 @@ import { ContagensFuncaoDadosComponent } from './contagens/contagens-detalhes/co
     SprintsCadastroComponent,
     ContagensComponent,
     ContagensCadastroComponent,
-    TabelasComponent,
-    TabelasCadastroComponent,
-    ColunasCadastroComponent,
     ContagensDetalhesComponent,
     ContagensFuncaoDadosComponent,
+    ContagensTransacoesComponent,
+    ContagensGrupoTransacoesComponent,
+    ContagensMensagensTelasComponent,
   ],
   imports: [
     BrowserModule,
@@ -67,7 +71,11 @@ import { ContagensFuncaoDadosComponent } from './contagens/contagens-detalhes/co
     ContagensService,
     TabelasService,
     ColunasService,
-    FuncaoDadosService
+    FuncaoDadosService,
+    GrupoTransacaoService,
+    MensagemTelaService,
+    TransacaoService,
+    TransacaoTDMensagemTelaService
   ],
   bootstrap: [AppComponent],
 })

@@ -1,0 +1,56 @@
+<div mat-dialog-content>
+  <form class="example-form">
+    <h2>{{ novoEditar }} grupo</h2>
+    <mat-form-field class="example-full-width">
+      <mat-label>Nome</mat-label>
+      <input matInput placeholder="Nome" name="nome" [(ngModel)]="grupo.nome" />
+      <mat-icon
+        style="cursor: pointer"
+        (click)="onOkClick()"
+        matTooltip="Salvar"
+        matSuffix
+        class="material-icons md-24"
+        >download</mat-icon
+      >
+      <mat-icon
+        *ngIf="novoEditar == 'Editar'"
+        style="cursor: pointer"
+        (click)="cancelarEdicao()"
+        matTooltip="Cancelar edição"
+        matSuffix
+        class="material-icons md-24"
+        >clear</mat-icon
+      >
+    </mat-form-field>
+  </form>
+  <h2>Grupos cadastrados</h2>
+  <mat-list role="list" *ngIf="grupos">
+    <mat-list-item *ngFor="let g of grupos"
+      >{{ g.nome }}
+      <mat-icon
+        matTooltip="Editar"
+        style="cursor: pointer; color: blue"
+        (click)="editarGrupo(g)"
+      >
+        create
+      </mat-icon>
+      <mat-icon
+        matTooltip="Apagar?"
+        style="cursor: pointer; color: red"
+        (click)="apagarGrupo(g)"
+      >
+        delete
+      </mat-icon>
+    </mat-list-item>
+  </mat-list>
+</div>
+<div mat-dialog-actions>
+  <mat-icon
+    [mat-dialog-close]="true"
+    style="cursor: pointer; color: green"
+    matTooltip="Fechar"
+    matSuffix
+    class="material-icons md-24"
+    >verified</mat-icon
+  >
+</div>

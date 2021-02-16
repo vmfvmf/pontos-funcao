@@ -1,8 +1,7 @@
 <h2>
   Contagens
-  <button (click)="novoEditar(null)" >
-    <span class="material-icons md-24" matTooltip="Novo">create_new_folder</span>
-  </button>
+  <mat-icon style="cursor: pointer;" (click)="novoEditar(null)" matTooltip="clique aqui para adicionar"
+        matSuffix class="material-icons md-24">create_new_folder</mat-icon>
 </h2>
 
 <table mat-table  [dataSource]="sprint.contagens" class="mat-elevation-z8">
@@ -34,15 +33,12 @@
   <ng-container matColumnDef="acao">
     <th mat-header-cell *matHeaderCellDef> Ação </th>
     <td mat-cell *matCellDef="let contagem">
-      <button (click)="novoEditar(contagem)" >
-        <span class="material-icons md-24" matTooltip="Ver">folder_open</span>
-      </button>
-      <button (click)="apagar(contagem.id)" routerLink="." >
-        <span class="material-icons md-24" matTooltip="Apagar">delete</span>
-      </button>
-      <button routerLink="/contagens/detalhe/{{contagem.id}}" routerLinkActive="router-link-active" >
-        <span class="material-icons md-24" matTooltip="Contagem">analytics</span>
-      </button>
+      <mat-icon style="cursor: pointer;" (click)="novoEditar(contagem)" matTooltip="clique aqui para editar"
+        matSuffix class="material-icons md-24">folder_open</mat-icon>
+        <mat-icon style="cursor: pointer;" (click)="apagar(contagem.id)" matTooltip="clique aqui para apagar"
+        matSuffix class="material-icons md-24">delete</mat-icon>
+        <mat-icon style="cursor: pointer;" routerLink="/contagens/detalhe/{{contagem.id}}" matTooltip="detalhes"
+        matSuffix class="material-icons md-24">analytics</mat-icon>
     </td>
   </ng-container>
 
