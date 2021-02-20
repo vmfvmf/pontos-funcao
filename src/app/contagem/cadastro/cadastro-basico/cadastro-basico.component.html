@@ -1,0 +1,72 @@
+<mat-card>
+  <mat-card-title>Manutenção de contagem </mat-card-title>
+</mat-card>
+
+<div class="conteudo">
+  <!-- ------------------------ TABELA ------------------------------>
+  <mat-card class="card-tabela" style="min-width: 800px">
+    <mat-card-content>
+      <mat-form-field  class="example-full-width">
+        <mat-label>DED</mat-label>
+        <mat-select name="ded"  [(ngModel)]="contagem.sprint.ded.id" (selectionChange)="dedChange($event.value)">
+          <mat-option *ngFor="let ded of deds" [value]="ded.id">{{
+            ded.numero
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <form fxLayout="row wrap">
+        <!-- <mat-form-field fxFlex="100">
+        <input matInput #script placeholder="Valor" required maxlength="200" formControlName="valor"
+          [(ngModel)]="parametroGeralDto.valor">
+        <mat-error *ngIf="parametroGeralFrm.get('valor').errors?.required">Campo obrigatório.</mat-error>
+      </mat-form-field> -->
+
+        <mat-form-field *ngIf="contagem && contagem.sprint" class="example-full-width">
+          <mat-label>Sprint</mat-label>
+          <mat-select name="sprint"  [(ngModel)]="contagem.sprint.id">
+            <mat-option *ngFor="let sprint of getSprints()" [value]="sprint.id">{{
+              sprint.numero
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="contagem && contagem.sistema" class="example-full-width">
+          <mat-label>Sistema</mat-label>
+          <mat-select name="sistema"  [(ngModel)]="contagem.sistema.id">
+            <mat-option *ngFor="let sistema of sistemas" [value]="sistema.id">{{
+              sistema.nome
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width">
+          <mat-label>Contador</mat-label>
+          <input
+            matInput
+            placeholder="Contador"
+            name="contador"
+            [(ngModel)]="contagem.contador"
+          />
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Data contagem</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            name="dataContagem"
+            [(ngModel)]="contagem.dataContagem"
+          />
+          <mat-datepicker-toggle matSuffix [for]="picker">
+            <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+      </form>
+      <button mat-button mat-flat-button color="primary" (click)="salvar()">
+        Salvar
+      </button>
+    </mat-card-content>
+  </mat-card>
+</div>

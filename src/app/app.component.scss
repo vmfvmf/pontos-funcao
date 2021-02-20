@@ -1,0 +1,14 @@
+$index-fonte-padrao: 'Open Sans', Arial, Verdana, sans-serif;
+
+.version-tag{
+  color: #346785;
+  position: fixed;
+  right: 0px;
+  padding-right: 20px;
+  bottom: 1px;
+  z-index: 999;
+  font-size: 0.8em;
+  font-family: $index-fonte-padrao;
+  opacity: 0;
+  cursor: default;
+}

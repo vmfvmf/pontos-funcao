@@ -1,0 +1,104 @@
+<mat-card>
+  <mat-card-title>Manutenção de arquivo referenciado </mat-card-title>
+</mat-card>
+
+<div class="conteudo">
+  <!-- ------------------------ TABELA ------------------------------>
+  <mat-card class="card-tabela" >
+    <mat-card-content>
+        <mat-form-field >
+          <mat-label>Nome</mat-label>
+          <input
+            matInput
+            placeholder="Nome"
+            name="nome"
+            [(ngModel)]="arquivoReferenciado.nome"
+          />
+        </mat-form-field>
+
+        <mat-form-field >
+          <mat-label>Tipo</mat-label>
+          <mat-select name="subtipo" [(ngModel)]="arquivoReferenciado.subtipo">
+            <mat-option *ngFor="let subtipo of subtipos" [value]="subtipo">{{
+              subtipo
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="card-tabela" >
+    <mat-card-content>
+          <mat-card-title>Tabelas </mat-card-title>
+
+        <mat-form-field style="margin-left: 50px" appearance="legacy">
+          <mat-label>Incluir tabela</mat-label>
+          <input
+            matInput
+            [(ngModel)]="novaTabela.nome"
+            (keyup.enter)="salvarArquivoReferenciado_SalvarTabela()"
+            name="novotrnome"
+            placeholder="Ex. Tabela Projetos"
+          />
+          <mat-icon
+            style="cursor: pointer"
+            matTooltip="clique aqui para adicionar"
+            matSuffix
+            (click)="salvarArquivoReferenciado_SalvarTabela()"
+            >download</mat-icon
+          >
+        </mat-form-field>
+
+        <mat-tab-group [(selectedIndex)]="selectedTabelaIndex">
+          <mat-tab *ngFor="let t of arquivoReferenciado.tabelas; let index = index">
+            <ng-template mat-tab-label>
+              {{ t.nome }}
+              <mat-icon *ngIf="selectedTabelaIndex == index || index == 0 && selectedTabelaIndex == undefined"
+                matTooltip="Apagar?"
+                style="cursor: pointer; color: red;"
+                (click)="apagarTabela(t)"
+              >
+                delete
+              </mat-icon>
+            </ng-template>
+              <mat-card-title>Colunas </mat-card-title>
+              <mat-form-field style="margin-left: 50px" appearance="legacy">
+                <mat-label>Incluir coluna</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="novaColuna.nome"
+                  (keyup.enter)="adicionarColuna()"
+                  placeholder="Ex. Coluna Nome"
+                />
+                <mat-icon
+                  style="cursor: pointer"
+                  (click)="adicionarColuna()"
+                  matTooltip="clique aqui para adicionar"
+                  matSuffix
+                  >download</mat-icon
+                >
+              </mat-form-field>
+
+            <mat-list role="list" *ngIf="t && t.colunas">
+              <mat-list-item *ngFor="let c of t.colunas"
+                >{{ c.nome }}
+                <mat-icon
+                  matTooltip="Apagar?"
+                  style="cursor: pointer; color: red;"
+                  (click)="apagarColuna(c)"
+                >
+                  delete
+                </mat-icon>
+              </mat-list-item>
+            </mat-list>
+          </mat-tab>
+        </mat-tab-group>
+    </mat-card-content>
+    <mat-card-actions mat-dialog-actions align="center">
+      <button mat-button mat-flat-button color="primary" (click)="salvar(arquivoReferenciado)" mat-dialog-close>
+        Salvar
+      </button>
+      <button mat-button mat-dialog-close >Cancelar</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

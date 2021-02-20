@@ -1,0 +1,35 @@
+<mat-card>
+  <mat-card-header>
+    <h1 class="mat-title">Manutenção de Sistema</h1>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form class="example-form">
+      <mat-form-field class="example-full-width">
+        <mat-label>Nome</mat-label>
+        <input
+          matInput
+          placeholder="Nome"
+          name="nome"
+          [(ngModel)]="sistema.nome"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Versão</mat-label>
+        <input
+          matInput
+          placeholder="Versão"
+          name="versao"
+          [(ngModel)]="sistema.versao"
+        />
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions mat-dialog-actions align="center">
+    <button mat-button mat-flat-button color="primary" (click)="salvar()">
+    Salvar</button>
+    <button mat-button (click)="dialogRef.close(null)">Cancelar</button>
+  </mat-card-actions>
+</mat-card>

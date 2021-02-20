@@ -1,0 +1,56 @@
+/* You can add global styles to this file, and also import other style files */
+
+/*
+  Alteração de parâmetros do select panel do Material, de acordo
+  com solicitações do Grupo de Negócio. Essa classe precisou ser
+  sobrescrita no CSS raiz por conta da natureza dos Componentes
+  Overlay do Material, que são criados em um componente global
+  por fora do componente.
+ */
+@media screen and (min-width: 800px) {
+    .mat-select-panel{
+        max-width: none !important;
+        max-height: 400px !important;
+    }
+
+    .mat-autocomplete-panel {
+        max-width: none !important;
+    }
+
+    .mat-menu-panel.menu {
+        max-width: none !important;
+    }
+}
+
+.mat-tooltip{
+    background-color: black !important;
+    font-size: 14px !important;
+}
+
+.mat-select{
+    font-family: 'Open Sans', Arial, Verdana, sans-serif !important;
+}
+
+.mat-card{
+    font-family: 'Open Sans', Arial, Verdana, sans-serif !important;
+}
+
+/*
+  Alteração na tag 'a', que ao ser utilizada com mdTooltip, torna o texto não selecionavel.
+*/
+a {
+    user-select: auto !important;
+}
+
+/*
+  Alteração da margem do card-header que é gerada automaticamente pelo angular, gerando sempre 16px na esquerda.
+*/
+.mat-card-header-text{
+    margin: 0px !important;
+  }
+
+span.mat-form-field-required-marker {
+  color: red !important;
+}
+
+.mat-tab-body {padding-top: 20px;}

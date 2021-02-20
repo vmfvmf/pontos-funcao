@@ -1,0 +1,73 @@
+<mat-card>
+  <mat-card-header>
+    <h1 class="mat-title">Manutenção de Sprint</h1>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form class="example-form">
+      <mat-form-field class="example-full-width">
+        <mat-label>DED</mat-label>
+        <mat-select name="DED" [(ngModel)]="sprint.ded">
+          <mat-option *ngFor="let ded of deds" [value]="ded">{{
+            ded.numero + " - " + ded.descricao
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Número</mat-label>
+        <input
+          matInput
+          placeholder="Número"
+          name="numero"
+          [(ngModel)]="sprint.numero"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Data de início</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          name="inicio"
+          [(ngModel)]="sprint.dataInicio"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker">
+          <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+        </mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width" appearance="fill">
+        <mat-label>Data do fim</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker2"
+          name="fim"
+          [(ngModel)]="sprint.dataFim"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker2">
+          <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+        </mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Dias úteis</mat-label>
+        <input
+          matInput
+          placeholder="Dias úteis"
+          name="diasUteis"
+          [(ngModel)]="sprint.diasUteis"
+        />
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions mat-dialog-actions align="center">
+    <button mat-button mat-flat-button color="primary" (click)="salvar()">
+      Salvar
+    </button>
+    <button mat-button (click)="dialogRef.close(null)">Cancelar</button>
+  </mat-card-actions>
+</mat-card>

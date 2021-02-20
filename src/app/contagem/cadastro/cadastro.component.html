@@ -1,0 +1,13 @@
+
+
+
+<app-contagem-cadastro-basico *ngIf="contagem" [contagem]="contagem">
+
+</app-contagem-cadastro-basico>
+
+<app-contagem-cadastro-arquivo-referenciado *ngIf="contagem && contagem.id" [contagem]="contagem" >
+
+</app-contagem-cadastro-arquivo-referenciado>
+
+<app-contagem-cadastro-transacao *ngIf="contagem && contagem.id" [contagem]="contagem">
+</app-contagem-cadastro-transacao>

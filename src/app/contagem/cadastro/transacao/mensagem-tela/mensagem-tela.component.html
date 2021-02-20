@@ -1,0 +1,59 @@
+<mat-card>
+  <mat-card-header>
+    <h1 class="mat-title">{{ novoEditar }} mensagem de tela</h1>
+  </mat-card-header>
+
+  <mat-card-content>
+  <form class="example-form">
+    <mat-form-field class="example-full-width">
+      <mat-label>Nome</mat-label>
+      <input matInput placeholder="Nome" name="nome" [(ngModel)]="mensagemTela.nome" />
+      <mat-icon
+        style="cursor: pointer"
+        (click)="onOkClick()"
+        matTooltip="Salvar"
+        matSuffix
+        class="material-icons md-24"
+        >download</mat-icon
+      >
+      <mat-icon
+        *ngIf="novoEditar == 'Editar'"
+        style="cursor: pointer"
+        (click)="cancelarEdicao()"
+        matTooltip="Cancelar edição"
+        matSuffix
+        class="material-icons md-24"
+        >clear</mat-icon
+      >
+    </mat-form-field>
+  </form>
+
+  <mat-card-header>
+    <h1 class="mat-title">Mensagens de Telas cadastradas</h1>
+  </mat-card-header>
+
+  <mat-list role="list" *ngIf="mensagens">
+    <mat-list-item *ngFor="let m of mensagens"
+      >{{ m.nome }}
+      <mat-icon
+        matTooltip="Editar"
+        style="cursor: pointer; color: blue"
+        (click)="editarMensagemTela(m)"
+      >
+        create
+      </mat-icon>
+      <mat-icon
+        matTooltip="Apagar?"
+        style="cursor: pointer; color: red"
+        (click)="apagarMensagemTela(m)"
+      >
+        delete
+      </mat-icon>
+    </mat-list-item>
+  </mat-list>
+
+</mat-card-content>
+
+<mat-card-actions mat-dialog-actions align="center">
+  <button mat-button mat-dialog-close >Fechar</button>
+</mat-card-actions>

@@ -1,0 +1,28 @@
+<mat-card>
+  <mat-card-header>
+    <h1 class="mat-title">Manutenção de DED</h1>
+  </mat-card-header>
+
+  <mat-card-content>
+<form class="example-form" fxLayout="row wrap">
+  <mat-form-field fxFlex="100">
+    <mat-label>DED</mat-label>
+    <input matInput placeholder="DED Nº" name="numero" [(ngModel)]="ded.numero">
+  </mat-form-field>
+
+  <mat-form-field fxFlex="100" >
+    <mat-label>Descrição</mat-label>
+    <textarea matInput placeholder="Descrição" name="descricao" [(ngModel)]="ded.descricao"></textarea>
+  </mat-form-field>
+
+</form>
+</mat-card-content>
+
+<mat-card-actions mat-dialog-actions align="center">
+  <button mat-button mat-flat-button color="primary" (click)="salvar()" mat-dialog-close>
+    Salvar
+  </button>
+  <button mat-button (click)="close()" >Cancelar</button>
+</mat-card-actions>
+
+</mat-card>

@@ -1,0 +1,5 @@
+{
+    "authServerUrl": "https://keycloak-cds-dev.trt15.jus.br/auth",
+    "realm": "TRT15",
+    "resource": "atualizacaocadastralinativospensionistas"
+}

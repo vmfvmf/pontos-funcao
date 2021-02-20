@@ -1,0 +1,89 @@
+<mat-card>
+  <mat-card-title>
+  Arquivos Referenciados
+  <mat-icon
+    style="cursor: pointer; color: deeppink"
+    matTooltip="Ajuda"
+    matSuffix
+    class="material-icons md-24"
+    >help</mat-icon
+  >
+  <mat-icon
+    style="cursor: pointer; color: mediumaquamarine"
+    (click)="novoEditar(null)"
+    matTooltip="Novo"
+    matSuffix
+    class="material-icons md-24"
+    >create_new_folder</mat-icon
+  >
+</mat-card-title>
+</mat-card>
+
+<div class="conteudo">
+  <!-- ------------------------ TABELA ------------------------------>
+  <mat-card class="card-tabela" style="min-width: 800px">
+    <mat-card-content>
+      <pje-data-table [totalRegistros]="1" [value]="arquivosReferenciados"
+        listrado="true"
+         mensagemVazio="Nenhum registro encontrado" nameTabela="Arquivos Referenciados"
+        [exibePaginador]="false">
+
+        <pje-data-column header="Nome" value="nome" [ordenar]="false">
+          <ng-template let-arquivoReferenciado="rowData" #body>
+            {{ arquivoReferenciado.nome }}
+          </ng-template>
+        </pje-data-column>
+
+        <pje-data-column header="Tipo" value="tipo" [ordenar]="false">
+          <ng-template let-arquivoReferenciado="rowData" #body>
+            {{ arquivoReferenciado.subtipo }}
+          </ng-template>
+        </pje-data-column>
+
+        <pje-data-column header="TD" value="td" [ordenar]="false">
+          <ng-template let-arquivoReferenciado="rowData" #body>
+            {{ arquivoReferenciado.td }}
+          </ng-template>
+        </pje-data-column>
+
+        <pje-data-column header="TR" value="tr" [ordenar]="false">
+          <ng-template let-arquivoReferenciado="rowData" #body>
+            {{ arquivoReferenciado.tr }}
+          </ng-template>
+        </pje-data-column>
+
+        <pje-data-column header="Complexidade" value="complexidade" [ordenar]="false">
+          <ng-template let-arquivoReferenciado="rowData" #body>
+            {{ arquivoReferenciado.complexidade }}
+          </ng-template>
+        </pje-data-column>
+
+        <pje-data-column header="PF" value="pf" [ordenar]="false">
+          <ng-template let-arquivoReferenciado="rowData" #body>
+            {{ arquivoReferenciado.pf }}
+          </ng-template>
+        </pje-data-column>
+
+        <pje-data-column header="" [ordenar]="false">
+          <ng-template let-arquivoReferenciado="rowData" #body>
+            <mat-icon
+              style="cursor: pointer; color: saddlebrown"
+              (click)="novoEditar(arquivoReferenciado)"
+              matTooltip="Editar"
+              matSuffix
+              class="material-icons md-24"
+              >folder_open</mat-icon
+            >
+            <mat-icon
+              style="cursor: pointer; color: red"
+              (click)="apagar(arquivoReferenciado.id)"
+              matTooltip="Apagar"
+              matSuffix
+              class="material-icons md-24"
+              >delete</mat-icon
+            >
+          </ng-template>
+        </pje-data-column>
+
+      </pje-data-table>
+
