@@ -5,10 +5,42 @@
 <div class="conteudo">
   <!-- ------------------------ TABELA ------------------------------>
   <mat-card class="card-tabela" style="min-width: 800px">
+    <mat-form-field class="example-full-width">
+      <mat-label>Escopo</mat-label>
+      <mat-select name="escopo" [(ngModel)]="contagem.escopo">
+        <mat-option *ngFor="let escopo of escopos" [value]="escopo">{{
+          escopo
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <mat-card-content>
-      <mat-form-field  class="example-full-width">
+      <mat-form-field
+        *ngIf="contagem.escopo == 'PROJETO'"
+        class="example-full-width"
+      >
         <mat-label>DED</mat-label>
-        <mat-select name="ded"  [(ngModel)]="contagem.sprint.ded.id" (selectionChange)="dedChange($event.value)">
+        <mat-select
+          name="ded"
+          [(ngModel)]="contagem.ded.id"
+          (selectionChange)="dedChange($event.value)"
+        >
+          <mat-option *ngFor="let ded of deds" [value]="ded.id">{{
+            ded.numero
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field
+        *ngIf="contagem.escopo == 'SPRINT'"
+        class="example-full-width"
+      >
+        <mat-label>DED</mat-label>
+        <mat-select
+          name="ded"
+          [(ngModel)]="contagem.sprint.ded.id"
+          (selectionChange)="dedChange($event.value)"
+        >
           <mat-option *ngFor="let ded of deds" [value]="ded.id">{{
             ded.numero
           }}</mat-option>
@@ -21,18 +53,26 @@
         <mat-error *ngIf="parametroGeralFrm.get('valor').errors?.required">Campo obrigatório.</mat-error>
       </mat-form-field> -->
 
-        <mat-form-field *ngIf="contagem && contagem.sprint" class="example-full-width">
+        <mat-form-field
+          *ngIf="contagem && contagem.sprint && contagem.escopo == 'SPRINT'"
+          class="example-full-width"
+        >
           <mat-label>Sprint</mat-label>
-          <mat-select name="sprint"  [(ngModel)]="contagem.sprint.id">
-            <mat-option *ngFor="let sprint of getSprints()" [value]="sprint.id">{{
-              sprint.numero
-            }}</mat-option>
+          <mat-select name="sprint" [(ngModel)]="contagem.sprint.id">
+            <mat-option
+              *ngFor="let sprint of getSprints()"
+              [value]="sprint.id"
+              >{{ sprint.numero }}</mat-option
+            >
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field *ngIf="contagem && contagem.sistema" class="example-full-width">
+        <mat-form-field
+          *ngIf="contagem && contagem.sistema"
+          class="example-full-width"
+        >
           <mat-label>Sistema</mat-label>
-          <mat-select name="sistema"  [(ngModel)]="contagem.sistema.id">
+          <mat-select name="sistema" [(ngModel)]="contagem.sistema.id">
             <mat-option *ngFor="let sistema of sistemas" [value]="sistema.id">{{
               sistema.nome
             }}</mat-option>
@@ -62,7 +102,6 @@
           </mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
-
       </form>
       <button mat-button mat-flat-button color="primary" (click)="salvar()">
         Salvar

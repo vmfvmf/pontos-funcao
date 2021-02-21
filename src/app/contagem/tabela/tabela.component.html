@@ -19,7 +19,13 @@
         tamanhoPadrao="10" mensagemVazio="Nenhum registro encontrado" nameTabela="Contagens"
         [exibePaginador]="true">
 
-        <pje-data-column header="DED" value="ded" [ordenar]="false">
+        <pje-data-column header="Escopo" value="escopo" [ordenar]="false">
+          <ng-template let-contagem="rowData" #body>
+            {{ contagem.escopo + getEscopoInfo(contagem)}}
+          </ng-template>
+        </pje-data-column>
+
+        <!-- <pje-data-column header="DED" value="ded" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>
             {{ contagem.sprint.ded.numero }} - {{ contagem.sprint.ded.descricao }}
           </ng-template>
@@ -29,7 +35,7 @@
           <ng-template let-contagem="rowData" #body>
             {{ contagem.sprint.numero }}
           </ng-template>
-        </pje-data-column>
+        </pje-data-column> -->
 
         <pje-data-column header="Sistema" value="sistema" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>

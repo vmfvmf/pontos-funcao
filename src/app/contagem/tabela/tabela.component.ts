@@ -29,6 +29,11 @@ export class ContagemTabelaComponent implements OnInit {
     });
   }
 
+  getEscopoInfo(contagem: Contagem){
+    return contagem.escopo == EscopoContagemEnum.PROJETO ? ' - DED: ' + contagem.ded.numero : contagem.escopo == EscopoContagemEnum.SPRINT ?
+      " " + contagem.sprint.numero + " - DED: " + contagem.sprint.ded.numero : '';
+  }
+
   apagar(contagem: number) {
     if (confirm('Confirmar. Apagar o registro?') != true) {
       return;

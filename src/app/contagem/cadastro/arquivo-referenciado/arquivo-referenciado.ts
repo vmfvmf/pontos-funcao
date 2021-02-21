@@ -1,6 +1,7 @@
+import { TipoContagemItemEnum } from '../../contagem-item';
 import { HttpParams } from '@angular/common/http';
 import { Contagem } from '../../contagem';
-import { ComplexidadeEnum, ItemContagem, SubTipoItemContagemEnum } from './item-contagem';
+import { ComplexidadeEnum, ContagemItem, SubtipoItemContagemEnum } from '../../contagem-item';
 import { Tabela } from './tabela';
 
 
@@ -9,7 +10,8 @@ export class IArquivoReferenciado {
   contagem?: Contagem;
   nome?: String;
   contado?: boolean;
-  subtipo?: SubTipoItemContagemEnum;
+  tipo?: TipoContagemItemEnum;
+  subtipo?: SubtipoItemContagemEnum;
   td?: number;
   tr?: number;
   pf?: number;
@@ -18,24 +20,15 @@ export class IArquivoReferenciado {
   isCheckSelected?: boolean;
 }
 
-export class ArquivoReferenciado extends ItemContagem {
+export class ArquivoReferenciado extends ContagemItem {
   tr?: number;
   tabelas?: Tabela[];
   isCheckSelected?: boolean;
 
   constructor(i: IArquivoReferenciado) {
     super(i);
-    this.tr = i.tr;
+    this.tipo = TipoContagemItemEnum.ARQUIVO_REFERENCIADO;
     this.tabelas = i.tabelas ? i.tabelas : [];
     this.isCheckSelected = i.isCheckSelected;
   }
-
-  public toHttpParams(): HttpParams {
-    let httpParams = super.toHttpParams();
-    if (this.tr !== undefined) {
-      httpParams = httpParams.set('tr', this.tr.toString());
-    }
-    return httpParams;
-  }
-
 }

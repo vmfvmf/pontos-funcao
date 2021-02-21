@@ -1,11 +1,12 @@
 import { HttpParams } from "@angular/common/http";
+import { ContagemItem } from "../../contagem-item";
 import { ArquivoReferenciado } from "./arquivo-referenciado";
 
 export interface ITabela{
   id?: number;
   nome?: string;
   colunas?: Coluna[];
-  arquivoReferenciado?: ArquivoReferenciado;
+  contagemItem?: ContagemItem;
   isCheckSelected?: boolean;
 }
 
@@ -13,27 +14,27 @@ export class Tabela {
   id?: number;
   nome?: string;
   colunas?: Coluna[];
-  arquivoReferenciado?: ArquivoReferenciado;
+  contagemItem?: ContagemItem;
   isCheckSelected?: boolean;
 
   constructor(t: ITabela){
     this.id = t.id;
     this.nome = t.nome;
     this.colunas = t.colunas ? t.colunas : [];
-    this.arquivoReferenciado = t.arquivoReferenciado;
+    this.contagemItem = t.contagemItem;
     this.isCheckSelected = this.isCheckSelected;
   }
-  toHttpParams(): HttpParams {
+  public static toHttpParams(iTabela: ITabela): HttpParams {
     let httpParams = new HttpParams();
 
-      if (this.id !== undefined) {
-        httpParams = httpParams.set('id', this.id.toString());
+      if (iTabela.id !== undefined) {
+        httpParams = httpParams.set('id', iTabela.id.toString());
       }
-      if (this.nome !== undefined) {
-        httpParams = httpParams.set('number', this.nome.toString());
+      if (iTabela.nome !== undefined) {
+        httpParams = httpParams.set('number', iTabela.nome.toString());
       }
-      if (this.arquivoReferenciado !== undefined) {
-        httpParams = httpParams.set('funcaoDados_id', this.arquivoReferenciado.id.toString());
+      if (iTabela.contagemItem !== undefined) {
+        httpParams = httpParams.set('funcaoDados_id', iTabela.contagemItem.id.toString());
       }
       return httpParams;
     }

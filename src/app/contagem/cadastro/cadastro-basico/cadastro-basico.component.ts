@@ -16,6 +16,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./cadastro-basico.component.scss']
 })
 export class ContagemCadastroBasicoComponent implements OnInit {
+  EscopoContagemEnum: typeof EscopoContagemEnum = EscopoContagemEnum;
+  escopos = ['SISTEMA', 'PROJETO', 'SPRINT'];
   sistemas: Sistema[] = [];
   deds: Ded[] = [];
   sprints: Sprint[] = [];
@@ -78,7 +80,6 @@ export class ContagemCadastroBasicoComponent implements OnInit {
     if(this.contagem.id){
 
     }else {
-      this.contagem.escopo = EscopoContagemEnum.SPRINT;
       this.contagemService.novo(this.contagem).subscribe(response => {
         this.msgService.success("O registro foi salvo com sucesso.");
         this.router.navigate([response.id], { relativeTo: this.route });

@@ -1,6 +1,6 @@
 import { HttpParams } from "@angular/common/http";
 import { Contagem } from "../../contagem";
-import { ItemContagem, SubTipoItemContagemEnum } from "../arquivo-referenciado/item-contagem";
+import { ContagemItem, SubtipoItemContagemEnum } from "../../contagem-item";
 import { Tabela } from "../arquivo-referenciado/tabela";
 import { GrupoTransacao } from "./grupo/grupo-transacao";
 import { TransacaoTDColuna } from "./transacao-td-coluna";
@@ -12,7 +12,7 @@ export interface ITransacao {
   contagem?: Contagem;
   nome?: String;
   contado?: boolean;
-  subtipo?: SubTipoItemContagemEnum;
+  subtipo?: SubtipoItemContagemEnum;
   td?: number;
   tr?: number;
   pf?: number;
@@ -23,7 +23,7 @@ export interface ITransacao {
   transacaosTDColunas?: TransacaoTDColuna[];
 }
 
-export class Transacao extends ItemContagem {
+export class Transacao extends ContagemItem {
   grupo?: GrupoTransacao;
   transacaosTDMensagemTela?: TransacaoTDMensagemTela[];
   transacaosTDColunas?: TransacaoTDColuna[];
@@ -36,8 +36,4 @@ export class Transacao extends ItemContagem {
     this.transacaosTDColunas = i.transacaosTDColunas ? i.transacaosTDColunas : [];
   }
 
-  public toHttpParams(): HttpParams {
-    let httpParams = super.toHttpParams();
-      return httpParams;
-    }
 }

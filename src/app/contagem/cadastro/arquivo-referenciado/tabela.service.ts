@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import { environment } from "../../../../environments/environment";
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Tabela } from "./tabela";
+import { ITabela, Tabela } from "./tabela";
 
 @Injectable()
 export class TabelaService {
@@ -13,24 +13,20 @@ export class TabelaService {
   constructor(private httpClient: HttpClient) {
   }
 
-  listar(filtro: Tabela): Observable<Tabela[]> {
-    return this.httpClient.get<Tabela[]>(`${TabelaService.URL_API}`, {params: filtro.toHttpParams()});
+  listar(filtro: ITabela): Observable<Tabela[]> {
+    return this.httpClient.get<Tabela[]>(`${TabelaService.URL_API}`, {params: Tabela.toHttpParams(filtro)});
   }
 
-  novo(novaTabela: Tabela): Observable<Tabela> {
+  save(novaTabela: Tabela): Observable<Tabela> {
     return this.httpClient.post<Tabela>(`${TabelaService.URL_API}`, novaTabela);
   }
 
-  salvaEmLote(novasTabelas: Tabela[]): Observable<Tabela[]> {
+  batchSave(novasTabelas: Tabela[]): Observable<Tabela[]> {
     return this.httpClient.post<Tabela[]>(`${TabelaService.URL_API}/emlote`, novasTabelas);
   }
 
   ver(sitema_id: number): Observable<Tabela> {
     return this.httpClient.get<Tabela>(`${TabelaService.URL_API}/${sitema_id}`);
-  }
-
-  editar(tabelaModificado: Tabela): Observable<Tabela> {
-    return this.httpClient.put<Tabela>(`${TabelaService.URL_API}`, tabelaModificado);
   }
 
   apagar(tabela_id: number): Observable<any> {

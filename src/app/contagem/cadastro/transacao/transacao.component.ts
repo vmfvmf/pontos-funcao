@@ -1,14 +1,14 @@
+import { ContagemItemService } from './../../contagem-item.service';
 import { MensagemTelaComponent } from './mensagem-tela/mensagem-tela.component';
 import { GrupoComponent } from './grupo/grupo.component';
 import { TransacaoCadastroComponent } from './cadastro/cadastro.component';
-import { TransacaoService } from './transacao.service';
-import { ContagemService } from './../../contagem.service';
 import { Component, Input, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Contagem } from "../../contagem";
 import { MessageService } from 'pje-componentes';
 import { Transacao } from './transacao';
 import { GrupoTransacao } from './grupo/grupo-transacao';
+import { ContagemItem, TipoContagemItemEnum } from '../../contagem-item';
 
 @Component({
   selector: 'app-contagem-cadastro-transacao',
@@ -22,7 +22,7 @@ export class TransacaoComponent implements OnInit {
   subTotalPf = 0;
   constructor(
     public dialog: MatDialog,
-    private transacaoService: TransacaoService,
+    private transacaoService: ContagemItemService,
     private msgService: MessageService
   ) { }
 
@@ -38,12 +38,12 @@ export class TransacaoComponent implements OnInit {
   }
 
   updateTableData() {
-    this.transacaoService.listar(new Transacao({contagem: this.contagem})).subscribe(response => {
-      this.transacaos = response;
-      console.log('recuperados arquivos referenciados', response);
+    this.transacaoService.listar({contagem: this.contagem, tipo: TipoContagemItemEnum.TRANSACAO}).subscribe(response => {
+      this.transacaos = response.map(x => new Transacao(x));
+      console.log('TRANSACAO[]', response);
     }, error => {
-      console.log('erro ao recuperar arquivos referenciados', error);
-      this.msgService.error("Ocorreu um erro ao recuperar arquivos referenciados.");
+      console.log('erro ao recuperar transacao[]', error);
+      this.msgService.error("Ocorreu um erro ao recuperar dados do banco.");
     });
   }
 

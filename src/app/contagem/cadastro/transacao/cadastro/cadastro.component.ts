@@ -1,17 +1,18 @@
+import { ContagemItemService } from './../../../contagem-item.service';
 import { TransacaoTDMensagemTelaService } from "./../transacao-td-mensagem-tela.service";
-import { ArquivoReferenciadoService } from "./../../arquivo-referenciado/arquivo-referenciado.service";
 import { ArquivoReferenciado } from "./../../arquivo-referenciado/arquivo-referenciado";
 import { Component, Inject, OnInit } from "@angular/core";
 import {
   ComplexidadeEnum,
+  ContagemItem,
   FuncoesTransacao,
-  SubTipoItemContagemEnum,
-} from "../../arquivo-referenciado/item-contagem";
+  SubtipoItemContagemEnum,
+  TipoContagemItemEnum,
+} from "../../../contagem-item";
 import { Coluna, Tabela } from "../../arquivo-referenciado/tabela";
 import { Transacao } from "../transacao";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MessageService } from "pje-componentes";
-import { TransacaoService } from "../transacao.service";
 import { Contagem } from "../../../../contagem/contagem";
 import { MatTabChangeEvent } from "@angular/material/tabs";
 import { GrupoTransacao } from "../grupo/grupo-transacao";
@@ -43,9 +44,9 @@ export class TransacaoCadastroComponent implements OnInit {
     private grupoService: GrupoTransacaoService,
     private msgService: MessageService,
     private msgTelasService: MensagemTelaService,
-    private transacaoService: TransacaoService,
+    private contagemItemService: ContagemItemService,
     private transacaoTdMsgTelaService: TransacaoTDMensagemTelaService,
-    private arquivoReferenciadoService: ArquivoReferenciadoService,
+    private arquivoReferenciadoService: ContagemItemService,
     private transacaoTDColunaService: TransacaoTDColunaService,
     @Inject(MAT_DIALOG_DATA) public data: { transacao: Transacao }
   ) {
@@ -78,13 +79,14 @@ export class TransacaoCadastroComponent implements OnInit {
     );
     this.arquivoReferenciadoService
       .listar(
-        new ArquivoReferenciado({
+        {
           contagem: new Contagem({ id: this.transacao.contagem.id }),
-        })
+          tipo: TipoContagemItemEnum.ARQUIVO_REFERENCIADO
+        }
       )
       .subscribe(
         (response) => {
-          this.arquivosReferenciados = response;
+          this.arquivosReferenciados = response.map(m => new ArquivoReferenciado(m));
           this.transacao.transacaosTDColunas.forEach((tdCol) => {
             this.arquivosReferenciados.forEach((f) => {
               f.tabelas.forEach((t) => {
@@ -200,7 +202,7 @@ export class TransacaoCadastroComponent implements OnInit {
 
   checkMsgTelaValue(selecionadosTela: MensagemTela[]) {
     if (!this.transacao.id) {
-      this.transacaoService.novo(this.transacao).subscribe(
+      this.contagemItemService.novo(this.transacao).subscribe(
         (response) => {
           this.transacao.id = response.id;
           this.msgService.success("Registro salvo com sucesso.");
@@ -254,7 +256,7 @@ export class TransacaoCadastroComponent implements OnInit {
   }
 
   salvar() {
-    this.transacaoService.novo(this.transacao).subscribe(
+    this.contagemItemService.novo(this.transacao).subscribe(
       (response) => {
         console.log(response);
         this.msgService.success("Registro salvo com sucesso.");
@@ -292,14 +294,14 @@ export class TransacaoCadastroComponent implements OnInit {
         complexidade: this.transacao.complexidade,
         subtipo: this.transacao.subtipo,
       });
-      this.transacaoService.editar(t).subscribe((fd) => {
-        this.transacao = fd;
+      this.contagemItemService.editar(t).subscribe((fd) => {
+        this.transacao = new Transacao(fd);
         console.log("Atualização", fd);
       });
     }
   }
   analisaComplexidade() {
-    if (this.transacao.subtipo == SubTipoItemContagemEnum.EE) {
+    if (this.transacao.subtipo == SubtipoItemContagemEnum.EE) {
       if (
         (this.transacao.td <= 15 && this.transacao.tr < 2) ||
         (this.transacao.td < 5 && this.transacao.tr == 2)
@@ -315,8 +317,8 @@ export class TransacaoCadastroComponent implements OnInit {
         this.transacao.complexidade = ComplexidadeEnum.alta;
       }
     } else if (
-      this.transacao.subtipo == SubTipoItemContagemEnum.CE ||
-      this.transacao.subtipo == SubTipoItemContagemEnum.SE
+      this.transacao.subtipo == SubtipoItemContagemEnum.CE ||
+      this.transacao.subtipo == SubtipoItemContagemEnum.SE
     ) {
       if (
         (this.transacao.td <= 19 && this.transacao.tr < 2) ||
@@ -336,7 +338,7 @@ export class TransacaoCadastroComponent implements OnInit {
   }
   analisaPF() {
     switch (this.transacao.subtipo) {
-      case SubTipoItemContagemEnum.EE:
+      case SubtipoItemContagemEnum.EE:
         switch (this.transacao.complexidade) {
           case ComplexidadeEnum.baixa:
             this.transacao.pf = 3;
@@ -349,7 +351,7 @@ export class TransacaoCadastroComponent implements OnInit {
             break;
         }
         break;
-      case SubTipoItemContagemEnum.CE:
+      case SubtipoItemContagemEnum.CE:
         switch (this.transacao.complexidade) {
           case ComplexidadeEnum.baixa:
             this.transacao.pf = 3;
@@ -362,7 +364,7 @@ export class TransacaoCadastroComponent implements OnInit {
             break;
         }
         break;
-      case SubTipoItemContagemEnum.SE:
+      case SubtipoItemContagemEnum.SE:
         switch (this.transacao.complexidade) {
           case ComplexidadeEnum.baixa:
             this.transacao.pf = 4;

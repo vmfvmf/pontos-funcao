@@ -46,7 +46,7 @@ export class MensagemTelaComponent implements OnInit {
     this.novoEditar = "Nova";
   }
 
-  onOkClick(){
+  save(){
     this.mensagemTelaService.novo(this.mensagemTela).subscribe((response) =>
     {
       this.updateMensagens();

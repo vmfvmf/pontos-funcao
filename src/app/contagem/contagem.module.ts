@@ -1,3 +1,4 @@
+import { ContagemItemService } from './contagem-item.service';
 import { TransacaoTDMensagemTelaService } from './cadastro/transacao/transacao-td-mensagem-tela.service';
 import { TransacaoTDColunaService } from './cadastro/transacao/transacao-td-coluna.service';
 
@@ -10,8 +11,6 @@ import { SistemaService } from "../sistema/sistema.service";
 import { ContagemCadastroModule } from "./cadastro/cadastro.module";
 import { TabelaService } from "./cadastro/arquivo-referenciado/tabela.service";
 import { ColunaService } from "./cadastro/arquivo-referenciado/coluna.service";
-import { ArquivoReferenciadoService } from "./cadastro/arquivo-referenciado/arquivo-referenciado.service";
-import { TransacaoService } from "./cadastro/transacao/transacao.service";
 import { GrupoTransacaoService } from "./cadastro/transacao/grupo/grupo_transacao.service";
 import { MensagemTelaService } from "./cadastro/transacao/mensagem-tela/mensagem-tela.service";
 
@@ -27,8 +26,7 @@ import { MensagemTelaService } from "./cadastro/transacao/mensagem-tela/mensagem
     SistemaService,
     TabelaService,
     ColunaService,
-    ArquivoReferenciadoService,
-    TransacaoService,
+    ContagemItemService,
     GrupoTransacaoService,
     MensagemTelaService,
     TransacaoTDColunaService,

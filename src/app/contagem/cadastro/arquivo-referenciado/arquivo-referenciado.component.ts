@@ -1,11 +1,12 @@
+import { ContagemItemService } from './../../contagem-item.service';
 import { ContagemService } from './../../contagem.service';
-import { ArquivoReferenciadoService } from './arquivo-referenciado.service';
 import { Component, Input, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Contagem } from "../../contagem";
 import { MessageService } from 'pje-componentes';
 import { ArquivoReferenciado } from './arquivo-referenciado';
 import { ArquivoReferenciadoCadastroComponent } from './cadastro/cadastro.component';
+import { TipoContagemItemEnum } from '../../contagem-item';
 
 @Component({
   selector: 'app-contagem-cadastro-arquivo-referenciado',
@@ -19,7 +20,7 @@ export class ArquivoReferenciadoComponent implements OnInit {
   subTotalPf = 0;
   constructor(
     public dialog: MatDialog,
-    private arquivoReferenciadoService: ArquivoReferenciadoService,
+    private arquivoReferenciadoService: ContagemItemService,
     private contagemService: ContagemService,
     private msgService: MessageService
     // private transacaoService: TransacaoService
@@ -37,8 +38,8 @@ export class ArquivoReferenciadoComponent implements OnInit {
   }
 
   updateTableData() {
-    this.arquivoReferenciadoService.listar(new ArquivoReferenciado({contagem: this.contagem})).subscribe(response => {
-      this.arquivosReferenciados = response;
+    this.arquivoReferenciadoService.listar({contagem: this.contagem, tipo: TipoContagemItemEnum.ARQUIVO_REFERENCIADO}).subscribe(response => {
+      this.arquivosReferenciados = response.map(m => new ArquivoReferenciado(m));
       console.log('recuperados arquivos referenciados', response);
     }, error => {
       console.log('erro ao recuperar arquivos referenciados', error);

@@ -3,7 +3,7 @@ import { Observable, of } from "rxjs";
 import { environment } from "../../environments/environment";
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Contagem } from "./contagem";
+import { Contagem, EscopoContagemEnum } from "./contagem";
 
 @Injectable()
 export class ContagemService {
@@ -18,6 +18,14 @@ export class ContagemService {
   }
 
   novo(novaContagem: Contagem): Observable<Contagem> {
+    if(novaContagem.escopo == EscopoContagemEnum.SISTEMA){
+      novaContagem.ded = undefined;
+      novaContagem.sprint = undefined;
+    }else if(novaContagem.escopo == EscopoContagemEnum.PROJETO) {
+      novaContagem.sprint = undefined;
+    } else {
+      novaContagem.ded = undefined;
+    }
     return this.httpClient.post<Contagem>(`${ContagemService.URL_API}`, novaContagem);
   }
 
@@ -34,3 +42,4 @@ export class ContagemService {
   }
 
 }
+
