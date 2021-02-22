@@ -7,7 +7,7 @@ export interface ITabela{
   nome?: string;
   colunas?: Coluna[];
   contagemItem?: ContagemItem;
-  isCheckSelected?: boolean;
+  isChecked?: boolean;
 }
 
 export class Tabela {
@@ -15,14 +15,14 @@ export class Tabela {
   nome?: string;
   colunas?: Coluna[];
   contagemItem?: ContagemItem;
-  isCheckSelected?: boolean;
+  isChecked?: boolean;
 
   constructor(t: ITabela){
     this.id = t.id;
     this.nome = t.nome;
     this.colunas = t.colunas ? t.colunas : [];
     this.contagemItem = t.contagemItem;
-    this.isCheckSelected = this.isCheckSelected;
+    this.isChecked = this.isChecked;
   }
   public static toHttpParams(iTabela: ITabela): HttpParams {
     let httpParams = new HttpParams();
@@ -50,13 +50,13 @@ export class Coluna {
   id?: number;
   nome?: string;
   tabela?: Tabela;
-  isCheckSelected?: boolean;
+  isChecked?: boolean;
 
   constructor(i: IColuna){
     this.id = i.id;
     this.nome = i.nome;
     this.tabela = i.tabela;
-    this.isCheckSelected = i.isCheckSelected;
+    this.isChecked = i.isCheckSelected;
   }
 
   public static toHttpParams(c: IColuna): HttpParams {

@@ -1,6 +1,4 @@
 import { ContagemItemService } from './contagem-item.service';
-import { TransacaoTDMensagemTelaService } from './cadastro/transacao/transacao-td-mensagem-tela.service';
-import { TransacaoTDColunaService } from './cadastro/transacao/transacao-td-coluna.service';
 
 import { ContagemTabelaModule } from "./tabela/tabela.module";
 import { ContagemService } from "./contagem.service";
@@ -11,8 +9,9 @@ import { SistemaService } from "../sistema/sistema.service";
 import { ContagemCadastroModule } from "./cadastro/cadastro.module";
 import { TabelaService } from "./cadastro/arquivo-referenciado/tabela.service";
 import { ColunaService } from "./cadastro/arquivo-referenciado/coluna.service";
-import { GrupoTransacaoService } from "./cadastro/transacao/grupo/grupo_transacao.service";
+import { GrupoService } from "./cadastro/transacao/grupo/grupo.service";
 import { MensagemTelaService } from "./cadastro/transacao/mensagem-tela/mensagem-tela.service";
+import { TransacaoTDService } from './cadastro/transacao/transacao-td.service';
 
 @NgModule({
   imports: [
@@ -27,10 +26,9 @@ import { MensagemTelaService } from "./cadastro/transacao/mensagem-tela/mensagem
     TabelaService,
     ColunaService,
     ContagemItemService,
-    GrupoTransacaoService,
+    GrupoService,
     MensagemTelaService,
-    TransacaoTDColunaService,
-    TransacaoTDMensagemTelaService
+    TransacaoTDService
   ],
   entryComponents: [ContagemCadastroModule],
 })

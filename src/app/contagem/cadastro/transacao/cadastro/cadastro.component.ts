@@ -1,5 +1,5 @@
-import { ContagemItemService } from './../../../contagem-item.service';
-import { TransacaoTDMensagemTelaService } from "./../transacao-td-mensagem-tela.service";
+import { TransacaoTDService } from "./../transacao-td.service";
+import { ContagemItemService } from "./../../../contagem-item.service";
 import { ArquivoReferenciado } from "./../../arquivo-referenciado/arquivo-referenciado";
 import { Component, Inject, OnInit } from "@angular/core";
 import {
@@ -14,14 +14,11 @@ import { Transacao } from "../transacao";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MessageService } from "pje-componentes";
 import { Contagem } from "../../../../contagem/contagem";
-import { MatTabChangeEvent } from "@angular/material/tabs";
-import { GrupoTransacao } from "../grupo/grupo-transacao";
+import { Grupo } from "../grupo/grupo";
 import { MensagemTela } from "../mensagem-tela/mensagem-tela";
-import { GrupoTransacaoService } from "../grupo/grupo_transacao.service";
+import { GrupoService } from "../grupo/grupo.service";
 import { MensagemTelaService } from "../mensagem-tela/mensagem-tela.service";
-import { TransacaoTDColunaService } from "../transacao-td-coluna.service";
-import { TransacaoTDColuna } from "../transacao-td-coluna";
-import { TransacaoTDMensagemTela } from "../transacao-td-mensagem-tela";
+import { TipoTransacaoTDEnum, TransacaoTD } from "../transacao-td";
 
 @Component({
   selector: "app-transacao-cadastro",
@@ -29,70 +26,73 @@ import { TransacaoTDMensagemTela } from "../transacao-td-mensagem-tela";
   styleUrls: ["./cadastro.component.scss"],
 })
 export class TransacaoCadastroComponent implements OnInit {
-  transacao: Transacao;
+  contagemItem: Transacao;
   subtipos: string[] = FuncoesTransacao;
-  grupos: GrupoTransacao[];
+  grupos: Grupo[];
   msgsTela: MensagemTela[] = [];
-  selectedMsgsTela: MensagemTela[];
+  selectedMsgsTela: MensagemTela[] = [];
   selectedTabelasColunas: Coluna[];
   selectedARIndex = 0;
   selectedTRIndex = 0;
   arquivosReferenciados: ArquivoReferenciado[] = [];
+  tdsToDelete: TransacaoTD[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<TransacaoCadastroComponent>,
-    private grupoService: GrupoTransacaoService,
+    private grupoService: GrupoService,
     private msgService: MessageService,
     private msgTelasService: MensagemTelaService,
     private contagemItemService: ContagemItemService,
-    private transacaoTdMsgTelaService: TransacaoTDMensagemTelaService,
-    private arquivoReferenciadoService: ContagemItemService,
-    private transacaoTDColunaService: TransacaoTDColunaService,
+    private transacaoTDService: TransacaoTDService,
     @Inject(MAT_DIALOG_DATA) public data: { transacao: Transacao }
   ) {
-    this.transacao = data.transacao;
-    this.transacao.contagem = { id: data.transacao.contagem.id };
-    this.selectedMsgsTela = [];
+    this.contagemItem = data.transacao;
+    this.contagemItem.contagem = { id: data.transacao.contagem.id };
   }
 
   ngOnInit(): void {
-    this.grupoService.listar(new GrupoTransacao({contagem: this.transacao.contagem})).subscribe(
+    this.grupoService
+      .listar(new Grupo({ contagem: this.contagemItem.contagem }))
+      .subscribe(
+        (response) => {
+          this.grupos = response;
+        },
+        (error) => {
+          console.log("Erro ao recuperar lista de grupos", error);
+        }
+      );
+    this.msgTelasService.listar({}).subscribe(
       (response) => {
-        this.grupos = response;
-      },
-      (error) => {
-        console.log("Erro ao recuperar lista de grupos", error);
-      }
-    );
-    this.msgTelasService.listar(new MensagemTela({})).subscribe(
-      (response) => {
-        this.msgsTela = response;
-        this.transacao.transacaosTDMensagemTela.forEach((td) => {
-          this.selectedMsgsTela.push(
-            this.msgsTela.find((el) => el.id == td.mensagemTela.id)
-          );
+        this.msgsTela = response.map(m => m = { id:m.id, nome: m.nome, isChecked:false });
+        this.contagemItem.transacaoTDs.forEach((td) => {
+          if (td.tipo == TipoTransacaoTDEnum.MENSAGEM_TELA) {
+            this.selectedMsgsTela.push(this.msgsTela.find(
+              (el) => el.id == td.mensagemTela.id
+            ));
+          }
         });
       },
       (error) => {
         console.log("Erro ao recuperar lista de mensagens", error);
       }
     );
-    this.arquivoReferenciadoService
-      .listar(
-        {
-          contagem: new Contagem({ id: this.transacao.contagem.id }),
-          tipo: TipoContagemItemEnum.ARQUIVO_REFERENCIADO
-        }
-      )
+    this.contagemItemService
+      .listar({
+        contagem: new Contagem({ id: this.contagemItem.contagem.id }),
+        tipo: TipoContagemItemEnum.ARQUIVO_REFERENCIADO,
+      })
       .subscribe(
         (response) => {
-          this.arquivosReferenciados = response.map(m => new ArquivoReferenciado(m));
-          this.transacao.transacaosTDColunas.forEach((tdCol) => {
+          this.arquivosReferenciados = <ArquivoReferenciado[]>response;
+          this.contagemItem.transacaoTDs.forEach((tdCol) => {
             this.arquivosReferenciados.forEach((f) => {
               f.tabelas.forEach((t) => {
                 t.colunas.forEach((c) => {
-                  if (c.id == tdCol.coluna.id) {
-                    c.isCheckSelected = true;
+                  if (
+                    tdCol.tipo == TipoTransacaoTDEnum.ARQUIVO_REFERENCIADO &&
+                    c.id == tdCol.coluna.id
+                  ) {
+                    c.isChecked = true;
                   }
                 });
               });
@@ -110,71 +110,32 @@ export class TransacaoCadastroComponent implements OnInit {
   }
 
   checkFuncaoDadosValue(arquivoReferenciado: ArquivoReferenciado) {
-    let booleano = arquivoReferenciado.isCheckSelected;
+    let booleano = arquivoReferenciado.isChecked;
     arquivoReferenciado.tabelas.forEach((t) => {
-      t.isCheckSelected = booleano;
+      t.isChecked = booleano;
       t.colunas.forEach((c) => {
-        c.isCheckSelected = booleano;
+        c.isChecked = booleano;
       });
     });
-    this.atualizaContagem();
+    this.atualizaCheckBoxInterface();
   }
 
   checkTabelasValue(tab: Tabela) {
-    let booleano = tab.isCheckSelected;
+    let booleano = tab.isChecked;
     this.arquivosReferenciados.forEach((f) => {
       let fdChecked = false;
       f.tabelas.forEach((t) => {
         if (t.id == tab.id) {
           t.colunas.forEach((c) => {
-            c.isCheckSelected = booleano;
+            c.isChecked = booleano;
           });
         }
-        if (t.isCheckSelected) {
+        if (t.isChecked) {
           fdChecked = true;
         }
       });
-      f.isCheckSelected = fdChecked;
+      f.isChecked = fdChecked;
     });
-    this.atualizaContagem();
-  }
-
-  checkColunasValue(col: Coluna) {
-    let ttdCol = this.transacao.transacaosTDColunas.find(
-      (td) => td.coluna.id == col.id
-    );
-    if (col.isCheckSelected && !ttdCol) {
-      let ttdCol = new TransacaoTDColuna({
-        transacao: new Transacao({ id: this.transacao.id }),
-        coluna: col,
-      });
-      this.transacaoTDColunaService.novo(ttdCol).subscribe(
-        (response) => {
-          console.log("Transação td coluna salva", response);
-          this.transacao.transacaosTDColunas.push(response);
-        },
-        (error) => {
-          this.msgService.success("Ocorreu um erro ao salvar registro.");
-          console.log("Erro ao salvar transação td coluna", error, ttdCol);
-        }
-      );
-    } else if (ttdCol) {
-      this.transacaoTDColunaService.apagar(ttdCol.id).subscribe(
-        (response) => {
-          console.log("Apagado transação td coluna", ttdCol);
-          const index = this.transacao.transacaosTDColunas.findIndex(
-            (e) => e.id == ttdCol.id
-          );
-          if (index > -1) {
-            this.transacao.transacaosTDColunas.splice(index, 1);
-          }
-        },
-        (error) => {
-          this.msgService.error("Ocorreu um erro ao apagar registro.");
-          console.log("Erro ao apagar transação td coluna", error, ttdCol);
-        }
-      );
-    }
     this.atualizaCheckBoxInterface();
   }
 
@@ -184,196 +145,162 @@ export class TransacaoCadastroComponent implements OnInit {
       f.tabelas.forEach((t) => {
         let tabChecked = false;
         t.colunas.forEach((c) => {
-          if (c.isCheckSelected) {
+          if (c.isChecked) {
             fdChecked = true;
             tabChecked = true;
           }
         });
-        t.isCheckSelected = tabChecked;
+        t.isChecked = tabChecked;
       });
-      f.isCheckSelected = fdChecked;
+      f.isChecked = fdChecked;
     });
-    this.atualizaContagem();
-  }
-
-  onTabARChanged(evt: MatTabChangeEvent) {
-    console.log(evt);
-  }
-
-  checkMsgTelaValue(selecionadosTela: MensagemTela[]) {
-    if (!this.transacao.id) {
-      this.contagemItemService.novo(this.transacao).subscribe(
-        (response) => {
-          this.transacao.id = response.id;
-          this.msgService.success("Registro salvo com sucesso.");
-          this.salvaChecksMsgTelaSelecionados(selecionadosTela);
-        },
-        (error) => {
-          this.msgService.error("Ocorreu um erro ao salvar registro.");
-          console.log("Erro ao criar nova transação", error, this.transacao);
-        }
-      );
-    } else {
-      this.salvaChecksMsgTelaSelecionados(selecionadosTela);
-    }
-  }
-
-  salvaChecksMsgTelaSelecionados(selecionadosTela: MensagemTela[]) {
-    this.transacaoTdMsgTelaService
-      .apagarTDMsgTelaEmLote(this.transacao.id)
-      .subscribe(
-        () => {
-          let transacaosTD = selecionadosTela.map((m) => {
-            return new TransacaoTDMensagemTela({
-              transacao: new Transacao({ id: this.transacao.id }),
-              mensagemTela: new MensagemTela({ id: m.id }),
-            });
-          });
-          this.transacaoTdMsgTelaService
-            .salvaMsgTelaEmLote(transacaosTD)
-            .subscribe(
-              (response2) => {
-                console.log("salvando transTD", response2, transacaosTD);
-                this.atualizaContagem();
-              },
-              (error2) => {
-                console.log(
-                  "Erro ao criar transação td em lote",
-                  error2,
-                  selecionadosTela
-                );
-              }
-            );
-        },
-        (error) => {
-          console.log(
-            "Erro ao deletar transação td com transação id",
-            error,
-            this.transacao.id
-          );
-        }
-      );
   }
 
   salvar() {
-    this.contagemItemService.novo(this.transacao).subscribe(
+    this.arquivosReferenciados.forEach(ar => {
+      ar.tabelas.forEach(tb => {
+        tb.colunas.forEach(col => {
+          const currTd = this.contagemItem.transacaoTDs.find(transTD => transTD.tipo == TipoTransacaoTDEnum.ARQUIVO_REFERENCIADO
+            && transTD.coluna.id == col.id);
+          if(col.isChecked && !currTd) {
+            this.contagemItem.transacaoTDs.push(new TransacaoTD({ tipo: TipoTransacaoTDEnum.ARQUIVO_REFERENCIADO, coluna: col }));
+          }else if(!col.isChecked && currTd){
+            const index = this.contagemItem.transacaoTDs.findIndex(c => c == currTd);
+            if (index > -1) {
+              this.tdsToDelete.push(this.contagemItem.transacaoTDs[index]);
+              this.contagemItem.transacaoTDs.splice(index, 1);
+            }
+          }
+        })
+      })
+    });
+    this.msgsTela.forEach(msg => {
+      if(this.selectedMsgsTela.includes(msg)){
+        const currTd = this.contagemItem.transacaoTDs.find(transTD => transTD.tipo == TipoTransacaoTDEnum.MENSAGEM_TELA && transTD.mensagemTela.id == msg.id);
+        if(!currTd){
+          this.contagemItem.transacaoTDs.push(new TransacaoTD({tipo: TipoTransacaoTDEnum.MENSAGEM_TELA, mensagemTela: msg}));
+        }
+      }else {
+        const index = this.contagemItem.transacaoTDs.findIndex(c => c.tipo == TipoTransacaoTDEnum.MENSAGEM_TELA && c.mensagemTela.id == msg.id);
+            if (index > -1) {
+              this.tdsToDelete.push(this.contagemItem.transacaoTDs[index]);
+              this.contagemItem.transacaoTDs.splice(index, 1);
+            }
+      }
+    });
+    this.atualizaContagem();
+    this.tdsToDelete.forEach(td => {
+      this.transacaoTDService.apagar(td.id).subscribe(()=> {
+        console.log("apagado td", td);
+      }, error => {
+        console.log("erro ao apagar td", error, td);
+      });
+    });
+    this.contagemItemService.salvar(this.contagemItem).subscribe(
       (response) => {
         console.log(response);
         this.msgService.success("Registro salvo com sucesso.");
+        this.dialogRef.close();
       },
       (error) => {
         this.msgService.error("Ocorreu um erro ao salvar registro.");
-        console.log("Erro ao criar nova transação", error, this.transacao);
+        console.log("Erro ao salvar transação", error, this.contagemItem);
       }
     );
   }
 
   atualizaContagem() {
-    this.transacao.td = 0;
-    this.transacao.tr = 0;
-    this.transacao.td += this.selectedMsgsTela.length;
-    this.arquivosReferenciados.forEach((f) => {
-      if (f.isCheckSelected) this.transacao.tr++;
-      f.tabelas.forEach((t) => {
+    this.contagemItem.td = 0;
+    this.contagemItem.tr = 0;
+    this.selectedMsgsTela.forEach(() => {
+      this.contagemItem.td++;
+    });
+    this.arquivosReferenciados.forEach((ar) => {
+      if (ar.isChecked) this.contagemItem.tr++;
+      ar.tabelas.forEach((t) => {
         t.colunas.forEach((c) => {
-          if (c.isCheckSelected) this.transacao.td++;
+          if (c.isChecked) this.contagemItem.td++;
         });
       });
     });
     this.analisaComplexidade();
     this.analisaPF();
-    if (this.transacao.id) {
-      /** Todo: arrumar pq n funciona */
-      let t = new Transacao({
-        id: this.transacao.id,
-        nome: this.transacao.nome, // grupo: this.transacao.grupo,
-        td: this.transacao.td,
-        tr: this.transacao.tr,
-        pf: this.transacao.pf,
-        contagem: this.transacao.contagem,
-        complexidade: this.transacao.complexidade,
-        subtipo: this.transacao.subtipo,
-      });
-      this.contagemItemService.editar(t).subscribe((fd) => {
-        this.transacao = new Transacao(fd);
-        console.log("Atualização", fd);
-      });
-    }
   }
+
   analisaComplexidade() {
-    if (this.transacao.subtipo == SubtipoItemContagemEnum.EE) {
+    if (this.contagemItem.subtipo == SubtipoItemContagemEnum.EE) {
       if (
-        (this.transacao.td <= 15 && this.transacao.tr < 2) ||
-        (this.transacao.td < 5 && this.transacao.tr == 2)
+        (this.contagemItem.td <= 15 && this.contagemItem.tr < 2) ||
+        (this.contagemItem.td < 5 && this.contagemItem.tr == 2)
       ) {
-        this.transacao.complexidade = ComplexidadeEnum.baixa;
+        this.contagemItem.complexidade = ComplexidadeEnum.BAIXA;
       } else if (
-        (this.transacao.td < 5 && this.transacao.tr > 2) ||
-        (this.transacao.td <= 15 && this.transacao.tr == 2) ||
-        (this.transacao.td > 15 && this.transacao.tr < 2)
+        (this.contagemItem.td < 5 && this.contagemItem.tr > 2) ||
+        (this.contagemItem.td <= 15 && this.contagemItem.tr == 2) ||
+        (this.contagemItem.td > 15 && this.contagemItem.tr < 2)
       ) {
-        this.transacao.complexidade = ComplexidadeEnum.media;
+        this.contagemItem.complexidade = ComplexidadeEnum.MEDIA;
       } else {
-        this.transacao.complexidade = ComplexidadeEnum.alta;
+        this.contagemItem.complexidade = ComplexidadeEnum.ALTA;
       }
     } else if (
-      this.transacao.subtipo == SubtipoItemContagemEnum.CE ||
-      this.transacao.subtipo == SubtipoItemContagemEnum.SE
+      this.contagemItem.subtipo == SubtipoItemContagemEnum.CE ||
+      this.contagemItem.subtipo == SubtipoItemContagemEnum.SE
     ) {
       if (
-        (this.transacao.td <= 19 && this.transacao.tr < 2) ||
-        (this.transacao.td < 6 && this.transacao.tr < 3)
+        (this.contagemItem.td <= 19 && this.contagemItem.tr < 2) ||
+        (this.contagemItem.td < 6 && this.contagemItem.tr < 3)
       ) {
-        this.transacao.complexidade = ComplexidadeEnum.baixa;
+        this.contagemItem.complexidade = ComplexidadeEnum.BAIXA;
       } else if (
-        (this.transacao.td < 6 && this.transacao.tr <= 3) ||
-        (this.transacao.td <= 19 && this.transacao.tr <= 3) ||
-        (this.transacao.td > 19 && this.transacao.tr < 2)
+        (this.contagemItem.td < 6 && this.contagemItem.tr <= 3) ||
+        (this.contagemItem.td <= 19 && this.contagemItem.tr <= 3) ||
+        (this.contagemItem.td > 19 && this.contagemItem.tr < 2)
       ) {
-        this.transacao.complexidade = ComplexidadeEnum.media;
+        this.contagemItem.complexidade = ComplexidadeEnum.MEDIA;
       } else {
-        this.transacao.complexidade = ComplexidadeEnum.alta;
+        this.contagemItem.complexidade = ComplexidadeEnum.ALTA;
       }
     }
   }
   analisaPF() {
-    switch (this.transacao.subtipo) {
+    switch (this.contagemItem.subtipo) {
       case SubtipoItemContagemEnum.EE:
-        switch (this.transacao.complexidade) {
-          case ComplexidadeEnum.baixa:
-            this.transacao.pf = 3;
+        switch (this.contagemItem.complexidade) {
+          case ComplexidadeEnum.BAIXA:
+            this.contagemItem.pf = 3;
             break;
-          case ComplexidadeEnum.media:
-            this.transacao.pf = 4;
+          case ComplexidadeEnum.MEDIA:
+            this.contagemItem.pf = 4;
             break;
-          case ComplexidadeEnum.alta:
-            this.transacao.pf = 6;
+          case ComplexidadeEnum.ALTA:
+            this.contagemItem.pf = 6;
             break;
         }
         break;
       case SubtipoItemContagemEnum.CE:
-        switch (this.transacao.complexidade) {
-          case ComplexidadeEnum.baixa:
-            this.transacao.pf = 3;
+        switch (this.contagemItem.complexidade) {
+          case ComplexidadeEnum.BAIXA:
+            this.contagemItem.pf = 3;
             break;
-          case ComplexidadeEnum.media:
-            this.transacao.pf = 4;
+          case ComplexidadeEnum.MEDIA:
+            this.contagemItem.pf = 4;
             break;
-          case ComplexidadeEnum.alta:
-            this.transacao.pf = 6;
+          case ComplexidadeEnum.ALTA:
+            this.contagemItem.pf = 6;
             break;
         }
         break;
       case SubtipoItemContagemEnum.SE:
-        switch (this.transacao.complexidade) {
-          case ComplexidadeEnum.baixa:
-            this.transacao.pf = 4;
+        switch (this.contagemItem.complexidade) {
+          case ComplexidadeEnum.BAIXA:
+            this.contagemItem.pf = 4;
             break;
-          case ComplexidadeEnum.media:
-            this.transacao.pf = 5;
+          case ComplexidadeEnum.MEDIA:
+            this.contagemItem.pf = 5;
             break;
-          case ComplexidadeEnum.alta:
-            this.transacao.pf = 7;
+          case ComplexidadeEnum.ALTA:
+            this.contagemItem.pf = 7;
             break;
         }
         break;

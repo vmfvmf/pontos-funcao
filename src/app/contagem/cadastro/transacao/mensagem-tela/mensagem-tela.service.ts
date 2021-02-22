@@ -14,7 +14,7 @@ export class MensagemTelaService {
   }
 
   listar(filtro: MensagemTela): Observable<MensagemTela[]> {
-    return  this.httpClient.get<MensagemTela[]>(`${MensagemTelaService.URL_API}`);
+    return  this.httpClient.get<MensagemTela[]>(`${MensagemTelaService.URL_API}`, {params: MensagemTela.toHttpParams(filtro)});
   }
 
   novo(novoMensagemTela: MensagemTela): Observable<MensagemTela> {

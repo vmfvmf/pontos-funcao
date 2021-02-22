@@ -16,13 +16,13 @@ export enum SubtipoItemContagemEnum{
 }
 
 export enum ComplexidadeEnum{
-  baixa = "Baixa",
-  media = "Média",
-  alta = "Alta"
+  BAIXA = "BAIXA",
+  MEDIA = "MEDIA",
+  ALTA = "ALTA"
 }
 
 export const FuncoesArquivoREFERENCIADO: string[] = ["AIE", "ALI"];
-export const FuncoesTransacao: string[] = ["Entrada Externa", "Saída Externa", "Consulta Externa"];
+export const FuncoesTransacao: string[] = ["EE", "SE", "CE"];
 
 export interface IContagemItem {
   id?: number;

@@ -2,9 +2,8 @@ import { HttpParams } from "@angular/common/http";
 import { Contagem } from "../../contagem";
 import { ContagemItem, SubtipoItemContagemEnum } from "../../contagem-item";
 import { Tabela } from "../arquivo-referenciado/tabela";
-import { GrupoTransacao } from "./grupo/grupo-transacao";
-import { TransacaoTDColuna } from "./transacao-td-coluna";
-import { TransacaoTDMensagemTela } from "./transacao-td-mensagem-tela";
+import { Grupo } from "./grupo/grupo";
+import { TransacaoTD } from "./transacao-td";
 
 
 export interface ITransacao {
@@ -16,24 +15,20 @@ export interface ITransacao {
   td?: number;
   tr?: number;
   pf?: number;
-  tabelas?: Tabela[];
-  grupo?: GrupoTransacao;
+  grupo?: Grupo;
   complexidade?: String;
-  transacaosTDMensagemTela?: TransacaoTDMensagemTela[];
-  transacaosTDColunas?: TransacaoTDColuna[];
+  transacaoTDs?: TransacaoTD[];
 }
 
 export class Transacao extends ContagemItem {
-  grupo?: GrupoTransacao;
-  transacaosTDMensagemTela?: TransacaoTDMensagemTela[];
-  transacaosTDColunas?: TransacaoTDColuna[];
+  grupo?: Grupo;
+  transacaoTDs?: TransacaoTD[];
   contagem_id: number;
 
   constructor(i: ITransacao){
     super(i);
-    this.grupo = i.grupo ? i.grupo : new GrupoTransacao({ });
-    this.transacaosTDMensagemTela = i.transacaosTDMensagemTela ? i.transacaosTDMensagemTela : [];
-    this.transacaosTDColunas = i.transacaosTDColunas ? i.transacaosTDColunas : [];
+    this.grupo = i.grupo ? i.grupo : new Grupo({ });
+    this.transacaoTDs = i.transacaoTDs ? i.transacaoTDs : [];
   }
 
 }

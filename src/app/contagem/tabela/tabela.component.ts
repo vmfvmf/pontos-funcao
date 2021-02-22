@@ -41,7 +41,7 @@ export class ContagemTabelaComponent implements OnInit {
     this.contagemService.apagar(contagem).subscribe(
       (msg) => {
         this.msgService.success('Registro apagado com sucesso.');
-        window.location.reload();
+        this.atualizaResultados();
       },
       (erro) => {
         this.msgService.error('Ocorreu um erro ao apagar registro.');

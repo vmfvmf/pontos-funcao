@@ -1,36 +1,36 @@
-import { Contagem } from './../../../contagem';
+import { Contagem } from '../../../contagem';
 import { Transacao } from '../transacao';
 import { HttpParams } from "@angular/common/http";
 
-export interface IGrupoTransacao {
+export interface IGrupo {
   id?: number;
   nome?: String;
   transacoes?: Transacao[];
   contagem?: Contagem;
 }
 
-export class GrupoTransacao {
+export class Grupo {
   id?: number;
   nome?: String;
   transacoes?: Transacao[];
   contagem?: Contagem;
 
-  constructor(i: IGrupoTransacao){
+  constructor(i: IGrupo){
     this.id = i.id;
     this.nome = i.nome;
     this.transacoes = i.transacoes;
     this.contagem = i.contagem;
   }
 
-  public toHttpParams(): HttpParams {
+  public static toHttpParams(iGrupo: IGrupo): HttpParams {
     let httpParams = new HttpParams();
     //let httpParams = this.paginacao.toHttpParams();
 
-      if (this.nome !== undefined) {
-        httpParams = httpParams.set('nome', this.nome.toString());
+      if (iGrupo.nome !== undefined) {
+        httpParams = httpParams.set('nome', iGrupo.nome.toString());
       }
-      if (this.contagem !== undefined) {
-        httpParams = httpParams.set('contagem.id', this.contagem.id.toString());
+      if (iGrupo.contagem !== undefined) {
+        httpParams = httpParams.set('contagem.id', iGrupo.contagem.id.toString());
       }
       return httpParams;
     }

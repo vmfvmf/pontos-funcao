@@ -23,7 +23,6 @@ export class ArquivoReferenciadoComponent implements OnInit {
     private arquivoReferenciadoService: ContagemItemService,
     private contagemService: ContagemService,
     private msgService: MessageService
-    // private transacaoService: TransacaoService
   ) { }
 
   ngOnInit(): void {
@@ -59,34 +58,6 @@ export class ArquivoReferenciadoComponent implements OnInit {
     });
   }
 
-  // novoEditarTransacao(transacao: Transacao) {
-  //   if (!transacao) transacao = new Transacao({ transacaosTDMensagemTela: [] });
-  //   transacao.contagem =  { id: this.contagem.id };
-  //   const dialogRef = this.dialog.open(ContagensTransacoesComponent, {
-  //     width: '600px',
-  //     data: { transacao: transacao }
-  //   });
-
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     this.updateTableData();
-  //   });
-  // }
-
-  gerenciadorMensagensTelas(){
-    // this.dialog.open(ContagensMensagensTelasComponent, {
-    //   width: '600px'
-    // });
-  }
-
-  gerenciadorGrupo() {
-    // let grupo = new GrupoTransacao({ contagem: {id: this.contagem.id} });
-    // this.dialog.open(ContagensGrupoTransacoesComponent, {
-    //   width: '600px',
-    //   data: { grupo: grupo }
-    // });
-  }
-
-
   apagar(arquivoId: number) {
     if (confirm('Confirmar. Apagar o registro?') != true) {
       return;
@@ -102,21 +73,4 @@ export class ArquivoReferenciadoComponent implements OnInit {
       }
     );
   }
-
-  apagarTransacao(transacaoId: number) {
-    // if (confirm('Confirmar. Apagar o registro?') != true) {
-    //   return;
-    // }
-    // this.transacaoService.apagar(transacaoId).subscribe(
-    //   (msg) => {
-    //     this.updateTableData();
-    //     this.msgService.success('Registro apagado com sucesso.');
-    //   },
-    //   (erro) => {
-    //     console.log("Erro ao apagar transacao", erro)
-    //     this.msgService.error('Ocorreu um erro ao apagar registro.');
-    //   }
-    // );
-  }
-
 }

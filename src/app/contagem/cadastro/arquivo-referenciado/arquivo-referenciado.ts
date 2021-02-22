@@ -23,12 +23,12 @@ export class IArquivoReferenciado {
 export class ArquivoReferenciado extends ContagemItem {
   tr?: number;
   tabelas?: Tabela[];
-  isCheckSelected?: boolean;
+  isChecked?: boolean;
 
   constructor(i: IArquivoReferenciado) {
     super(i);
     this.tipo = TipoContagemItemEnum.ARQUIVO_REFERENCIADO;
     this.tabelas = i.tabelas ? i.tabelas : [];
-    this.isCheckSelected = i.isCheckSelected;
+    this.isChecked = i.isCheckSelected;
   }
 }

@@ -2,7 +2,7 @@ import { Ded } from "../ded/ded";
 import { Sistema } from "../sistema/sistema";
 import { Sprint } from "../sprint/sprint";
 import { ArquivoReferenciado } from "./cadastro/arquivo-referenciado/arquivo-referenciado";
-import { GrupoTransacao } from "./cadastro/transacao/grupo/grupo-transacao";
+import { Grupo } from "./cadastro/transacao/grupo/grupo";
 import { Transacao } from "./cadastro/transacao/transacao";
 
 
@@ -23,7 +23,7 @@ export class IContagem {
   totalPf?: number;
   transacaos?: Transacao[];
   arquivoReferenciado?: ArquivoReferenciado[];
-  grupos?: GrupoTransacao[];
+  grupos?: Grupo[];
 }
 
 export class Contagem {
@@ -37,7 +37,7 @@ export class Contagem {
   totalPf?: number;
   transacaos?: Transacao[];
   arquivoReferenciado?: ArquivoReferenciado[];
-  grupos?: GrupoTransacao[];
+  grupos?: Grupo[];
 
   constructor(i: IContagem){
     this.id = i.id;

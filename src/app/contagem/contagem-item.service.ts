@@ -17,7 +17,7 @@ export class ContagemItemService {
     return this.httpClient.get<ContagemItem[]>(`${ContagemItemService.URL_API}`,{params: ContagemItem.toHttpParams(filtro)});
   }
 
-  novo(novx: ContagemItem): Observable<ContagemItem> {
+  salvar(novx: ContagemItem): Observable<ContagemItem> {
     return this.httpClient.post<ContagemItem>(`${ContagemItemService.URL_API}`, novx);
   }
 
@@ -25,12 +25,12 @@ export class ContagemItemService {
     return this.httpClient.get<ContagemItem>(`${ContagemItemService.URL_API}/${_id}`);
   }
 
-  editar(edited: ContagemItem): Observable<ContagemItem> {
-    return this.httpClient.put<ContagemItem>(`${ContagemItemService.URL_API}`, edited);
-  }
-
   apagar(_id: number): Observable<any> {
     return this.httpClient.delete<any>(`${ContagemItemService.URL_API}/${_id}`);
+  }
+
+  apagarTds(itemId: number){
+    return this.httpClient.delete<any>(`${ContagemItemService.URL_API}/tds/${itemId}`);
   }
 
 }

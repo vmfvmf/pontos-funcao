@@ -14,12 +14,12 @@ export class MensagemTela{
   constructor(i: IMensagemTela){
     this.id = i.id;
     this.nome = i.nome;
-    this.isChecked = i.isChecked;
+    this.isChecked = i.isChecked ? i.isChecked : false;
   }
-  toHttpParams(): HttpParams {
+  public static toHttpParams(iMsg: IMensagemTela): HttpParams {
     let httpParams = new HttpParams();
-      if (this.nome !== undefined) {
-        httpParams = httpParams.set('nome', this.nome.toString());
+      if (iMsg.nome !== undefined) {
+        httpParams = httpParams.set('nome', iMsg.nome.toString());
       }
       return httpParams;
     }

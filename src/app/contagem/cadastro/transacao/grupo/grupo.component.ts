@@ -1,7 +1,7 @@
 
-import { GrupoTransacaoService } from './grupo_transacao.service';
+import { GrupoService } from './grupo.service';
 import { Component, Inject, OnInit } from '@angular/core';
-import { GrupoTransacao } from './grupo-transacao';
+import { Grupo } from './grupo';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MessageService } from 'pje-componentes';
 import { Contagem } from '../../../../contagem/contagem';
@@ -13,13 +13,13 @@ import { Contagem } from '../../../../contagem/contagem';
 })
 export class GrupoComponent implements OnInit {
   novoEditar = "Novo";
-  grupo: GrupoTransacao = new GrupoTransacao({});
-  grupos: GrupoTransacao[] = [];
+  grupo: Grupo = new Grupo({});
+  grupos: Grupo[] = [];
   constructor(
-    private grupoTransacaoService: GrupoTransacaoService,
+    private grupoService: GrupoService,
     public dialogRef: MatDialogRef<GrupoComponent>,
     private msgService: MessageService,
-    @Inject(MAT_DIALOG_DATA) public data: { grupo: GrupoTransacao }) {
+    @Inject(MAT_DIALOG_DATA) public data: { grupo: Grupo }) {
       this.grupo = data.grupo;
      }
 
@@ -28,15 +28,15 @@ export class GrupoComponent implements OnInit {
   }
 
   updateGrupos(){
-    this.grupoTransacaoService.listar(new GrupoTransacao({ contagem: new Contagem({id: this.grupo.contagem.id}) })).subscribe(response =>{
+    this.grupoService.listar({ contagem: this.grupo.contagem }).subscribe(response =>{
       this.grupos = response;
     }),error => {
       console.log('Erro ao recuperar grupos', error);
     };
   }
 
-  apagarGrupo(grupo: GrupoTransacao){
-    this.grupoTransacaoService.apagar(grupo.id).subscribe(response =>{
+  apagarGrupo(grupo: Grupo){
+    this.grupoService.apagar(grupo.id).subscribe(response =>{
       this.updateGrupos();
       this.msgService.success("Registro apagado com sucesso.")
     }, error => {
@@ -44,9 +44,9 @@ export class GrupoComponent implements OnInit {
     });
   }
 
-  editarGrupo(grupo: GrupoTransacao){
+  editarGrupo(grupo: Grupo){
     grupo.contagem = this.grupo.contagem;
-    this.grupo = new GrupoTransacao(grupo);
+    this.grupo = new Grupo(grupo);
     this.novoEditar = "Editar";
   }
 
@@ -57,7 +57,7 @@ export class GrupoComponent implements OnInit {
   }
 
   salvar(){
-    this.grupoTransacaoService.novo(this.grupo).subscribe((response) =>
+    this.grupoService.novo(this.grupo).subscribe((response) =>
     {
       this.updateGrupos();
       this.cancelarEdicao();

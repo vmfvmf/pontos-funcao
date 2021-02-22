@@ -7,7 +7,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { Contagem } from "../../contagem";
 import { MessageService } from 'pje-componentes';
 import { Transacao } from './transacao';
-import { GrupoTransacao } from './grupo/grupo-transacao';
+import { Grupo } from './grupo/grupo';
 import { ContagemItem, TipoContagemItemEnum } from '../../contagem-item';
 
 @Component({
@@ -39,7 +39,7 @@ export class TransacaoComponent implements OnInit {
 
   updateTableData() {
     this.transacaoService.listar({contagem: this.contagem, tipo: TipoContagemItemEnum.TRANSACAO}).subscribe(response => {
-      this.transacaos = response.map(x => new Transacao(x));
+      this.transacaos = <Transacao[]>response;
       console.log('TRANSACAO[]', response);
     }, error => {
       console.log('erro ao recuperar transacao[]', error);
@@ -66,7 +66,7 @@ export class TransacaoComponent implements OnInit {
   }
 
   gerenciadorGrupo() {
-    let grupo = new GrupoTransacao({ contagem: {id: this.contagem.id} });
+    let grupo = new Grupo({ contagem: {id: this.contagem.id} });
     this.dialog.open(GrupoComponent, {
       width: '600px',
       data: { grupo: grupo }

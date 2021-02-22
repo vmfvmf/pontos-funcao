@@ -26,7 +26,6 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
   novaColuna: Coluna = new Coluna({});
   tabelasExcluir: Tabela[] = [];
   colunasExcluir: Coluna[] = [];
-
   selectedTabelaIndex: number;
   constructor(
     @Inject(MAT_DIALOG_DATA)
@@ -38,19 +37,6 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
     private contagemItemService: ContagemItemService
   ) {
     this.arquivoReferenciado = data.arquivoReferenciado;
-    if (data.arquivoReferenciado.id > 0) {
-      this.tabelaService
-        .listar({ contagemItem: <ContagemItem>this.arquivoReferenciado })
-        .subscribe(
-          (response) => {
-            this.arquivoReferenciado.tabelas = response;
-          },
-          (error) => {
-            console.log("erro ao recuperar tabelas", error);
-            this.msgService.error("Erro ao recuperar tabelas.");
-          }
-        );
-    }
   }
 
   ngOnInit(): void {
@@ -69,8 +55,9 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
       );
       return;
     }
-    this.arquivoReferenciado.tabelas.push({ nome: this.novaTabela.nome });
+    this.arquivoReferenciado.tabelas.push({ nome: this.novaTabela.nome, colunas: [] });
     this.selectedTabelaIndex = this.arquivoReferenciado.tabelas.length;
+    this.novaTabela.nome = "";
   }
 
   adicionarColuna() {
@@ -83,6 +70,7 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
       this.arquivoReferenciado.tabelas[this.selectedTabelaIndex].colunas.push({
         nome: this.novaColuna.nome,
       });
+      this.novaColuna.nome = "";
     }
   }
 
@@ -91,12 +79,22 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
   }
 
   salvar() {
-    this.contagemItemService.novo(this.arquivoReferenciado).subscribe(
+    this.tabelasExcluir.forEach(t => this.tabelaService.apagar(t.id).subscribe(response => {
+      console.log("Tabela apagada", t);
+    }, error => {
+      console.log("Erro apagar tabela", error);
+    }));
+    this.colunasExcluir.forEach(c => this.colunaService.apagar(c.id).subscribe(response => {
+      console.log("Coluna apagada", c);
+    }, error => {
+      console.log("Erro apagar coluna", error);
+    }));
+    this.atualizaContagem();
+    this.contagemItemService.salvar(this.arquivoReferenciado).subscribe(
       (response) => {
         this.arquivoReferenciado = response;
         this.msgService.success("Registro salvo com sucesso.");
         console.log("Response novo objeto ContagemItem", response);
-        this.salvarTabelas();
       },
       (error) => {
         this.msgService.error("Ocorreu um erro ao salvar!");
@@ -105,56 +103,20 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
     );
   }
 
-  salvarTabelas(){
-    this.arquivoReferenciado.tabelas.forEach(tab => {
-      this.tabelaService.save(tab).subscribe(response => {
-        console.log("erserd");
-      },error => {
-        console.log("Erro ao salvar tabela.");
-        console.log("Erro salvar tabela", error);
-      })
-    });
-  }
-
   apagarTabela(tabela: Tabela) {
-    this.tabelaService.apagar(tabela.id).subscribe(
-      (response) => {
-        this.msgService.success("Registro apagado com sucesso.");
-        const index = this.arquivoReferenciado.tabelas.findIndex(
-          (tb) => tb.id == tabela.id
-        );
-        if (index > -1) {
-          this.arquivoReferenciado.tabelas.splice(index, 1);
-        }
-        this.atualizaContagem();
-      },
-      (erro) => {
-        this.msgService.error("Ocorreu um erro ao apagar tabela.");
-        console.log("erro ao apagar tabela", erro);
-      }
-    );
+    const index = this.arquivoReferenciado.tabelas.findIndex(t => t.nome =tabela.nome);
+    if (index > -1) {
+      if(tabela.id) this.tabelasExcluir.push(tabela);
+      this.arquivoReferenciado.tabelas.splice(index, 1);
+    }
   }
 
   apagarColuna(coluna: Coluna) {
-    this.colunaService.apagar(coluna.id).subscribe(
-      (msg) => {
-        this.msgService.success("Registro apagado com sucesso.");
-        const index = this.arquivoReferenciado.tabelas[
-          this.getSelectedTabelaIndex()
-        ].colunas.findIndex((col) => col.id == coluna.id);
-        if (index > -1) {
-          this.arquivoReferenciado.tabelas[
-            this.getSelectedTabelaIndex()
-          ].colunas.splice(index, 1);
-          this.atualizaContagem();
-        }
-        this.atualizaContagem();
-      },
-      (erro) => {
-        this.msgService.error("Ocorreu um erro ao apagar coluna.");
-        console.log("erro ao apagar coluna", erro);
-      }
-    );
+    const index = this.arquivoReferenciado.tabelas[this.getSelectedTabelaIndex()].colunas.findIndex(c => c.nome = coluna.nome);
+    if (index > -1) {
+      if(coluna.id) this.colunasExcluir.push(coluna);
+      this.arquivoReferenciado.tabelas[this.getSelectedTabelaIndex()].colunas.splice(index, 1);
+    }
   }
 
   atualizaContagem() {
@@ -168,6 +130,7 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
     this.arquivoReferenciado.td = i;
     this.analisarComplexidade();
     this.calcularPF();
+
   }
 
   private analisarComplexidade() {
@@ -175,16 +138,16 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
       (this.arquivoReferenciado.td < 50 && this.arquivoReferenciado.tr == 1) ||
       (this.arquivoReferenciado.td < 20 && this.arquivoReferenciado.tr <= 5)
     ) {
-      this.arquivoReferenciado.complexidade = ComplexidadeEnum.baixa;
+      this.arquivoReferenciado.complexidade = ComplexidadeEnum.BAIXA;
     } else if (
       (this.arquivoReferenciado.td > 50 && this.arquivoReferenciado.tr == 1) ||
       (this.arquivoReferenciado.td >= 20 &&
         this.arquivoReferenciado.td <= 50 &&
         this.arquivoReferenciado.tr <= 5)
     ) {
-      this.arquivoReferenciado.complexidade = ComplexidadeEnum.media;
+      this.arquivoReferenciado.complexidade = ComplexidadeEnum.MEDIA;
     } else {
-      this.arquivoReferenciado.complexidade = ComplexidadeEnum.alta;
+      this.arquivoReferenciado.complexidade = ComplexidadeEnum.ALTA;
     }
   }
 
@@ -192,26 +155,26 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
     switch (this.arquivoReferenciado.subtipo) {
       case SubtipoItemContagemEnum.ALI:
         switch (this.arquivoReferenciado.complexidade) {
-          case ComplexidadeEnum.baixa:
+          case ComplexidadeEnum.BAIXA:
             this.arquivoReferenciado.pf = 7;
             break;
-          case ComplexidadeEnum.media:
+          case ComplexidadeEnum.MEDIA:
             this.arquivoReferenciado.pf = 10;
             break;
-          case ComplexidadeEnum.alta:
+          case ComplexidadeEnum.ALTA:
             this.arquivoReferenciado.pf = 15;
             break;
         }
         break;
       case SubtipoItemContagemEnum.AIE:
         switch (this.arquivoReferenciado.complexidade) {
-          case ComplexidadeEnum.baixa:
+          case ComplexidadeEnum.BAIXA:
             this.arquivoReferenciado.pf = 5;
             break;
-          case ComplexidadeEnum.media:
+          case ComplexidadeEnum.MEDIA:
             this.arquivoReferenciado.pf = 7;
             break;
-          case ComplexidadeEnum.alta:
+          case ComplexidadeEnum.ALTA:
             this.arquivoReferenciado.pf = 10;
             break;
         }
