@@ -31,27 +31,54 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-expansion-panel hideToggle>
+    <mat-expansion-panel
+      (opened)="exp1(true)"
+      (closed)="exp1(false)"
+      hideToggle
+    >
       <mat-expansion-panel-header>
         <mat-panel-title> Mensagens de Tela </mat-panel-title>
-        <mat-panel-description> Sumary </mat-panel-description>
+        <mat-panel-description>
+          <span *ngIf="aberto" class="material-icons"> keyboard_arrow_up </span>
+          <span *ngIf="!aberto" class="material-icons">
+            keyboard_arrow_down
+          </span>
+        </mat-panel-description>
       </mat-expansion-panel-header>
-      <mat-selection-list [(ngModel)]="selectedMsgsTela" #list name="selectedsMsgs">
-        <mat-list-option *ngFor="let msg of msgsTela" (change)="teste()" [value]="msg">
-          {{ msg.nome }}
+      <mat-selection-list
+        [(ngModel)]="selectedMsgAcao"
+        #list
+        name="selectedsMsgs"
+      >
+        <mat-list-option
+          *ngFor="let msg of msgAcao"
+          (change)="teste()"
+          [value]="msg"
+        >
+          {{ msg }}
         </mat-list-option>
       </mat-selection-list>
     </mat-expansion-panel>
 
-    <mat-expansion-panel hideToggle>
+    <mat-expansion-panel
+      (opened)="exp2(true)"
+      (closed)="exp2(false)"
+      hideToggle
+    >
       <mat-expansion-panel-header>
         <mat-panel-title> Arquivos referenciados </mat-panel-title>
-        <mat-panel-description> Sumary </mat-panel-description>
+        <mat-panel-description>
+          <span *ngIf="aberto2" class="material-icons"> keyboard_arrow_up </span>
+          <span *ngIf="!aberto2" class="material-icons">
+            keyboard_arrow_down
+          </span>
+        </mat-panel-description>
       </mat-expansion-panel-header>
       <mat-tab-group [(selectedIndex)]="selectedARIndex">
         <mat-tab *ngFor="let arquivoReferenciado of arquivosReferenciados">
           <ng-template mat-tab-label>
-            <mat-checkbox (change)="checkFuncaoDadosValue(arquivoReferenciado)"
+            <mat-checkbox
+              (change)="checkFuncaoDadosValue(arquivoReferenciado)"
               [(ngModel)]="arquivoReferenciado.isChecked"
             >
             </mat-checkbox>
@@ -64,7 +91,8 @@
           <mat-tab-group [(selectedIndex)]="selectedTRIndex">
             <mat-tab *ngFor="let tabela of arquivoReferenciado.tabelas">
               <ng-template mat-tab-label>
-                <mat-checkbox (change)="checkTabelasValue(tabela)"
+                <mat-checkbox
+                  (change)="checkTabelasValue(tabela)"
                   [(ngModel)]="tabela.isChecked"
                 >
                 </mat-checkbox>
@@ -72,7 +100,8 @@
               </ng-template>
               <mat-divider></mat-divider>
               <h4>Colunas</h4>
-              <mat-checkbox (change)="atualizaCheckBoxInterface()"
+              <mat-checkbox
+                (change)="atualizaCheckBoxInterface()"
                 [(ngModel)]="col.isChecked"
                 *ngFor="let col of tabela.colunas"
               >
@@ -86,12 +115,7 @@
   </mat-card-content>
 
   <mat-card-actions mat-dialog-actions align="center">
-    <button
-      mat-button
-      mat-flat-button
-      color="primary"
-      (click)="salvar()"
-    >
+    <button mat-button mat-flat-button color="primary" (click)="salvar()">
       Salvar
     </button>
     <button mat-button mat-dialog-close>Cancelar</button>

@@ -67,7 +67,7 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
         this.getSelectedTabelaIndex()
       ].colunas.findIndex((c) => c.nome == this.novaColuna.nome) == -1
     ) {
-      this.arquivoReferenciado.tabelas[this.selectedTabelaIndex].colunas.push({
+      this.arquivoReferenciado.tabelas[this.getSelectedTabelaIndex()].colunas.push({
         nome: this.novaColuna.nome,
       });
       this.novaColuna.nome = "";

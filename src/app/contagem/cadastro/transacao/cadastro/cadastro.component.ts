@@ -4,7 +4,6 @@ import { ArquivoReferenciado } from "./../../arquivo-referenciado/arquivo-refere
 import { Component, Inject, OnInit } from "@angular/core";
 import {
   ComplexidadeEnum,
-  ContagemItem,
   FuncoesTransacao,
   SubtipoItemContagemEnum,
   TipoContagemItemEnum,
@@ -15,9 +14,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MessageService } from "pje-componentes";
 import { Contagem } from "../../../../contagem/contagem";
 import { Grupo } from "../grupo/grupo";
-import { MensagemTela } from "../mensagem-tela/mensagem-tela";
 import { GrupoService } from "../grupo/grupo.service";
-import { MensagemTelaService } from "../mensagem-tela/mensagem-tela.service";
 import { TipoTransacaoTDEnum, TransacaoTD } from "../transacao-td";
 
 @Component({
@@ -29,19 +26,27 @@ export class TransacaoCadastroComponent implements OnInit {
   contagemItem: Transacao;
   subtipos: string[] = FuncoesTransacao;
   grupos: Grupo[];
-  msgsTela: MensagemTela[] = [];
-  selectedMsgsTela: MensagemTela[] = [];
   selectedTabelasColunas: Coluna[];
   selectedARIndex = 0;
   selectedTRIndex = 0;
   arquivosReferenciados: ArquivoReferenciado[] = [];
   tdsToDelete: TransacaoTD[] = [];
+  selectedMsgAcao: String[] = [];
+  msgAcao: String[] = ['ACAO', 'MENSAGEM'];
+  aberto = false;
+  aberto2 = false;
+
+  exp1(obj: boolean){
+    this.aberto = obj;
+  }
+  exp2(obj: boolean){
+    this.aberto2 = obj;
+  }
 
   constructor(
     public dialogRef: MatDialogRef<TransacaoCadastroComponent>,
     private grupoService: GrupoService,
     private msgService: MessageService,
-    private msgTelasService: MensagemTelaService,
     private contagemItemService: ContagemItemService,
     private transacaoTDService: TransacaoTDService,
     @Inject(MAT_DIALOG_DATA) public data: { transacao: Transacao }
@@ -61,21 +66,6 @@ export class TransacaoCadastroComponent implements OnInit {
           console.log("Erro ao recuperar lista de grupos", error);
         }
       );
-    this.msgTelasService.listar({}).subscribe(
-      (response) => {
-        this.msgsTela = response.map(m => m = { id:m.id, nome: m.nome, isChecked:false });
-        this.contagemItem.transacaoTDs.forEach((td) => {
-          if (td.tipo == TipoTransacaoTDEnum.MENSAGEM_TELA) {
-            this.selectedMsgsTela.push(this.msgsTela.find(
-              (el) => el.id == td.mensagemTela.id
-            ));
-          }
-        });
-      },
-      (error) => {
-        console.log("Erro ao recuperar lista de mensagens", error);
-      }
-    );
     this.contagemItemService
       .listar({
         contagem: new Contagem({ id: this.contagemItem.contagem.id }),
@@ -89,7 +79,7 @@ export class TransacaoCadastroComponent implements OnInit {
               f.tabelas.forEach((t) => {
                 t.colunas.forEach((c) => {
                   if (
-                    tdCol.tipo == TipoTransacaoTDEnum.ARQUIVO_REFERENCIADO &&
+                    tdCol.tipo == 'ARQUIVO_REFERENCIADO' &&
                     c.id == tdCol.coluna.id
                   ) {
                     c.isChecked = true;
@@ -107,6 +97,11 @@ export class TransacaoCadastroComponent implements OnInit {
           );
         }
       );
+      this.msgAcao.forEach(msg => {
+        if(this.contagemItem.transacaoTDs.find(td => td.tipo == msg)){
+          this.selectedMsgAcao.push(msg);
+        }
+      });
   }
 
   checkFuncaoDadosValue(arquivoReferenciado: ArquivoReferenciado) {
@@ -157,6 +152,19 @@ export class TransacaoCadastroComponent implements OnInit {
   }
 
   salvar() {
+    for (let item in TipoTransacaoTDEnum) {
+      const find1 = this.contagemItem.transacaoTDs.find(td => td.tipo == item);
+      const find2 = this.selectedMsgAcao.find(msgAcao => msgAcao == item);
+      if(find1 && !find2){
+        this.tdsToDelete.push(find1);
+        const index = this.contagemItem.transacaoTDs.findIndex(td => td.tipo == item);
+        if (index > -1) {
+          this.contagemItem.transacaoTDs.splice(index, 1);
+        }
+      }else if(!find1 && find2) {
+        this.contagemItem.transacaoTDs.push(new TransacaoTD({ tipo: <TipoTransacaoTDEnum>item, transacao: {id: this.contagemItem.id }}));
+      }
+  }
     this.arquivosReferenciados.forEach(ar => {
       ar.tabelas.forEach(tb => {
         tb.colunas.forEach(col => {
@@ -173,20 +181,6 @@ export class TransacaoCadastroComponent implements OnInit {
           }
         })
       })
-    });
-    this.msgsTela.forEach(msg => {
-      if(this.selectedMsgsTela.includes(msg)){
-        const currTd = this.contagemItem.transacaoTDs.find(transTD => transTD.tipo == TipoTransacaoTDEnum.MENSAGEM_TELA && transTD.mensagemTela.id == msg.id);
-        if(!currTd){
-          this.contagemItem.transacaoTDs.push(new TransacaoTD({tipo: TipoTransacaoTDEnum.MENSAGEM_TELA, mensagemTela: msg}));
-        }
-      }else {
-        const index = this.contagemItem.transacaoTDs.findIndex(c => c.tipo == TipoTransacaoTDEnum.MENSAGEM_TELA && c.mensagemTela.id == msg.id);
-            if (index > -1) {
-              this.tdsToDelete.push(this.contagemItem.transacaoTDs[index]);
-              this.contagemItem.transacaoTDs.splice(index, 1);
-            }
-      }
     });
     this.atualizaContagem();
     this.tdsToDelete.forEach(td => {
@@ -212,7 +206,7 @@ export class TransacaoCadastroComponent implements OnInit {
   atualizaContagem() {
     this.contagemItem.td = 0;
     this.contagemItem.tr = 0;
-    this.selectedMsgsTela.forEach(() => {
+    this.selectedMsgAcao.forEach(() => {
       this.contagemItem.td++;
     });
     this.arquivosReferenciados.forEach((ar) => {

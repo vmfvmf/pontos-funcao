@@ -17,7 +17,7 @@ export class ContagemService {
     return this.httpClient.get<Contagem[]>(`${ContagemService.URL_API}`);
   }
 
-  novo(novaContagem: Contagem): Observable<Contagem> {
+  salvar(novaContagem: Contagem): Observable<Contagem> {
     if(novaContagem.escopo == EscopoContagemEnum.SISTEMA){
       novaContagem.ded = undefined;
       novaContagem.sprint = undefined;
@@ -31,10 +31,6 @@ export class ContagemService {
 
   ver(contagem_id: number): Observable<Contagem> {
     return this.httpClient.get<Contagem>(`${ContagemService.URL_API}/${contagem_id}`);
-  }
-
-  editar(contagemModificado: Contagem): Observable<Contagem> {
-    return this.httpClient.put<Contagem>(`${ContagemService.URL_API}`, contagemModificado);
   }
 
   apagar(contagem_id: number): Observable<any> {

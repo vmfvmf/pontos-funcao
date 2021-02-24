@@ -1,8 +1,7 @@
 import { ContagemItemService } from './../../contagem-item.service';
-import { MensagemTelaComponent } from './mensagem-tela/mensagem-tela.component';
 import { GrupoComponent } from './grupo/grupo.component';
 import { TransacaoCadastroComponent } from './cadastro/cadastro.component';
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Contagem } from "../../contagem";
 import { MessageService } from 'pje-componentes';
@@ -20,6 +19,8 @@ export class TransacaoComponent implements OnInit {
   contagem: Contagem;
   transacaos: Transacao[] = [];
   subTotalPf = 0;
+  @Output()
+  somaPFTransacaos = new EventEmitter<ContagemItem[]>();
   constructor(
     public dialog: MatDialog,
     private transacaoService: ContagemItemService,
@@ -40,6 +41,7 @@ export class TransacaoComponent implements OnInit {
   updateTableData() {
     this.transacaoService.listar({contagem: this.contagem, tipo: TipoContagemItemEnum.TRANSACAO}).subscribe(response => {
       this.transacaos = <Transacao[]>response;
+      this.somaPFTransacaos.emit(response);
       console.log('TRANSACAO[]', response);
     }, error => {
       console.log('erro ao recuperar transacao[]', error);
@@ -56,12 +58,6 @@ export class TransacaoComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
         this.updateTableData();
-    });
-  }
-
-  gerenciadorMensagensTelas(){
-    this.dialog.open(MensagemTelaComponent, {
-      width: '600px'
     });
   }
 

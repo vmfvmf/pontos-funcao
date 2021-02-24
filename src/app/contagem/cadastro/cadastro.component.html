@@ -5,9 +5,13 @@
 
 </app-contagem-cadastro-basico>
 
-<app-contagem-cadastro-arquivo-referenciado *ngIf="contagem && contagem.id" [contagem]="contagem" >
+<app-contagem-cadastro-arquivo-referenciado *ngIf="contagem && contagem.id"
+(somaPFArquivosReferenciados)="atualizaContagemArquivosReferenciados($event)"
+ [contagem]="contagem" >
 
 </app-contagem-cadastro-arquivo-referenciado>
 
-<app-contagem-cadastro-transacao *ngIf="contagem && contagem.id" [contagem]="contagem">
+<app-contagem-cadastro-transacao *ngIf="contagem && contagem.id"
+(somaPFTransacaos)="atualizaContagemTransacaos($event)"
+[contagem]="contagem">
 </app-contagem-cadastro-transacao>

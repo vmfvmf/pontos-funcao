@@ -1,4 +1,4 @@
-import { MensagemTelaComponent } from './transacao/mensagem-tela/mensagem-tela.component';
+import { MatBadgeModule } from '@angular/material/badge';
 import { GrupoComponent } from "./transacao/grupo/grupo.component";
 import { TransacaoCadastroComponent } from "./transacao/cadastro/cadastro.component";
 import { MatTooltipModule } from "@angular/material/tooltip";
@@ -36,6 +36,7 @@ import { TransacaoComponent } from "./transacao/transacao.component";
     PJeBaseMaterialModule,
     MatInputModule,
     MatTooltipModule,
+    MatBadgeModule
   ],
   declarations: [
     ContagemCadastroComponent,
@@ -44,8 +45,7 @@ import { TransacaoComponent } from "./transacao/transacao.component";
     ArquivoReferenciadoCadastroComponent,
     TransacaoComponent,
     TransacaoCadastroComponent,
-    GrupoComponent,
-    MensagemTelaComponent
+    GrupoComponent
   ],
   exports: [ContagemCadastroComponent],
 })
