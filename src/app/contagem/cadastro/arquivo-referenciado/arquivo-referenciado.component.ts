@@ -1,11 +1,11 @@
-import { ContagemItemService } from './../../contagem-item.service';
+import { AbstractContagemItemService } from './../../contagem-item.service';
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Contagem } from "../../contagem";
 import { MessageService } from 'pje-componentes';
-import { ArquivoReferenciado } from './arquivo-referenciado';
+import { ArquivoReferenciado, FuncaoArquivoReferenciadoEnum } from './arquivo-referenciado';
 import { ArquivoReferenciadoCadastroComponent } from './cadastro/cadastro.component';
-import { ContagemItem, TipoContagemItemEnum } from '../../contagem-item';
+import { AbstractContagemItem } from '../../abstract-contagem-item';
 
 @Component({
   selector: 'app-contagem-cadastro-arquivo-referenciado',
@@ -16,13 +16,13 @@ export class ArquivoReferenciadoComponent implements OnInit {
   @Input()
   contagem: Contagem;
   @Output()
-  somaPFArquivosReferenciados: EventEmitter<ContagemItem[]> = new EventEmitter<ContagemItem[]>();
+  somaPFArquivosReferenciados: EventEmitter<AbstractContagemItem[]> = new EventEmitter<AbstractContagemItem[]>();
 
   arquivosReferenciados: ArquivoReferenciado[] = [];
   subTotalPf = 0;
   constructor(
     public dialog: MatDialog,
-    private arquivoReferenciadoService: ContagemItemService,
+    private arquivoReferenciadoService: AbstractContagemItemService,
     private msgService: MessageService
   ) { }
 
@@ -38,8 +38,10 @@ export class ArquivoReferenciadoComponent implements OnInit {
   }
 
   updateTableData() {
-    this.arquivoReferenciadoService.listar({contagem: this.contagem, tipo: TipoContagemItemEnum.ARQUIVO_REFERENCIADO}).subscribe(response => {
-      this.arquivosReferenciados = response.map(m => new ArquivoReferenciado(m));
+    const ar = new ArquivoReferenciado();
+    ar.contagem = this.contagem;
+    this.arquivoReferenciadoService.listar(ar).subscribe(response => {
+      this.arquivosReferenciados = response.map(resp => (resp as ArquivoReferenciado));
       this.somaPFArquivosReferenciados.emit(this.arquivosReferenciados);
       console.log('recuperados arquivos referenciados', response);
     }, error => {
@@ -48,15 +50,19 @@ export class ArquivoReferenciadoComponent implements OnInit {
     });
   }
 
-  novoEditar(dados: ArquivoReferenciado) {
-    if (!dados) dados = new ArquivoReferenciado({ contagem: this.contagem });
+  novoEditar(dados?: ArquivoReferenciado) {
+    if (!dados) {
+      dados = new ArquivoReferenciado();
+    }
     const dialogRef = this.dialog.open(ArquivoReferenciadoCadastroComponent, {
       width: '600px',
       data: { arquivoReferenciado: dados }
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      if (result) {
         this.updateTableData();
+      }
     });
   }
 
@@ -66,8 +72,10 @@ export class ArquivoReferenciadoComponent implements OnInit {
     }
     this.arquivoReferenciadoService.apagar(arquivoId).subscribe(
       (msg) => {
-        this.updateTableData();
-        this.msgService.success('Registro apagado com sucesso.');
+        if (msg) {
+          this.updateTableData();
+          this.msgService.success('Registro apagado com sucesso.');
+        }
       },
       (erro) => {
         console.log("Erro ao apagar arquivo", erro)

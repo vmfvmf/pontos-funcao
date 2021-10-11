@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import { environment } from "../../../../environments/environment";
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ITabela, Tabela } from "./tabela";
+import { Tabela } from "./tabela";
 
 @Injectable()
 export class TabelaService {
@@ -13,7 +13,7 @@ export class TabelaService {
   constructor(private httpClient: HttpClient) {
   }
 
-  listar(filtro: ITabela): Observable<Tabela[]> {
+  listar(filtro: Tabela): Observable<Tabela[]> {
     return this.httpClient.get<Tabela[]>(`${TabelaService.URL_API}`, {params: Tabela.toHttpParams(filtro)});
   }
 

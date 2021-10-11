@@ -1,13 +1,12 @@
+import { FuncaoTransacaoEnum } from './../../../abstract-contagem-item';
 import { TransacaoTDService } from "./../transacao-td.service";
-import { ContagemItemService } from "./../../../contagem-item.service";
+import { AbstractContagemItemService } from "./../../../contagem-item.service";
 import { ArquivoReferenciado } from "./../../arquivo-referenciado/arquivo-referenciado";
 import { Component, Inject, OnInit } from "@angular/core";
 import {
   ComplexidadeEnum,
-  FuncoesTransacao,
-  SubtipoItemContagemEnum,
-  TipoContagemItemEnum,
-} from "../../../contagem-item";
+  FuncoesTransacao
+} from "../../../abstract-contagem-item";
 import { Coluna, Tabela } from "../../arquivo-referenciado/tabela";
 import { Transacao } from "../transacao";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
@@ -24,7 +23,7 @@ import { TipoTransacaoTDEnum, TransacaoTD } from "../transacao-td";
 })
 export class TransacaoCadastroComponent implements OnInit {
   contagemItem: Transacao;
-  subtipos: string[] = FuncoesTransacao;
+  funcoes: string[] = FuncoesTransacao;
   grupos: Grupo[];
   selectedTabelasColunas: Coluna[];
   selectedARIndex = 0;
@@ -47,7 +46,7 @@ export class TransacaoCadastroComponent implements OnInit {
     public dialogRef: MatDialogRef<TransacaoCadastroComponent>,
     private grupoService: GrupoService,
     private msgService: MessageService,
-    private contagemItemService: ContagemItemService,
+    private contagemItemService: AbstractContagemItemService,
     private transacaoTDService: TransacaoTDService,
     @Inject(MAT_DIALOG_DATA) public data: { transacao: Transacao }
   ) {
@@ -56,8 +55,10 @@ export class TransacaoCadastroComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const grupo = new Grupo();
+    grupo.contagem = this.contagemItem.contagem;
     this.grupoService
-      .listar(new Grupo({ contagem: this.contagemItem.contagem }))
+      .listar(grupo)
       .subscribe(
         (response) => {
           this.grupos = response;
@@ -66,11 +67,10 @@ export class TransacaoCadastroComponent implements OnInit {
           console.log("Erro ao recuperar lista de grupos", error);
         }
       );
+    const trans = new Transacao();
+    trans.contagem =  this.contagemItem.contagem;
     this.contagemItemService
-      .listar({
-        contagem: new Contagem({ id: this.contagemItem.contagem.id }),
-        tipo: TipoContagemItemEnum.ARQUIVO_REFERENCIADO,
-      })
+      .listar(trans)
       .subscribe(
         (response) => {
           this.arquivosReferenciados = <ArquivoReferenciado[]>response;
@@ -152,26 +152,14 @@ export class TransacaoCadastroComponent implements OnInit {
   }
 
   salvar() {
-    for (let item in TipoTransacaoTDEnum) {
-      const find1 = this.contagemItem.transacaoTDs.find(td => td.tipo == item);
-      const find2 = this.selectedMsgAcao.find(msgAcao => msgAcao == item);
-      if(find1 && !find2){
-        this.tdsToDelete.push(find1);
-        const index = this.contagemItem.transacaoTDs.findIndex(td => td.tipo == item);
-        if (index > -1) {
-          this.contagemItem.transacaoTDs.splice(index, 1);
-        }
-      }else if(!find1 && find2) {
-        this.contagemItem.transacaoTDs.push(new TransacaoTD({ tipo: <TipoTransacaoTDEnum>item, transacao: {id: this.contagemItem.id }}));
-      }
-  }
     this.arquivosReferenciados.forEach(ar => {
       ar.tabelas.forEach(tb => {
         tb.colunas.forEach(col => {
-          const currTd = this.contagemItem.transacaoTDs.find(transTD => transTD.tipo == TipoTransacaoTDEnum.ARQUIVO_REFERENCIADO
-            && transTD.coluna.id == col.id);
+          const currTd = this.contagemItem.transacaoTDs.find(transTD => transTD.coluna.id == col.id);
           if(col.isChecked && !currTd) {
-            this.contagemItem.transacaoTDs.push(new TransacaoTD({ tipo: TipoTransacaoTDEnum.ARQUIVO_REFERENCIADO, coluna: col }));
+            const trans = new TransacaoTD(this.contagemItem);
+            trans.coluna = col;
+            this.contagemItem.transacaoTDs.push(trans);
           }else if(!col.isChecked && currTd){
             const index = this.contagemItem.transacaoTDs.findIndex(c => c == currTd);
             if (index > -1) {
@@ -222,79 +210,82 @@ export class TransacaoCadastroComponent implements OnInit {
   }
 
   analisaComplexidade() {
-    if (this.contagemItem.subtipo == SubtipoItemContagemEnum.EE) {
+    const transacao = this.contagemItem as Transacao;
+    if (transacao.funcao === FuncaoTransacaoEnum.EE) {
       if (
-        (this.contagemItem.td <= 15 && this.contagemItem.tr < 2) ||
-        (this.contagemItem.td < 5 && this.contagemItem.tr == 2)
+        (transacao.td <= 15 && transacao.tr < 2) ||
+        (transacao.td < 5 && transacao.tr == 2)
       ) {
-        this.contagemItem.complexidade = ComplexidadeEnum.BAIXA;
+        transacao.complexidade = ComplexidadeEnum.BAIXA;
       } else if (
-        (this.contagemItem.td < 5 && this.contagemItem.tr > 2) ||
-        (this.contagemItem.td <= 15 && this.contagemItem.tr == 2) ||
-        (this.contagemItem.td > 15 && this.contagemItem.tr < 2)
+        (transacao.td < 5 && transacao.tr > 2) ||
+        (transacao.td <= 15 && transacao.tr == 2) ||
+        (transacao.td > 15 && transacao.tr < 2)
       ) {
-        this.contagemItem.complexidade = ComplexidadeEnum.MEDIA;
+        transacao.complexidade = ComplexidadeEnum.MEDIA;
       } else {
-        this.contagemItem.complexidade = ComplexidadeEnum.ALTA;
+        transacao.complexidade = ComplexidadeEnum.ALTA;
       }
     } else if (
-      this.contagemItem.subtipo == SubtipoItemContagemEnum.CE ||
-      this.contagemItem.subtipo == SubtipoItemContagemEnum.SE
+      transacao.funcao == FuncaoTransacaoEnum.CE ||
+      transacao.funcao == FuncaoTransacaoEnum.SE
     ) {
       if (
-        (this.contagemItem.td <= 19 && this.contagemItem.tr < 2) ||
-        (this.contagemItem.td < 6 && this.contagemItem.tr < 3)
+        (transacao.td <= 19 && transacao.tr < 2) ||
+        (transacao.td < 6 && transacao.tr < 3)
       ) {
-        this.contagemItem.complexidade = ComplexidadeEnum.BAIXA;
+        transacao.complexidade = ComplexidadeEnum.BAIXA;
       } else if (
-        (this.contagemItem.td < 6 && this.contagemItem.tr <= 3) ||
-        (this.contagemItem.td <= 19 && this.contagemItem.tr <= 3) ||
-        (this.contagemItem.td > 19 && this.contagemItem.tr < 2)
+        (transacao.td < 6 && transacao.tr <= 3) ||
+        (transacao.td <= 19 && transacao.tr <= 3) ||
+        (transacao.td > 19 && transacao.tr < 2)
       ) {
-        this.contagemItem.complexidade = ComplexidadeEnum.MEDIA;
+        transacao.complexidade = ComplexidadeEnum.MEDIA;
       } else {
-        this.contagemItem.complexidade = ComplexidadeEnum.ALTA;
+        transacao.complexidade = ComplexidadeEnum.ALTA;
       }
     }
   }
+
   analisaPF() {
-    switch (this.contagemItem.subtipo) {
-      case SubtipoItemContagemEnum.EE:
-        switch (this.contagemItem.complexidade) {
+    const transacao = this.contagemItem as Transacao;
+    switch (transacao.funcao) {
+      case FuncaoTransacaoEnum.EE:
+        switch (transacao.complexidade) {
           case ComplexidadeEnum.BAIXA:
-            this.contagemItem.pf = 3;
+            transacao.pf = 3;
             break;
           case ComplexidadeEnum.MEDIA:
-            this.contagemItem.pf = 4;
+            transacao.pf = 4;
             break;
           case ComplexidadeEnum.ALTA:
-            this.contagemItem.pf = 6;
+            transacao.pf = 6;
             break;
         }
         break;
-      case SubtipoItemContagemEnum.CE:
-        switch (this.contagemItem.complexidade) {
+      case FuncaoTransacaoEnum.CE:
+        switch (transacao.complexidade) {
           case ComplexidadeEnum.BAIXA:
-            this.contagemItem.pf = 3;
+            transacao.pf = 3;
             break;
           case ComplexidadeEnum.MEDIA:
-            this.contagemItem.pf = 4;
+            transacao.pf = 4;
             break;
           case ComplexidadeEnum.ALTA:
-            this.contagemItem.pf = 6;
+            transacao.pf = 6;
             break;
         }
         break;
-      case SubtipoItemContagemEnum.SE:
-        switch (this.contagemItem.complexidade) {
+      case FuncaoTransacaoEnum.SE:
+        switch (transacao.complexidade) {
           case ComplexidadeEnum.BAIXA:
-            this.contagemItem.pf = 4;
+            transacao.pf = 4;
             break;
           case ComplexidadeEnum.MEDIA:
-            this.contagemItem.pf = 5;
+            transacao.pf = 5;
             break;
           case ComplexidadeEnum.ALTA:
-            this.contagemItem.pf = 7;
+            transacao.pf = 7;
             break;
         }
         break;

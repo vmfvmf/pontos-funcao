@@ -8,27 +8,17 @@ export enum TipoTransacaoTDEnum {
   MENSAGEM = "MENSAGEM",
   ACAO = 'ACAO'
 }
-export interface ITransacaoTD {
-  id?: number;
-  transacao?: Transacao;
-  coluna?: Coluna;
-  tipo?:TipoTransacaoTDEnum;
-}
-
 export class TransacaoTD {
   id?: number;
   transacao?: Transacao;
   coluna?: Coluna;
   tipo?:TipoTransacaoTDEnum;
 
-  constructor(i: ITransacaoTD){
-    this.id = i.id;
-    this.tipo = i.tipo;
-    this.transacao = i.transacao;
-    this.coluna = i.coluna;
+  constructor(transacao?: Transacao){
+    this.transacao = transacao ? transacao : new Transacao();
   }
 
-  public static toHttpParams(iTransacaoTD: ITransacaoTD): HttpParams {
+  public static toHttpParams(iTransacaoTD: TransacaoTD): HttpParams {
     let httpParams = new HttpParams();
       return httpParams;
     }

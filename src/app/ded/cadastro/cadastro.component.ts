@@ -1,7 +1,7 @@
+import { SistemaService } from './../../sistema/sistema.service';
 import { DedService } from '../ded.service';
 import { Ded } from '../ded';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MessageService } from 'pje-componentes';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -13,17 +13,28 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class DedCadastroComponent implements OnInit {
   ded: Ded = new Ded({});
   novoCadastro: boolean= true;
+  sistemas = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {ded: Ded},
     public dialogRef: MatDialogRef<DedCadastroComponent>,
     private dService: DedService,
+    private sService: SistemaService,
     private mService: MessageService
     ) {
       this.ded = data.ded ? data.ded : new Ded({});
     }
 
   ngOnInit(): void {
+    this.sService.listar({}).subscribe(
+      (response) => {
+        this.sistemas = response;
+      },
+      (error) => {
+        this.mService.error("Ocorreu um erro ao carregar sistemas!");
+        console.log(error);
+      }
+    );
   }
 
   close(){

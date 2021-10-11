@@ -1,24 +1,24 @@
-<mat-card>
-  <mat-card-title>Gerenciamento de Sprints</mat-card-title>
-  <mat-icon
-    style="cursor: pointer; color: mediumaquamarine"
-    (click)="novoEditar(null)"
-    matTooltip="Novo"
-    matSuffix
-    class="material-icons md-24"
-    >create_new_folder</mat-icon
-  >
-</mat-card>
+<mat-card style="min-width: 800px">
+  <mat-card-title fxLayoutAlign="space-between center"
+    >Gerenciamento de Sprints
 
-<div class="conteudo">
-  <!-- ------------------------ TABELA ------------------------------>
-  <mat-card class="card-tabela" style="min-width: 800px">
+    <app-new-button (newEmitter)="novoEditar($event)" complemento="Sprint">
+    </app-new-button>
+
+  </mat-card-title>
+  <mat-card class="card-tabela">
     <mat-card-content>
-      <pje-data-table [totalRegistros]="1" [value]="sprints"
-        [tamanhos]="[10, 20, 50, 75, 100]" listrado="true" linhaDivisoraPaginador="true"
-        tamanhoPadrao="10" mensagemVazio="Nenhum registro encontrado" nameTabela="Parâmetros Gerais"
-        [exibePaginador]="true">
-
+      <pje-data-table
+        [totalRegistros]="1"
+        [value]="sprints"
+        [tamanhos]="[10, 20, 50, 75, 100]"
+        listrado="true"
+        linhaDivisoraPaginador="true"
+        tamanhoPadrao="10"
+        mensagemVazio="Nenhum registro encontrado"
+        nameTabela="Parâmetros Gerais"
+        [exibePaginador]="true"
+      >
         <pje-data-column header="DED" value="ded" [ordenar]="false">
           <ng-template let-sprint="rowData" #body>
             {{ sprint.ded.numero }} - {{ sprint.ded.descricao }}
@@ -33,48 +33,38 @@
 
         <pje-data-column header="Início" value="inicio" [ordenar]="false">
           <ng-template let-sprint="rowData" #body>
-            {{ sprint.dataInicio | date:'dd/MM/yyyy' }}
+            {{ sprint.dataInicio | date: "dd/MM/yyyy" }}
           </ng-template>
         </pje-data-column>
 
         <pje-data-column header="Fim" value="fim" [ordenar]="false">
           <ng-template let-sprint="rowData" #body>
-            {{ sprint.dataFim | date:'dd/MM/yyyy' }}
+            {{ sprint.dataFim | date: "dd/MM/yyyy" }}
           </ng-template>
         </pje-data-column>
 
-        <pje-data-column header="Dias úteis" value="diasUteis" [ordenar]="false">
+        <pje-data-column
+          header="Dias úteis"
+          value="diasUteis"
+          [ordenar]="false"
+        >
           <ng-template let-sprint="rowData" #body>
             {{ sprint.diasUteis }}
           </ng-template>
         </pje-data-column>
 
         <pje-data-column header="" [ordenar]="false">
-          <ng-template let-ded="rowData" #body>
-            <mat-icon
-              style="cursor: pointer; color: saddlebrown"
-              (click)="novoEditar(ded)"
-              matTooltip="Editar"
-              matSuffix
-              class="material-icons md-24"
-              >folder_open</mat-icon
-            >
-            <mat-icon
-              style="cursor: pointer; color: red"
-              (click)="apagar(ded.id)"
-              matTooltip="Apagar"
-              matSuffix
-              class="material-icons md-24"
-              >delete</mat-icon
-            >
+          <ng-template let-sprint="rowData" #body>
+
+            <app-edit-button (editEmitter)="novoEditar($event)" complemento="Sprint" [objeto]="sprint">
+            </app-edit-button>
+
+            <app-delete-button (deleteEmitter)="apagar($event)" complemento="Sprint" [id]="sprint.id">
+            </app-delete-button>
+
           </ng-template>
         </pje-data-column>
-
       </pje-data-table>
-
     </mat-card-content>
   </mat-card>
-</div>
-
-
-
+</mat-card>

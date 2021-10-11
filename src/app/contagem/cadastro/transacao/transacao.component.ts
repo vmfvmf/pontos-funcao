@@ -1,4 +1,4 @@
-import { ContagemItemService } from './../../contagem-item.service';
+import { AbstractContagemItemService } from './../../contagem-item.service';
 import { GrupoComponent } from './grupo/grupo.component';
 import { TransacaoCadastroComponent } from './cadastro/cadastro.component';
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
@@ -7,7 +7,7 @@ import { Contagem } from "../../contagem";
 import { MessageService } from 'pje-componentes';
 import { Transacao } from './transacao';
 import { Grupo } from './grupo/grupo';
-import { ContagemItem, TipoContagemItemEnum } from '../../contagem-item';
+import { AbstractContagemItem, TipoContagemItemEnum } from '../../abstract-contagem-item';
 
 @Component({
   selector: 'app-contagem-cadastro-transacao',
@@ -20,10 +20,10 @@ export class TransacaoComponent implements OnInit {
   transacaos: Transacao[] = [];
   subTotalPf = 0;
   @Output()
-  somaPFTransacaos = new EventEmitter<ContagemItem[]>();
+  somaPFTransacaos = new EventEmitter<AbstractContagemItem[]>();
   constructor(
     public dialog: MatDialog,
-    private transacaoService: ContagemItemService,
+    private transacaoService: AbstractContagemItemService,
     private msgService: MessageService
   ) { }
 
@@ -39,7 +39,8 @@ export class TransacaoComponent implements OnInit {
   }
 
   updateTableData() {
-    this.transacaoService.listar({contagem: this.contagem, tipo: TipoContagemItemEnum.TRANSACAO}).subscribe(response => {
+    const trans = new Transacao(this.contagem);
+    this.transacaoService.listar(trans).subscribe(response => {
       this.transacaos = <Transacao[]>response;
       this.somaPFTransacaos.emit(response);
       console.log('TRANSACAO[]', response);
@@ -49,8 +50,8 @@ export class TransacaoComponent implements OnInit {
     });
   }
 
-  novoEditar(transacao: Transacao) {
-    if (!transacao) transacao = new Transacao({ contagem: this.contagem });
+  novoEditar(transacao?: Transacao) {
+    if (!transacao) transacao = new Transacao(this.contagem);
     const dialogRef = this.dialog.open(TransacaoCadastroComponent, {
       width: '600px',
       data: { transacao: transacao }
@@ -62,7 +63,7 @@ export class TransacaoComponent implements OnInit {
   }
 
   gerenciadorGrupo() {
-    let grupo = new Grupo({ contagem: {id: this.contagem.id} });
+    const grupo = new Grupo(this.contagem);
     this.dialog.open(GrupoComponent, {
       width: '600px',
       data: { grupo: grupo }

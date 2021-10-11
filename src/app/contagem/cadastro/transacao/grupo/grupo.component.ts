@@ -28,7 +28,7 @@ export class GrupoComponent implements OnInit {
   }
 
   updateGrupos(){
-    this.grupoService.listar({ contagem: this.grupo.contagem }).subscribe(response =>{
+    this.grupoService.listar(new Grupo(this.grupo.contagem)).subscribe(response =>{
       this.grupos = response;
     }),error => {
       console.log('Erro ao recuperar grupos', error);

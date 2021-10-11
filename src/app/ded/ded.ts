@@ -1,13 +1,16 @@
 // import { Sprint } from "../sprints/sprint";
 
+import { Sistema } from "../sistema/sistema";
+
 export interface IDed{
   id?: number;
   numero?: number;
   descricao?: string;
+  sistema?: Sistema;
   // sprints?: Sprint[];
 }
 
-export class Ded implements IDed{
+export class Ded {
   id?: number;
   numero?: number;
   descricao?: string;
@@ -17,7 +20,6 @@ export class Ded implements IDed{
     this.id = iDed.id;
     this.numero = iDed.numero;
     this.descricao = iDed.descricao;
-    // this.sprints = iDed.sprints;
   }
   static parse(objeto: Ded): Ded {
     const leilao = Object.assign(new Ded({}), objeto);

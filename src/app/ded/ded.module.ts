@@ -1,21 +1,23 @@
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { ComponentesModule } from 'pje-componentes';
+import { DedCadastroComponent } from './cadastro/cadastro.component';
 import { DedRoutingModule } from './ded-routing.module';
-import { DedCadastroModule } from './cadastro/cadastro.module';
 import { DedService } from './ded.service';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DedTabelaModule } from './tabela/tabela.module';
+import { DedTabelaComponent } from './tabela/tabela.component';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
   imports: [
-    CommonModule,
-    DedTabelaModule,
-    DedCadastroModule,
-    DedRoutingModule
+    DedRoutingModule,
+    ComponentesModule,
+    FlexLayoutModule,
+    SharedModule
   ],
   providers: [
     DedService
   ],
-  entryComponents: [DedCadastroModule]
+  declarations: [ DedCadastroComponent, DedTabelaComponent ]
 })
 export class DedModule {}

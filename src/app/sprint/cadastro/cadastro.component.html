@@ -1,14 +1,14 @@
-<mat-card>
+
   <mat-card-header>
-    <h1 class="mat-title">Manutenção de Sprint</h1>
+    <h1 class="mat-title">{{sprint.id ? 'Editar' : 'Novo'}} Sprint</h1>
   </mat-card-header>
 
   <mat-card-content>
     <form class="example-form">
       <mat-form-field class="example-full-width">
         <mat-label>DED</mat-label>
-        <mat-select name="DED" [(ngModel)]="sprint.ded">
-          <mat-option *ngFor="let ded of deds" [value]="ded">{{
+        <mat-select name="DED" [(ngModel)]="sprint.ded.id">
+          <mat-option *ngFor="let ded of deds" [value]="ded.id">{{
             ded.numero + " - " + ded.descricao
           }}</mat-option>
         </mat-select>
@@ -70,4 +70,3 @@
     </button>
     <button mat-button (click)="dialogRef.close(null)">Cancelar</button>
   </mat-card-actions>
-</mat-card>

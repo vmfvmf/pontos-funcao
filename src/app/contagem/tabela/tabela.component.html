@@ -1,14 +1,10 @@
-<mat-card>
-  <mat-card-title>Gerenciamento de Contagens </mat-card-title>
-  <mat-icon
-    style="cursor: pointer; color: mediumaquamarine"
-    routerLink='editar'
-    matTooltip="Novo"
-    matSuffix
-    class="material-icons md-24"
-    >create_new_folder</mat-icon
-  >
-</mat-card>
+<mat-card style="min-width: 800px">
+  <mat-card-title fxLayoutAlign="space-between center">Gerenciamento de Contagens
+
+    <app-new-button routerLink='nova' complemento="Contagem">
+    </app-new-button>
+
+  </mat-card-title>
 
 <div class="conteudo">
   <!-- ------------------------ TABELA ------------------------------>
@@ -39,7 +35,7 @@
 
         <pje-data-column header="Sistema" value="sistema" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>
-            {{ contagem.sistema.nome }}
+            {{ contagem.sistema?.nome }}
           </ng-template>
         </pje-data-column>
 
@@ -63,22 +59,13 @@
 
         <pje-data-column header="" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>
-            <mat-icon
-              style="cursor: pointer; color: saddlebrown"
-              routerLink="editar/{{contagem.id}}"
-              matTooltip="Editar"
-              matSuffix
-              class="material-icons md-24"
-              >folder_open</mat-icon
-            >
-            <mat-icon
-              style="cursor: pointer; color: red"
-              (click)="apagar(contagem.id)"
-              matTooltip="Apagar"
-              matSuffix
-              class="material-icons md-24"
-              >delete</mat-icon
-            >
+
+            <app-edit-button [routerLink]='"editar/" + contagem.id' complemento="Contagem" [objeto]="contagem">
+            </app-edit-button>
+
+            <app-delete-button (deleteEmitter)="apagar($event)" complemento="Contagem" [id]="contagem.id">
+            </app-delete-button>
+
           </ng-template>
         </pje-data-column>
 
@@ -87,4 +74,5 @@
     </mat-card-content>
   </mat-card>
 </div>
+</mat-card>
 

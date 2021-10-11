@@ -1,23 +1,26 @@
+import { SharedModule } from './../shared/shared.module';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { PJeBaseMaterialModule, ComponentesModule } from 'pje-componentes';
+import { SprintCadastroComponent } from './cadastro/cadastro.component';
+import { SprintTabelaComponent } from './tabela/tabela.component';
 import { DedService } from './../ded/ded.service';
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SprintService } from './sprints.service';
 import { SprintRoutingModule } from './sprint-routing.module';
-import { SprintCadastroModule } from './cadastro/cadastro.module';
-import { SprintTabelaModule } from './tabela/tabela.module';
 
 
 @NgModule({
   imports: [
-    CommonModule,
-    SprintCadastroModule,
-    SprintTabelaModule,
-    SprintRoutingModule
+    ComponentesModule,
+    FlexLayoutModule,
+    SprintRoutingModule,
+    SharedModule
   ],
   providers: [
     SprintService, DedService
   ],
-  entryComponents: [SprintCadastroModule]
+  declarations: [SprintTabelaComponent, SprintCadastroComponent]
 })
 export class SprintModule {}

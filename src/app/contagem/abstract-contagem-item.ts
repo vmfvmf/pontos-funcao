@@ -7,12 +7,10 @@ export enum TipoContagemItemEnum{
   TRANSACAO = "TRANSACAO"
 }
 
-export enum SubtipoItemContagemEnum{
+export enum FuncaoTransacaoEnum{
   EE = "EE",
   SE = "SE",
-  CE = "CE",
-  AIE = "AIE",
-  ALI = "ALI"
+  CE = "CE"
 }
 
 export enum ComplexidadeEnum{
@@ -24,44 +22,24 @@ export enum ComplexidadeEnum{
 export const FuncoesArquivoREFERENCIADO: string[] = ["AIE", "ALI"];
 export const FuncoesTransacao: string[] = ["EE", "SE", "CE"];
 
-export interface IContagemItem {
-  id?: number;
-  contagem?: Contagem;
-  nome?: String;
-  tipo?: TipoContagemItemEnum;
-  td?: number;
-  tr?: number;
-  complexidade?: String;
-  pf?: number;
-  contado?: boolean;
-  subtipo?: SubtipoItemContagemEnum;
-}
 
-export class ContagemItem {
-  id?: number;
-  contagem?: Contagem;
-  nome?: String;
-  td?: number;
-  tr?: number;
-  complexidade?: String;
-  pf?: number;
-  contado?: boolean;
-  subtipo?: SubtipoItemContagemEnum;
-  tipo?: TipoContagemItemEnum;
+export abstract class AbstractContagemItem {
+  id: number;
+  contagem: Contagem;
+  nome: String;
+  tipo: String;
+  td: number;
+  tr: number;
+  complexidade: ComplexidadeEnum;
+  pf: number;
+  contado: boolean;
 
-  constructor(i: IContagemItem){
-    this.id = i.id;
-    this.contagem = i.contagem;
-    this.nome = i.nome;
-    this.td = i.td ? i.td : 0;
-    this.tr = i.tr ? i.tr : 0;
-    this.pf = i.pf ? i.pf : 0;
-    this.complexidade = i.complexidade;
-    this.contado = i.contado;
-    this.subtipo = i.subtipo;
-    this.tipo = i.tipo;
+  constructor(){
+    this.contagem = new Contagem()
+    this.contado = false;
   }
-  public static toHttpParams(iContagem: IContagemItem): HttpParams {
+
+  public static toHttpParams(iContagem: AbstractContagemItem): HttpParams {
     let httpParams = new HttpParams();
 
       if (iContagem.id !== undefined) {
@@ -72,6 +50,9 @@ export class ContagemItem {
       }
       if (iContagem.nome !== undefined) {
         httpParams = httpParams.set('nome', iContagem.nome.toString());
+      }
+      if (iContagem.tipo !== undefined) {
+        httpParams = httpParams.set('tipo', iContagem.tipo.toString());
       }
       if (iContagem.td !== undefined) {
         httpParams = httpParams.set('td', iContagem.td.toString());
@@ -84,12 +65,6 @@ export class ContagemItem {
       }
       if (iContagem.complexidade !== undefined) {
         httpParams = httpParams.set('complexidade', iContagem.complexidade.toString());
-      }
-      if (iContagem.tipo !== undefined) {
-        httpParams = httpParams.set('tipo', iContagem.tipo.toString());
-      }
-      if (iContagem.subtipo !== undefined) {
-        httpParams = httpParams.set('subtipo', iContagem.subtipo.toString());
       }
       return httpParams;
     }

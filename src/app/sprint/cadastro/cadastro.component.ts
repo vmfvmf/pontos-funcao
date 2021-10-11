@@ -32,7 +32,7 @@ export class SprintCadastroComponent implements OnInit {
         this.deds = response;
       },
       (error) => {
-        this.msgService.error("Ocorreu um erro ao salvar!");
+        this.msgService.error("Ocorreu um erro ao carregar deds!");
         console.log(error);
       }
     );

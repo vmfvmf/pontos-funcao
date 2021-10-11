@@ -4,24 +4,24 @@ import { Trt15MenuItem } from "trt15-base-app";
 export class MenuSistema {
   static MENU: Trt15MenuItem[] = [
     {
-      nome: "Gerenciador de DEDs",
-      url: "/ded",
-      urlHref: null,
-      perfilAcesso: [PerfisSistema.ADMINISTRADOR],
-      itemMenuLateral: { icone: "fas fa-cog" },
-      itens: null,
-    },
-    {
         nome: "Gerenciador de Sistemas",
-        url: "/sistema",
+        url: "/sistemas",
         urlHref: null,
         perfilAcesso: [PerfisSistema.ADMINISTRADOR],
         itemMenuLateral: { icone: "fas fa-desktop" },
         itens: null,
       },
+      {
+        nome: "Gerenciador de DEDs",
+        url: "/deds",
+        urlHref: null,
+        perfilAcesso: [PerfisSistema.ADMINISTRADOR],
+        itemMenuLateral: { icone: "fas fa-cog" },
+        itens: null,
+      },
     {
       nome: "Gerenciador de Sprints",
-      url: "/sprint",
+      url: "/sprints",
       urlHref: null,
       perfilAcesso: [PerfisSistema.ADMINISTRADOR],
       itemMenuLateral: { icone: "far fa-calendar-alt" },
@@ -29,7 +29,7 @@ export class MenuSistema {
     },
     {
       nome: "Gerenciador de Contagens",
-      url: "/contagem",
+      url: "/contagens",
       urlHref: null,
       perfilAcesso: [PerfisSistema.ADMINISTRADOR],
       itemMenuLateral: { icone: "fas fa-list-ol" },

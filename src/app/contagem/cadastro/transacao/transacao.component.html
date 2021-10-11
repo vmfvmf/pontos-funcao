@@ -1,106 +1,86 @@
 <mat-card>
-  <mat-card-title>
-  Transações
-  <mat-icon
-    style="cursor: pointer; color: deeppink"
-    matTooltip="Ajuda"
-    matSuffix
-    class="material-icons md-24"
-    >help</mat-icon
-  >
-  <mat-icon
-    style="cursor: pointer; color: mediumaquamarine"
-    (click)="novoEditar(null)"
-    matTooltip="Novo"
-    matSuffix
-    class="material-icons md-24"
-    >create_new_folder</mat-icon
-  >
-  <mat-icon
-    style="cursor: pointer; color: blueviolet"
-    (click)="gerenciadorGrupo()"
-    matTooltip="Gerenciador de grupos"
-    matSuffix
-    class="material-icons md-24"
-    >group_work</mat-icon
-  >
-</mat-card-title>
-</mat-card>
+  <mat-card-title fxLayoutAlign="space-between center">
+    <span>Transações</span>
+    <div>
+      <mat-icon
+        style="cursor: pointer; color: blueviolet"
+        (click)="gerenciadorGrupo()"
+        matTooltip="Gerenciador de grupos"
+        matSuffix
+        class="material-icons md-24"
+        >group_work</mat-icon
+      >
+      <app-new-button (newEmitter)="novoEditar()" complemento="Contagem">
+      </app-new-button>
+    </div>
+  </mat-card-title>
 
-<div class="conteudo">
-  <!-- ------------------------ TABELA ------------------------------>
   <mat-card class="card-tabela" style="min-width: 800px">
-    <mat-card-content>
-      <pje-data-table [totalRegistros]="1" [value]="transacaos"
-        listrado="true"
-         mensagemVazio="Nenhum registro encontrado" nameTabela="Transações"
-        [exibePaginador]="false">
+    <pje-data-table
+      [totalRegistros]="1"
+      [value]="transacaos"
+      listrado="true"
+      mensagemVazio="Nenhum registro encontrado"
+      nameTabela="Transações"
+      [exibePaginador]="false"
+    >
+      <pje-data-column header="Grupo" value="nome" [ordenar]="false">
+        <ng-template let-transacao="rowData" #body>
+          {{ transacao.grupo?.nome }}
+        </ng-template>
+      </pje-data-column>
 
-        <pje-data-column header="Grupo" value="nome" [ordenar]="false">
-          <ng-template let-transacao="rowData" #body>
-            {{ transacao.grupo.nome }}
-          </ng-template>
-        </pje-data-column>
+      <pje-data-column header="Nome" value="nome" [ordenar]="false">
+        <ng-template let-transacao="rowData" #body>
+          {{ transacao.nome }}
+        </ng-template>
+      </pje-data-column>
 
-        <pje-data-column header="Nome" value="nome" [ordenar]="false">
-          <ng-template let-transacao="rowData" #body>
-            {{ transacao.nome }}
-          </ng-template>
-        </pje-data-column>
+      <pje-data-column header="Tipo" value="tipo" [ordenar]="false">
+        <ng-template let-transacao="rowData" #body>
+          {{ transacao.subtipo }}
+        </ng-template>
+      </pje-data-column>
 
-        <pje-data-column header="Tipo" value="tipo" [ordenar]="false">
-          <ng-template let-transacao="rowData" #body>
-            {{ transacao.subtipo }}
-          </ng-template>
-        </pje-data-column>
+      <pje-data-column header="TD" value="td" [ordenar]="false">
+        <ng-template let-transacao="rowData" #body>
+          {{ transacao.td }}
+        </ng-template>
+      </pje-data-column>
 
-        <pje-data-column header="TD" value="td" [ordenar]="false">
-          <ng-template let-transacao="rowData" #body>
-            {{ transacao.td }}
-          </ng-template>
-        </pje-data-column>
+      <pje-data-column header="TR" value="tr" [ordenar]="false">
+        <ng-template let-transacao="rowData" #body>
+          {{ transacao.tr }}
+        </ng-template>
+      </pje-data-column>
 
-        <pje-data-column header="TR" value="tr" [ordenar]="false">
-          <ng-template let-transacao="rowData" #body>
-            {{ transacao.tr }}
-          </ng-template>
-        </pje-data-column>
+      <pje-data-column
+        header="Complexidade"
+        value="complexidade"
+        [ordenar]="false"
+      >
+        <ng-template let-transacao="rowData" #body>
+          {{ transacao.complexidade }}
+        </ng-template>
+      </pje-data-column>
 
-        <pje-data-column header="Complexidade" value="complexidade" [ordenar]="false">
-          <ng-template let-transacao="rowData" #body>
-            {{ transacao.complexidade }}
-          </ng-template>
-        </pje-data-column>
+      <pje-data-column header="PF" value="pf" [ordenar]="false">
+        <ng-template let-transacao="rowData" #body>
+          {{ transacao.pf }}
+        </ng-template>
+      </pje-data-column>
 
-        <pje-data-column header="PF" value="pf" [ordenar]="false">
-          <ng-template let-transacao="rowData" #body>
-            {{ transacao.pf }}
-          </ng-template>
-        </pje-data-column>
+      <pje-data-column header="" [ordenar]="false">
+        <ng-template let-transacao="rowData" #body>
 
-        <pje-data-column header="" [ordenar]="false">
-          <ng-template let-transacao="rowData" #body>
-            <mat-icon
-              style="cursor: pointer; color: saddlebrown"
-              (click)="novoEditar(transacao)"
-              matTooltip="Editar"
-              matSuffix
-              class="material-icons md-24"
-              >folder_open</mat-icon
-            >
-            <mat-icon
-              style="cursor: pointer; color: red"
-              (click)="apagar(transacao.id)"
-              matTooltip="Apagar"
-              matSuffix
-              class="material-icons md-24"
-              >delete</mat-icon
-            >
-          </ng-template>
-        </pje-data-column>
+          <app-edit-button (editEmitter)="novoEditar($event)" complemento="Transação" [objeto]="transacao">
+          </app-edit-button>
 
-      </pje-data-table>
-    </mat-card-content>
+          <app-delete-button (deleteEmitter)="apagar($event)" complemento="Transação" [id]="transacao.id">
+          </app-delete-button>
+
+        </ng-template>
+      </pje-data-column>
+    </pje-data-table>
   </mat-card>
-</div>
-
+</mat-card>

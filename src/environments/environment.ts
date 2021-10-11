@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  api: 'http://vmfvmf.com:8080',
+  api: 'http://127.0.0.1:8080',
   assetsPath: '../assets/',
   endpoints: {
     apiTrt15: 'http://localhost:8080/pontos-funcao-frontend-comum-api/api',

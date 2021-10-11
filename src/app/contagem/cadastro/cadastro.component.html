@@ -1,17 +1,14 @@
-
-
-
 <app-contagem-cadastro-basico *ngIf="contagem" [contagem]="contagem">
 
 </app-contagem-cadastro-basico>
 
-<app-contagem-cadastro-arquivo-referenciado *ngIf="contagem && contagem.id"
+<app-contagem-cadastro-arquivo-referenciado *ngIf="contagem?.id"
 (somaPFArquivosReferenciados)="atualizaContagemArquivosReferenciados($event)"
  [contagem]="contagem" >
 
 </app-contagem-cadastro-arquivo-referenciado>
 
-<app-contagem-cadastro-transacao *ngIf="contagem && contagem.id"
+<app-contagem-cadastro-transacao *ngIf="contagem?.id"
 (somaPFTransacaos)="atualizaContagemTransacaos($event)"
 [contagem]="contagem">
 </app-contagem-cadastro-transacao>

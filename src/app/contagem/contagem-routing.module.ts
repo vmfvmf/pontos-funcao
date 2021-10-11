@@ -15,7 +15,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'editar',
+    path: 'nova',
     component: ContagemCadastroComponent,
     data: {
       perfisAcesso: [PerfisSistema.ADMINISTRADOR]

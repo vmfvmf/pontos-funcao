@@ -1,18 +1,14 @@
-import { ContagemItemService } from "./../../../contagem-item.service";
+import { AbstractContagemItemService } from "./../../../contagem-item.service";
 
-import { ArquivoReferenciado } from "../arquivo-referenciado";
+import { ArquivoReferenciado, FuncaoArquivoReferenciadoEnum } from "../arquivo-referenciado";
 import { Component, Inject, OnInit } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { Coluna, Tabela } from "../tabela";
-import { TabelaService } from "../tabela.service";
 import { MessageService } from "pje-componentes";
-import { ColunaService } from "../coluna.service";
 import {
   FuncoesArquivoREFERENCIADO,
-  ComplexidadeEnum,
-  SubtipoItemContagemEnum,
-  ContagemItem,
-} from "../../../contagem-item";
+  ComplexidadeEnum
+} from "../../../abstract-contagem-item";
 
 @Component({
   selector: "app-contagem-cadastro-arquivo-referenciado-cadastro",
@@ -20,21 +16,19 @@ import {
   styleUrls: ["./cadastro.component.scss"],
 })
 export class ArquivoReferenciadoCadastroComponent implements OnInit {
-  arquivoReferenciado: ArquivoReferenciado = new ArquivoReferenciado({});
-  subtipos: string[] = FuncoesArquivoREFERENCIADO;
-  novaTabela: Tabela = new Tabela({});
+  arquivoReferenciado: ArquivoReferenciado = new ArquivoReferenciado();
+  funcoes: string[] = FuncoesArquivoREFERENCIADO;
+  novaTabela: Tabela = new Tabela();
   novaColuna: Coluna = new Coluna({});
   tabelasExcluir: Tabela[] = [];
   colunasExcluir: Coluna[] = [];
-  selectedTabelaIndex: number;
+  selectedTabelaIndex: number = 0;
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: { arquivoReferenciado: ArquivoReferenciado },
     public dialogRef: MatDialogRef<ArquivoReferenciadoCadastroComponent>,
-    private tabelaService: TabelaService,
     private msgService: MessageService,
-    private colunaService: ColunaService,
-    private contagemItemService: ContagemItemService
+    private abstractContagemItemService: AbstractContagemItemService
   ) {
     this.arquivoReferenciado = data.arquivoReferenciado;
   }
@@ -46,16 +40,28 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
   incluirTabela() {
     if (
       !this.arquivoReferenciado.nome ||
-      this.arquivoReferenciado.nome.length < 1 ||
-      !this.arquivoReferenciado.subtipo ||
-      this.arquivoReferenciado.subtipo.length < -1
+      !this.arquivoReferenciado.funcao ||
+      !this.novaTabela.nome
     ) {
       this.msgService.error(
-        "Preencha o nome e o subtipo antes de adicionar tabelas."
+        "Preencha o nome, subtipo e tabela antes de adicionar tabela."
       );
       return;
     }
-    this.arquivoReferenciado.tabelas.push({ nome: this.novaTabela.nome, colunas: [] });
+    if (
+      this.arquivoReferenciado.tabelas
+        .map((t) => t.nome)
+        .includes(this.novaTabela.nome)
+    ) {
+      this.msgService.error("Já  existe uma tabela com este nome");
+      this.selectedTabelaIndex = this.arquivoReferenciado.tabelas.findIndex(
+        (t) => t.nome === this.novaTabela.nome
+      );
+      this.novaTabela.nome = "";
+      return;
+    }
+    const newTable = new Tabela(this.novaTabela.nome);
+    this.arquivoReferenciado.tabelas.push(newTable);
     this.selectedTabelaIndex = this.arquivoReferenciado.tabelas.length;
     this.novaTabela.nome = "";
   }
@@ -64,35 +70,38 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
     if (
       this.novaColuna.nome.length > 0 &&
       this.arquivoReferenciado.tabelas[
-        this.getSelectedTabelaIndex()
+        this.selectedTabelaIndex
       ].colunas.findIndex((c) => c.nome == this.novaColuna.nome) == -1
     ) {
-      this.arquivoReferenciado.tabelas[this.getSelectedTabelaIndex()].colunas.push({
+      this.arquivoReferenciado.tabelas[
+        this.selectedTabelaIndex
+      ].colunas.push({
         nome: this.novaColuna.nome,
       });
       this.novaColuna.nome = "";
     }
   }
 
-  getSelectedTabelaIndex() {
-    return this.selectedTabelaIndex ? this.selectedTabelaIndex : 0;
-  }
-
   salvar() {
-    this.tabelasExcluir.forEach(t => this.tabelaService.apagar(t.id).subscribe(response => {
-      console.log("Tabela apagada", t);
-    }, error => {
-      console.log("Erro apagar tabela", error);
-    }));
-    this.colunasExcluir.forEach(c => this.colunaService.apagar(c.id).subscribe(response => {
-      console.log("Coluna apagada", c);
-    }, error => {
-      console.log("Erro apagar coluna", error);
-    }));
+    // forkJoin(this.tabelasExcluir.map(t => this.tabelaService.apagar(t.id)))
+    // .subscribe( result => {
+    //   if (result) {
+    //     console.log("tabelas apagadas", result);
+    //   }
+    // });
+
+    // forkJoin(this.colunasExcluir.map(c => this.colunaService.apagar(c.id)))
+    // .subscribe( result => {
+    //   if (result) {
+    //     console.log("colunas apagadas", result);
+    //   }
+    // });
+
     this.atualizaContagem();
-    this.contagemItemService.salvar(this.arquivoReferenciado).subscribe(
+
+    this.abstractContagemItemService.salvar(this.arquivoReferenciado).subscribe(
       (response) => {
-        this.arquivoReferenciado = response;
+        this.arquivoReferenciado = response as ArquivoReferenciado;
         this.msgService.success("Registro salvo com sucesso.");
         console.log("Response novo objeto ContagemItem", response);
       },
@@ -104,18 +113,24 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
   }
 
   apagarTabela(tabela: Tabela) {
-    const index = this.arquivoReferenciado.tabelas.findIndex(t => t.nome =tabela.nome);
+    const index = this.arquivoReferenciado.tabelas.findIndex(
+      (t) => (t.nome === tabela.nome)
+    );
     if (index > -1) {
-      if(tabela.id) this.tabelasExcluir.push(tabela);
+      if (tabela.id) this.tabelasExcluir.push(tabela);
       this.arquivoReferenciado.tabelas.splice(index, 1);
     }
   }
 
   apagarColuna(coluna: Coluna) {
-    const index = this.arquivoReferenciado.tabelas[this.getSelectedTabelaIndex()].colunas.findIndex(c => c.nome = coluna.nome);
+    const index = this.arquivoReferenciado.tabelas[
+      this.selectedTabelaIndex
+    ].colunas.findIndex((c) => (c.nome === coluna.nome));
     if (index > -1) {
-      if(coluna.id) this.colunasExcluir.push(coluna);
-      this.arquivoReferenciado.tabelas[this.getSelectedTabelaIndex()].colunas.splice(index, 1);
+      if (coluna.id) this.colunasExcluir.push(coluna);
+      this.arquivoReferenciado.tabelas[
+        this.selectedTabelaIndex
+      ].colunas.splice(index, 1);
     }
   }
 
@@ -130,7 +145,6 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
     this.arquivoReferenciado.td = i;
     this.analisarComplexidade();
     this.calcularPF();
-
   }
 
   private analisarComplexidade() {
@@ -152,8 +166,8 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
   }
 
   private calcularPF() {
-    switch (this.arquivoReferenciado.subtipo) {
-      case SubtipoItemContagemEnum.ALI:
+    switch (this.arquivoReferenciado.funcao) {
+      case FuncaoArquivoReferenciadoEnum.ALI:
         switch (this.arquivoReferenciado.complexidade) {
           case ComplexidadeEnum.BAIXA:
             this.arquivoReferenciado.pf = 7;
@@ -166,7 +180,7 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
             break;
         }
         break;
-      case SubtipoItemContagemEnum.AIE:
+      case FuncaoArquivoReferenciadoEnum.AIE:
         switch (this.arquivoReferenciado.complexidade) {
           case ComplexidadeEnum.BAIXA:
             this.arquivoReferenciado.pf = 5;

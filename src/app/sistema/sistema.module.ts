@@ -1,21 +1,23 @@
+import { SharedModule } from './../shared/shared.module';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { ComponentesModule } from 'pje-componentes';
+import { SistemaTabelaComponent } from './tabela/tabela.component';
+import { SistemaCadastroComponent } from './cadastro/cadastro.component';
 import { SistemaService } from './sistema.service';
-import { SistemaTabelaModule } from './tabela/tabela.module';
-import { SistemaCadastroModule } from './cadastro/cadastro.module';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SistemaRoutingModule } from './sistema-routing.module';
 
 
 @NgModule({
   imports: [
-    CommonModule,
-    SistemaCadastroModule,
-    SistemaTabelaModule,
-    SistemaRoutingModule
+    ComponentesModule,
+    SistemaRoutingModule,
+    FlexLayoutModule,
+    SharedModule
   ],
   providers: [
     SistemaService
   ],
-  entryComponents: [SistemaCadastroModule]
+  declarations: [ SistemaCadastroComponent, SistemaTabelaComponent ]
 })
 export class SistemaModule {}

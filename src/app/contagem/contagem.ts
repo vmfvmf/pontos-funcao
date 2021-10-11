@@ -4,27 +4,8 @@ import { Sprint } from "../sprint/sprint";
 import { ArquivoReferenciado } from "./cadastro/arquivo-referenciado/arquivo-referenciado";
 import { Grupo } from "./cadastro/transacao/grupo/grupo";
 import { Transacao } from "./cadastro/transacao/transacao";
+import { ContagemEscopoEnum } from "./contagem-escopo.enum";
 
-
-export enum EscopoContagemEnum{
-  SISTEMA = "SISTEMA",
-  PROJETO = "PROJETO",
-  SPRINT = "SPRINT"
-}
-
-export class IContagem {
-  id?: number;
-  ded?: Ded;
-  sistema?: Sistema;
-  sprint?: Sprint;
-  dataContagem?: Date;
-  contador?: String;
-  escopo?: EscopoContagemEnum;
-  totalPf?: number;
-  transacaos?: Transacao[];
-  arquivoReferenciado?: ArquivoReferenciado[];
-  grupos?: Grupo[];
-}
 
 export class Contagem {
   id?: number;
@@ -33,24 +14,21 @@ export class Contagem {
   ded?: Ded;
   dataContagem?: Date;
   contador?: String;
-  escopo?: EscopoContagemEnum;
+  escopo?: ContagemEscopoEnum;
   totalPf?: number;
   transacaos?: Transacao[];
   arquivoReferenciado?: ArquivoReferenciado[];
   grupos?: Grupo[];
 
-  constructor(i: IContagem){
-    this.id = i.id;
-    this.sistema = i.sistema ? i.sistema : new Sistema({});
-    this.sprint = i.sprint ? i.sprint : new Sprint({});
-    this.ded = i.ded ? i.ded : new Ded({});
-    this.transacaos = i.transacaos ? i.transacaos : [];
-    this.arquivoReferenciado = i.arquivoReferenciado ? i.arquivoReferenciado : [];
-    this.grupos = i.grupos ? i.grupos : [];
-    this.escopo = i.escopo;
-    this.totalPf = i.totalPf ? i.totalPf : 0;
-    this.dataContagem = i.dataContagem;
-    this.contador = i.contador;
+  constructor(){
+    this.sistema = new Sistema({});
+    this.sprint = new Sprint({});
+    this.ded = new Ded({});
+    this.transacaos = [];
+    this.arquivoReferenciado = [];
+    this.grupos = [];
+    this.totalPf =  0;
+    this.dataContagem = new Date();
   }
 
 }

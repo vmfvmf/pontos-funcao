@@ -13,7 +13,7 @@ export class SistemaService {
   constructor(private httpClient: HttpClient) {
   }
 
-  listar(filtro: Sistema): Observable<Sistema[]> {
+  listar(filtro?: Sistema): Observable<Sistema[]> {
     return this.httpClient.get<Sistema[]>(`${SistemaService.URL_API}`, {params: Sistema.toHttpParams(filtro)});
   }
 

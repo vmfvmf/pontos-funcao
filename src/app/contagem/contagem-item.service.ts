@@ -3,34 +3,35 @@ import { Observable, of } from "rxjs";
 import { environment } from "../../environments/environment";
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ContagemItem, IContagemItem } from "./contagem-item";
+import { AbstractContagemItem } from "./abstract-contagem-item";
 
 @Injectable()
-export class ContagemItemService {
+export class AbstractContagemItemService {
 
-  static readonly URL_API = environment.api + '/contagem_item';
+  static readonly URL_API = environment.api + '/itens';
 
   constructor(private httpClient: HttpClient) {
   }
 
-  listar(filtro: IContagemItem): Observable<ContagemItem[]> {
-    return this.httpClient.get<ContagemItem[]>(`${ContagemItemService.URL_API}`,{params: ContagemItem.toHttpParams(filtro)});
+  listar(filtro: AbstractContagemItem): Observable<AbstractContagemItem[]> {
+    const params = {params: AbstractContagemItem.toHttpParams(filtro)};
+    return this.httpClient.get<AbstractContagemItem[]>(`${AbstractContagemItemService.URL_API}`, params);
   }
 
-  salvar(novx: ContagemItem): Observable<ContagemItem> {
-    return this.httpClient.post<ContagemItem>(`${ContagemItemService.URL_API}`, novx);
+  salvar(novx: AbstractContagemItem): Observable<AbstractContagemItem> {
+    return this.httpClient.post<AbstractContagemItem>(`${AbstractContagemItemService.URL_API}`, novx);
   }
 
-  ver(_id: number): Observable<ContagemItem> {
-    return this.httpClient.get<ContagemItem>(`${ContagemItemService.URL_API}/${_id}`);
+  ver(_id: number): Observable<AbstractContagemItem> {
+    return this.httpClient.get<AbstractContagemItem>(`${AbstractContagemItemService.URL_API}/${_id}`);
   }
 
   apagar(_id: number): Observable<any> {
-    return this.httpClient.delete<any>(`${ContagemItemService.URL_API}/${_id}`);
+    return this.httpClient.delete<any>(`${AbstractContagemItemService.URL_API}/${_id}`);
   }
 
   apagarTds(itemId: number){
-    return this.httpClient.delete<any>(`${ContagemItemService.URL_API}/tds/${itemId}`);
+    return this.httpClient.delete<any>(`${AbstractContagemItemService.URL_API}/tds/${itemId}`);
   }
 
 }

@@ -1,0 +1,16 @@
+.spinner-overlay {
+    position: fixed;
+    z-index: 999;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 64px);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.spinner{
+    position:absolute;
+    z-index: 1000;
+    top:50%;
+    left:50%;
+}

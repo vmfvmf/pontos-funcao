@@ -1,40 +1,32 @@
 import { HttpParams } from "@angular/common/http";
-import { ContagemItem } from "../../contagem-item";
-import { ArquivoReferenciado } from "./arquivo-referenciado";
+import { AbstractContagemItem } from "../../abstract-contagem-item";
 
-export interface ITabela{
-  id?: number;
-  nome?: string;
-  colunas?: Coluna[];
-  contagemItem?: ContagemItem;
-  isChecked?: boolean;
-}
 
 export class Tabela {
-  id?: number;
-  nome?: string;
-  colunas?: Coluna[];
-  contagemItem?: ContagemItem;
-  isChecked?: boolean;
+  id: number;
+  nome: string;
+  colunas: Coluna[];
+  isChecked: boolean;
 
-  constructor(t: ITabela){
-    this.id = t.id;
-    this.nome = t.nome;
-    this.colunas = t.colunas ? t.colunas : [];
-    this.contagemItem = t.contagemItem;
+  constructor(nome?: string){
+    this.nome = nome;
+    this.colunas = [];
     this.isChecked = this.isChecked;
   }
-  public static toHttpParams(iTabela: ITabela): HttpParams {
+  public static toHttpParams(iTabela: Tabela): HttpParams {
     let httpParams = new HttpParams();
 
       if (iTabela.id !== undefined) {
         httpParams = httpParams.set('id', iTabela.id.toString());
       }
       if (iTabela.nome !== undefined) {
-        httpParams = httpParams.set('number', iTabela.nome.toString());
+        httpParams = httpParams.set('id', iTabela.nome.toString());
       }
-      if (iTabela.contagemItem !== undefined) {
-        httpParams = httpParams.set('funcaoDados_id', iTabela.contagemItem.id.toString());
+      if (iTabela.colunas !== undefined) {
+        httpParams = httpParams.set('colunas', iTabela.colunas.join(',').toString());
+      }
+      if (iTabela.colunas !== undefined) {
+        httpParams = httpParams.set('colunas', iTabela.colunas.join(',').toString());
       }
       return httpParams;
     }

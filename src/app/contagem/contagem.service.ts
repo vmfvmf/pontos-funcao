@@ -1,9 +1,10 @@
+import { ContagemEscopoEnum } from './contagem-escopo.enum';
 
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 import { environment } from "../../environments/environment";
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Contagem, EscopoContagemEnum } from "./contagem";
+import { Contagem } from "./contagem";
 
 @Injectable()
 export class ContagemService {
@@ -18,13 +19,13 @@ export class ContagemService {
   }
 
   salvar(novaContagem: Contagem): Observable<Contagem> {
-    if(novaContagem.escopo == EscopoContagemEnum.SISTEMA){
-      novaContagem.ded = undefined;
-      novaContagem.sprint = undefined;
-    }else if(novaContagem.escopo == EscopoContagemEnum.PROJETO) {
-      novaContagem.sprint = undefined;
+    if(novaContagem.escopo == ContagemEscopoEnum.SISTEMA){
+      delete novaContagem.ded;
+      delete novaContagem.sprint;
+    }else if(novaContagem.escopo == ContagemEscopoEnum.PROJETO) {
+      delete novaContagem.sprint;
     } else {
-      novaContagem.ded = undefined;
+      delete novaContagem.ded;
     }
     return this.httpClient.post<Contagem>(`${ContagemService.URL_API}`, novaContagem);
   }
