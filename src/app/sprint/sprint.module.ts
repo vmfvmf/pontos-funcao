@@ -1,25 +1,28 @@
-import { SharedModule } from './../shared/shared.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { PJeBaseMaterialModule, ComponentesModule } from 'pje-componentes';
+import { CommonModule } from '@angular/common';
+import { AngularMaterialModule } from './../material.module';
+import { SharedModule } from './../shared/shared.module';
 import { SprintCadastroComponent } from './cadastro/cadastro.component';
 import { SprintTabelaComponent } from './tabela/tabela.component';
-import { DedService } from './../ded/ded.service';
+import { ProjetoService } from '../projeto/projeto.service';
 
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SprintService } from './sprints.service';
 import { SprintRoutingModule } from './sprint-routing.module';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
   imports: [
-    ComponentesModule,
+    AngularMaterialModule,
+    CommonModule,
     FlexLayoutModule,
-    SprintRoutingModule,
-    SharedModule
+    FormsModule,
+    SharedModule,
+    SprintRoutingModule
   ],
   providers: [
-    SprintService, DedService
+    SprintService, ProjetoService
   ],
   declarations: [SprintTabelaComponent, SprintCadastroComponent]
 })

@@ -1,8 +1,8 @@
 import { Sistema } from '../sistema';
 import { Component, Inject, OnInit } from '@angular/core';
 import { SistemaService } from '../sistema.service';
-import { MessageService } from 'pje-componentes';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MessageService } from '../../shared/Service/message.service';
 
 @Component({
   selector: 'app-sistemas-cadastro',
@@ -10,7 +10,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./cadastro.component.scss']
 })
 export class SistemaCadastroComponent implements OnInit {
-  sistema: Sistema = new Sistema({});
+  sistema: Sistema = new Sistema();
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {sistema: Sistema},
@@ -18,7 +18,7 @@ export class SistemaCadastroComponent implements OnInit {
     private sService: SistemaService,
     private mService: MessageService
     ) {
-      this.sistema = data.sistema ? data.sistema : new Sistema({});
+      this.sistema = data.sistema || new Sistema();
     }
 
   ngOnInit(): void {

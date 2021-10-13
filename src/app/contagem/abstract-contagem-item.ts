@@ -27,15 +27,14 @@ export abstract class AbstractContagemItem {
   id: number;
   contagem: Contagem;
   nome: String;
-  tipo: String;
   td: number;
   tr: number;
   complexidade: ComplexidadeEnum;
   pf: number;
   contado: boolean;
 
-  constructor(){
-    this.contagem = new Contagem()
+  constructor(contagem?: Contagem){
+    this.contagem = contagem? contagem : new Contagem()
     this.contado = false;
   }
 
@@ -50,9 +49,6 @@ export abstract class AbstractContagemItem {
       }
       if (iContagem.nome !== undefined) {
         httpParams = httpParams.set('nome', iContagem.nome.toString());
-      }
-      if (iContagem.tipo !== undefined) {
-        httpParams = httpParams.set('tipo', iContagem.tipo.toString());
       }
       if (iContagem.td !== undefined) {
         httpParams = httpParams.set('td', iContagem.td.toString());

@@ -1,9 +1,9 @@
 import { SistemaCadastroComponent } from '../cadastro/cadastro.component';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MessageService } from 'pje-componentes';
 import { Sistema } from '../sistema';
 import { SistemaService } from '../sistema.service';
+import { MessageService } from '../../shared/Service/message.service';
 
 @Component({
   selector: 'app-sistema-tabela',
@@ -24,7 +24,7 @@ export class SistemaTabelaComponent implements OnInit {
     this.updateResultados();
   }
   updateResultados() {
-    this.sService.listar({}).subscribe(sistemas => { this.sistemas = sistemas });
+    this.sService.listar().subscribe(sistemas => { this.sistemas = sistemas });
   }
 
   novoEditar(sistema: Sistema){

@@ -6,10 +6,10 @@
   <mat-card-content>
     <form class="example-form">
       <mat-form-field class="example-full-width">
-        <mat-label>DED</mat-label>
-        <mat-select name="DED" [(ngModel)]="sprint.ded.id">
-          <mat-option *ngFor="let ded of deds" [value]="ded.id">{{
-            ded.numero + " - " + ded.descricao
+        <mat-label>Projeto</mat-label>
+        <mat-select name="Projeto" [(ngModel)]="sprint.projeto.id">
+          <mat-option *ngFor="let projeto of projetos" [value]="projeto.id">{{
+            projeto.identificador + " - " + projeto.descricao
           }}</mat-option>
         </mat-select>
       </mat-form-field>

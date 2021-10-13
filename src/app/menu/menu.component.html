@@ -1,0 +1,14 @@
+<mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
+  <span>Contagem de Pontos de Função</span>
+  <span fxLayoutGap="20px">
+    <i
+      *ngFor="let m of menu"
+      style="cursor: pointer"
+      [routerLink]="m.url"
+      [class]="m.itemMenuLateral.icone"
+      aria-hidden="false"
+      [aria-label]="m.nome"
+      [matTooltip]="m.nome"
+    ></i>
+  </span>
+</mat-toolbar>

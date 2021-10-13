@@ -8,7 +8,7 @@ import { Grupo } from "./grupo";
 @Injectable()
 export class GrupoService {
 
-  static readonly URL_API = environment.api + '/grupoTransacao';
+  static readonly URL_API = environment.api + '/grupos';
 
   constructor(private httpClient: HttpClient) {
   }

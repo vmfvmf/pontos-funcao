@@ -9,7 +9,7 @@
   </mat-card-title>
   <mat-card class="card-tabela">
     <mat-card-content>
-      <pje-data-table
+      <vmf-data-table
         [totalRegistros]="1"
         [value]="sistemas"
         [tamanhos]="[10, 20, 50, 75, 100]"
@@ -20,19 +20,19 @@
         nameTabela="Sistemas"
         [exibePaginador]="true"
       >
-        <pje-data-column header="Nome" value="nome" [ordenar]="false">
+        <vmf-data-column header="Nome" value="nome" [ordenar]="false">
           <ng-template let-sistema="rowData" #body>
             {{ sistema.nome }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="Versão" value="versao" [ordenar]="false">
+        <vmf-data-column header="Versão" value="versao" [ordenar]="false">
           <ng-template let-sistema="rowData" #body>
             {{ sistema.versao }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="" [ordenar]="false">
+        <vmf-data-column header="" [ordenar]="false">
           <ng-template let-sistema="rowData" #body>
 
             <app-edit-button (editEmitter)="novoEditar($event)" complemento="Sistema" [objeto]="sistema">
@@ -42,8 +42,8 @@
             </app-delete-button>
 
           </ng-template>
-        </pje-data-column>
-      </pje-data-table>
+        </vmf-data-column>
+      </vmf-data-table>
     </mat-card-content>
   </mat-card>
 </mat-card>

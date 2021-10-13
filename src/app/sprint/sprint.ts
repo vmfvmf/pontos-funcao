@@ -1,35 +1,19 @@
 import { HttpParams } from '@angular/common/http';
-import { Ded } from '../ded/ded';
-
-export interface ISprint{
-  id?: number;
-  numero?: number;
-  ded?: Ded;
-  dataInicio?: Date;
-  dataFim?: Date;
-  diasUteis?: number;
-  // contagens?: Contagem[];
-}
+import { Projeto } from '../projeto/projeto';
 
 export class Sprint  {
-  id?: number;
-  numero?: number;
-  ded?: Ded;
-  dataInicio?: Date;
-  dataFim?: Date;
-  diasUteis?: number;
-  // contagens?: Contagem[];
+  id: number;
+  numero: number;
+  projeto: Projeto;
+  dataInicio: Date;
+  dataFim: Date;
+  diasUteis: number;
 
-  constructor(i: ISprint){
-    this.id = i.id;
-    this.numero = i.numero;
-    this.ded = i.ded ? i.ded : new Ded({});
-    this.dataInicio = i.dataInicio;
-    this.dataFim = i.dataFim;
-    this.diasUteis = i.diasUteis;
+  constructor(projeto?: Projeto){
+    this.projeto =  projeto ? projeto : new Projeto();
   }
 
-  public static toHttpParams(s: ISprint): HttpParams {
+  public static toHttpParams(s: Sprint): HttpParams {
     let httpParams = new HttpParams();
     //let httpParams = this.paginacao.toHttpParams();
 
@@ -39,8 +23,8 @@ export class Sprint  {
       if (s.id !== undefined) {
         httpParams = httpParams.set('id', s.id.toString());
       }
-      if (s.ded !== undefined && s.ded.id !== undefined) {
-        httpParams = httpParams.set('ded.id', s.ded.id.toString());
+      if (s.projeto !== undefined && s.projeto.id !== undefined) {
+        httpParams = httpParams.set('projeto.id', s.projeto.id.toString());
       }
       return httpParams;
     }

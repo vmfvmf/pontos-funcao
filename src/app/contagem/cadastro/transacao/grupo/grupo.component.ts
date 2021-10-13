@@ -3,8 +3,7 @@ import { GrupoService } from './grupo.service';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Grupo } from './grupo';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MessageService } from 'pje-componentes';
-import { Contagem } from '../../../../contagem/contagem';
+import { MessageService } from '../../../../shared/Service/message.service';
 
 @Component({
   selector: 'app-contagens-grupo-transacao',
@@ -13,7 +12,7 @@ import { Contagem } from '../../../../contagem/contagem';
 })
 export class GrupoComponent implements OnInit {
   novoEditar = "Novo";
-  grupo: Grupo = new Grupo({});
+  grupo: Grupo = new Grupo();
   grupos: Grupo[] = [];
   constructor(
     private grupoService: GrupoService,
@@ -46,7 +45,7 @@ export class GrupoComponent implements OnInit {
 
   editarGrupo(grupo: Grupo){
     grupo.contagem = this.grupo.contagem;
-    this.grupo = new Grupo(grupo);
+    this.grupo = grupo;
     this.novoEditar = "Editar";
   }
 

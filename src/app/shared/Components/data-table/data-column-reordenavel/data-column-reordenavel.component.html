@@ -1,0 +1,29 @@
+<ng-template let-row="rowData" #body>
+    <div *ngIf="verificaSePodeReordenar(row)" class="botoes-reordenacao botoes-tamanho-{{botoesTamanho}}"
+            [ngClass]="{'botoes-vertical': botoesNaVertical, 'botoes-horizontal': !botoesNaVertical}">
+
+        <!-- Botão para reordenar acima -->
+        <button [disabled]="!verificaSePodeReordenarParaCima(row)" (click)="cliqueReordenarParaCima(row)"
+                [attr.aria-label]="'Mover para cima' + (verificaSePodeReordenarParaCima(row) ? '' : ' indisponível')"
+                [matTooltip]="'Mover para cima' + (verificaSePodeReordenarParaCima(row) ? '' : ' indisponível')"
+                [ngClass]="{'visivel-hover': !botoesSempreVisiveis}"
+                class="destaque-cor-hover mover-para-cima" #botaoMoverParaCima>
+            <i class="fas fa-sort-up fa-{{botoesTamanho}}" aria-hidden="true"></i>
+        </button>
+
+        <!-- Ícone de "três pontos" (ellipsis), para reordenação arrastando o item -->
+        <i *ngIf="botoesExibirDragDrop" (mousedown)="mousedownDragHandle()"
+            class="fas fa-ellipsis-v fa-{{botoesTamanho}} drag-handle destaque-cor-hover"
+            [ngClass]="{'visivel-hover': !botoesSempreVisiveis}" aria-hidden="true"
+            matTooltip="Clique e arraste para cima ou para baixo para alterar a ordem"></i>
+
+        <!-- Botão para reordenar abaixo -->
+        <button [disabled]="!verificaSePodeReordenarParaBaixo(row)" (click)="cliqueReordenarParaBaixo(row)"
+                [attr.aria-label]="'Mover para baixo' + (verificaSePodeReordenarParaBaixo(row) ? '' : ' indisponível')"
+                [matTooltip]="'Mover para baixo' + (verificaSePodeReordenarParaBaixo(row) ? '' : ' indisponível')"
+                [ngClass]="{'visivel-hover': !botoesSempreVisiveis}"
+                class="destaque-cor-hover mover-para-baixo" #botaoMoverParaBaixo>
+            <i class="fas fa-sort-down fa-{{botoesTamanho}}" aria-hidden="true"></i>
+        </button>
+    </div>
+</ng-template>

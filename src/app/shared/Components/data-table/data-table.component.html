@@ -1,0 +1,75 @@
+<div class="t-container-class">
+  <table class="t-class" [attr.name]="nameTabela"
+    [style.min-width]="larguraMinima">
+    <!-- TABLE HEADER -->
+    <thead>
+      <tr class="tr-th-class">
+        <th scope="col" class="th-class" *ngFor="let column of retornarApenasColunas()" (click)="ordenar(column)"
+          [class.cursor]="column.ordenar" [attr.width]="column.width" [class.centralizado]="column.headerCentral" [attr.colspan]="column.headerColSpan">
+          <div class="th-container-class">
+            <div *ngIf="! column.headerTemplate" class="th-elemento-class" tabindex="0">
+              {{column.header}}
+            </div>
+
+            <div *ngIf="column.headerTemplate" class="th-elemento-class">
+              <ng-template [ngTemplateOutlet]="column.headerTemplate"
+                  [ngTemplateOutletContext]="{header: column.header}">
+              </ng-template>
+            </div>
+
+            <span *ngIf="column.ordenado" [ngClass]="column.ordenado ? '' : 'th-ordenacao-escondido-class'" class="th-elemento-class th-ordenacao-class"
+              [attr.aria-label]="!column.ordenado ? '' : column.ascendente ? 'Ordenação ascendente' : 'Ordenação descedente'">
+              <i class="fa " [ngClass]="column.ascendente ? 'fa-angle-up' : 'fa-angle-down'" aria-hidden="true"></i>
+            </span>
+          </div>
+        </th>
+      </tr>
+      <tr *ngIf="estaCarregando" >
+        <td [attr.colspan]="retornarApenasColunas().length">
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </td>
+      </tr>
+    </thead>
+
+    <!-- TABLE BODY COM REGISTROS -->
+    <tbody *ngIf="temRegistros()" cdkDropList [cdkDropListDisabled]="!temReordenacao" cdkDropListLockAxis="y"
+        (cdkDropListDropped)="colunaReordenavel.dragDropped($event)">
+
+      <!-- COM REGISTROS -->
+      <tr *ngFor="let row of value;let impar=even;let j = index"
+          cdkDrag [cdkDragDisabled]="!temReordenacao || !colunaReordenavel.verificaSePodeReordenar(row) || !estaReordenando"
+          class="tr-class {{getTrClass(row)}}" [ngClass]="{'tr-reordenavel': temReordenacao}" [ngStyle]="{'background-color': definirCorLinha(j, impar)}"
+          (click)="alterarCorDaLinha($event)">
+          <td *ngFor="let column of colunas; let i = index;" [class.centralizado]="column.conteudoCentral"
+              [ngClass]="column.temHeaderColSpan ? 'td-headercolspan-class' : column.headerColSpan ? 'td-headercolspan-equerda-class' : 'td-class' ">
+            <div *ngIf="! colunas[i].bodyTemplate">
+               {{row[column.value]}}
+            </div>
+            <ng-template *ngIf="colunas[i].bodyTemplate" [ngTemplateOutlet]="colunas[i].bodyTemplate"
+                [ngTemplateOutletContext]="{cellData: row[column.value],
+                                    cellRow: j,
+                                    cellColumn: i,
+                                    rowData: row}">
+            </ng-template>
+          </td>
+        </tr>
+    </tbody>
+
+    <!-- TABLE BODY SEM REGISTROS -->
+    <tbody *ngIf="!temRegistros() && !estaCarregando">
+      <tr class="mensagem-vazio">
+        <td [attr.colspan]="colunas.length">
+          <span>{{mensagemVazio}}</span>
+        </td>
+      </tr>
+    </tbody>
+
+  </table>
+</div>
+ <!-- PAGINADOR -->
+<div [style.visibility]="temRegistros() ? 'visible' : 'hidden' " *ngIf="exibePaginador">
+  <pje-paginador (onPaginar)="novaPagina($event)" [totalRegistros]="totalRegistros" [tamanhosPaginas]="tamanhos"
+    [tamanhoPadrao]="tamanhoPadrao" [linhaDivisoraPaginador]="linhaDivisoraPaginador" [ocultarLabelPagina]="ocultarLabelPagina" 
+    [ocultarLabelTamanho]="ocultarLabelTamanho" #paginador>
+  </pje-paginador>
+</div>

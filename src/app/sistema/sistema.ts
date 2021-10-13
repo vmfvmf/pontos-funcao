@@ -1,23 +1,13 @@
 import { HttpParams } from "@angular/common/http";
-
-export interface ISistema {
-  id?: number;
-  nome?: string;
-  versao?: string;
-}
-
 export class Sistema {
-  id?: number;
-  nome?: string;
-  versao?: string;
+  id: number;
+  nome: string;
+  versao: string;
 
-  constructor(iSistema: ISistema) {
-    this.id = iSistema.id;
-    this.nome = iSistema.nome;
-    this.versao = iSistema.versao;
+  constructor() {
   }
 
-  public static toHttpParams(s: ISistema): HttpParams {
+  public static toHttpParams(s: Sistema): HttpParams {
     let httpParams = new HttpParams();
     //let httpParams = this.paginacao.toHttpParams();
     if (!s) {

@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MessageService } from "pje-componentes";
 import { Sprint } from "../sprint";
 import { SprintCadastroComponent } from "../cadastro/cadastro.component";
 import { SprintService } from "../sprints.service";
+import { MessageService } from "../../shared/Service/message.service";
 
 
 @Component({
@@ -23,7 +23,7 @@ export class SprintTabelaComponent implements OnInit {
     this.atualizaResultados();
   }
   atualizaResultados() {
-    this.sprintService.listar({}).subscribe(response => {
+    this.sprintService.listar().subscribe(response => {
       this.sprints = response;
     });
   }

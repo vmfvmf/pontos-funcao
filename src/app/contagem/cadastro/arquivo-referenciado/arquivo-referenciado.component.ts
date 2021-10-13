@@ -1,11 +1,11 @@
-import { AbstractContagemItemService } from './../../contagem-item.service';
+import { ArquivoReferenciadoService } from './arquivo-referenciado.service';
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Contagem } from "../../contagem";
-import { MessageService } from 'pje-componentes';
-import { ArquivoReferenciado, FuncaoArquivoReferenciadoEnum } from './arquivo-referenciado';
+import { ArquivoReferenciado } from './arquivo-referenciado';
 import { ArquivoReferenciadoCadastroComponent } from './cadastro/cadastro.component';
 import { AbstractContagemItem } from '../../abstract-contagem-item';
+import { MessageService } from '../../../shared/Service/message.service';
 
 @Component({
   selector: 'app-contagem-cadastro-arquivo-referenciado',
@@ -15,54 +15,50 @@ import { AbstractContagemItem } from '../../abstract-contagem-item';
 export class ArquivoReferenciadoComponent implements OnInit {
   @Input()
   contagem: Contagem;
-  @Output()
-  somaPFArquivosReferenciados: EventEmitter<AbstractContagemItem[]> = new EventEmitter<AbstractContagemItem[]>();
 
-  arquivosReferenciados: ArquivoReferenciado[] = [];
+  @Output()
+  salvarContagem = new EventEmitter<{msg: String, item?: AbstractContagemItem}>();
+
+  @Input()
+  somenteLeitura = true;
+
   subTotalPf = 0;
   constructor(
     public dialog: MatDialog,
-    private arquivoReferenciadoService: AbstractContagemItemService,
+    private arquivoReferenciadoService: ArquivoReferenciadoService,
     private msgService: MessageService
   ) { }
 
   ngOnInit(): void {
-    this.updateTableData();
   }
 
   pfSubtotalAL(){
     this.subTotalPf = 0;
-    if(this.contagem && this.contagem.arquivoReferenciado) this.contagem.arquivoReferenciado.forEach(fd => {
-      this.subTotalPf += fd.pf;
+    if(this.contagem && this.contagem.arquivosReferenciados) this.contagem.arquivosReferenciados.forEach(ar => {
+      this.subTotalPf += ar.pf;
     });
   }
 
-  updateTableData() {
-    const ar = new ArquivoReferenciado();
-    ar.contagem = this.contagem;
-    this.arquivoReferenciadoService.listar(ar).subscribe(response => {
-      this.arquivosReferenciados = response.map(resp => (resp as ArquivoReferenciado));
-      this.somaPFArquivosReferenciados.emit(this.arquivosReferenciados);
-      console.log('recuperados arquivos referenciados', response);
-    }, error => {
-      console.log('erro ao recuperar arquivos referenciados', error);
-      this.msgService.error("Ocorreu um erro ao recuperar arquivos referenciados.");
-    });
-  }
-
-  novoEditar(dados?: ArquivoReferenciado) {
-    if (!dados) {
-      dados = new ArquivoReferenciado();
+  novoEditar(arquivoReferenciado?: ArquivoReferenciado) {
+    if (!arquivoReferenciado) {
+      arquivoReferenciado = new ArquivoReferenciado();
     }
     const dialogRef = this.dialog.open(ArquivoReferenciadoCadastroComponent, {
       width: '600px',
-      data: { arquivoReferenciado: dados }
+      data: { arquivoReferenciado: arquivoReferenciado }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.updateTableData();
+        this.salvarContagem.emit({msg: "Arquivo referenciado adicionado com sucesso!", item: result});
       }
+    });
+  }
+
+  visualizar(arquivoReferenciado: ArquivoReferenciado) {
+    this.dialog.open(ArquivoReferenciadoCadastroComponent, {
+      width: '600px',
+      data: { arquivoReferenciado: arquivoReferenciado, somenteLeitura: true }
     });
   }
 
@@ -70,17 +66,8 @@ export class ArquivoReferenciadoComponent implements OnInit {
     if (confirm('Confirmar. Apagar o registro?') != true) {
       return;
     }
-    this.arquivoReferenciadoService.apagar(arquivoId).subscribe(
-      (msg) => {
-        if (msg) {
-          this.updateTableData();
-          this.msgService.success('Registro apagado com sucesso.');
-        }
-      },
-      (erro) => {
-        console.log("Erro ao apagar arquivo", erro)
-        this.msgService.error('Ocorreu um erro ao apagar registro.');
-      }
-    );
+    const i = this.contagem.arquivosReferenciados.findIndex(ar => ar.id === arquivoId);
+    this.contagem.arquivosReferenciados.splice(i, 1);
+    this.salvarContagem.emit({msg: "Arquivo referenciado excluído com sucesso!"});
   }
 }

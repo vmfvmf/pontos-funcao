@@ -1,4 +1,4 @@
-import { DedTabelaComponent } from './ded/tabela/tabela.component';
+import { HomeComponent } from './home/home.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { Trt15AcessoNegadoComponent } from 'trt15-base-app';
@@ -6,12 +6,15 @@ import { Trt15AcessoNegadoComponent } from 'trt15-base-app';
 const routes: Routes = [
   {
     path: '',
-    component: DedTabelaComponent,
     children: [
       {
-        path: 'deds',
+        path: '',
+        component: HomeComponent,
+      },
+      {
+        path: 'projetos',
         loadChildren:
-          './ded/ded.module#DedModule',
+          './projeto/projeto.module#ProjetoModule',
       },
       {
         path: 'sistemas',

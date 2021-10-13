@@ -18,13 +18,12 @@ export class Transacao extends AbstractContagemItem {
     this.grupo = new Grupo();
     this.transacaoTDs = [];
     this.contagem = contagem ? contagem : new Contagem();
-    this.tipo = 'TRANSACAO';
   }
 
   public static toHttpParams(transacao: Transacao): HttpParams {
     let httpParams = super.toHttpParams(transacao)
 
-    if (transacao.transacaoTDs) {
+    if (transacao.transacaoTDs && transacao.transacaoTDs[0]) {
       httpParams = httpParams.append('transacaoTDs', transacao.transacaoTDs.join(', '));
     }
 

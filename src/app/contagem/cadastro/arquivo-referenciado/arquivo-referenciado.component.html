@@ -1,44 +1,44 @@
 <mat-card style="min-width: 800px">
   <mat-card-title fxLayoutAlign="space-between center">
     <span>Arquivos Referenciados</span>
-    <app-new-button (newEmitter)="novoEditar()" complemento="Contagem">
+    <app-new-button *ngIf="!somenteLeitura" (newEmitter)="novoEditar()" complemento="Contagem">
     </app-new-button>
   </mat-card-title>
   <mat-card-content>
     <mat-card class="card-tabela">
-      <pje-data-table
+      <vmf-data-table
         [totalRegistros]="1"
-        [value]="arquivosReferenciados"
+        [value]="contagem.arquivosReferenciados"
         listrado="true"
         mensagemVazio="Nenhum registro encontrado"
         nameTabela="Arquivos Referenciados"
         [exibePaginador]="false"
       >
-        <pje-data-column header="Nome" value="nome" [ordenar]="false">
+        <vmf-data-column header="Nome" value="nome" [ordenar]="false">
           <ng-template let-arquivoReferenciado="rowData" #body>
             {{ arquivoReferenciado.nome }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="Tipo" value="tipo" [ordenar]="false">
+        <vmf-data-column header="Função" value="funcao" [ordenar]="false">
           <ng-template let-arquivoReferenciado="rowData" #body>
-            {{ arquivoReferenciado.subtipo }}
+            {{ arquivoReferenciado.funcao }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="TD" value="td" [ordenar]="false">
+        <vmf-data-column header="TD" value="td" [ordenar]="false">
           <ng-template let-arquivoReferenciado="rowData" #body>
             {{ arquivoReferenciado.td }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="TR" value="tr" [ordenar]="false">
+        <vmf-data-column header="TR" value="tr" [ordenar]="false">
           <ng-template let-arquivoReferenciado="rowData" #body>
             {{ arquivoReferenciado.tr }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column
+        <vmf-data-column
           header="Complexidade"
           value="complexidade"
           [ordenar]="false"
@@ -46,24 +46,27 @@
           <ng-template let-arquivoReferenciado="rowData" #body>
             {{ arquivoReferenciado.complexidade }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="PF" value="pf" [ordenar]="false">
+        <vmf-data-column header="PF" value="pf" [ordenar]="false">
           <ng-template let-arquivoReferenciado="rowData" #body>
             {{ arquivoReferenciado.pf }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="" [ordenar]="false">
+        <vmf-data-column header="" [ordenar]="false">
           <ng-template let-arquivoReferenciado="rowData" #body>
-            <app-edit-button (editEmitter)="novoEditar($event)" complemento="Arquivo Referenciado" [objeto]="arquivoReferenciado">
+            <app-edit-button *ngIf="!somenteLeitura" (editEmitter)="novoEditar($event)" complemento="Arquivo Referenciado" [objeto]="arquivoReferenciado">
             </app-edit-button>
 
-            <app-delete-button (deleteEmitter)="apagar($event)" complemento="Arquivo Referenciado" [id]="arquivoReferenciado.id">
+            <app-view-button *ngIf="somenteLeitura" (viewEmitter)="visualizar($event)" complemento="Arquivo Referenciado" [objeto]="arquivoReferenciado">
+            </app-view-button>
+
+            <app-delete-button *ngIf="!somenteLeitura" (deleteEmitter)="apagar($event)" complemento="Arquivo Referenciado" [id]="arquivoReferenciado.id">
             </app-delete-button>
           </ng-template>
-        </pje-data-column>
-      </pje-data-table>
+        </vmf-data-column>
+      </vmf-data-table>
     </mat-card>
   </mat-card-content>
 </mat-card>

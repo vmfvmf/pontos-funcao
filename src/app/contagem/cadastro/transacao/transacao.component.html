@@ -1,8 +1,8 @@
-<mat-card>
+<mat-card >
   <mat-card-title fxLayoutAlign="space-between center">
     <span>Transações</span>
     <div>
-      <mat-icon
+      <mat-icon *ngIf="!somenteLeitura"
         style="cursor: pointer; color: blueviolet"
         (click)="gerenciadorGrupo()"
         matTooltip="Gerenciador de grupos"
@@ -10,51 +10,51 @@
         class="material-icons md-24"
         >group_work</mat-icon
       >
-      <app-new-button (newEmitter)="novoEditar()" complemento="Contagem">
+      <app-new-button *ngIf="!somenteLeitura" (newEmitter)="novoEditar()" complemento="Contagem">
       </app-new-button>
     </div>
   </mat-card-title>
 
   <mat-card class="card-tabela" style="min-width: 800px">
-    <pje-data-table
+    <vmf-data-table [vmf-read-only]="contagem.estado == 'V'"
       [totalRegistros]="1"
-      [value]="transacaos"
+      [value]="contagem.transacoes"
       listrado="true"
       mensagemVazio="Nenhum registro encontrado"
       nameTabela="Transações"
       [exibePaginador]="false"
     >
-      <pje-data-column header="Grupo" value="nome" [ordenar]="false">
+      <vmf-data-column header="Grupo" value="nome" [ordenar]="false">
         <ng-template let-transacao="rowData" #body>
           {{ transacao.grupo?.nome }}
         </ng-template>
-      </pje-data-column>
+      </vmf-data-column>
 
-      <pje-data-column header="Nome" value="nome" [ordenar]="false">
+      <vmf-data-column header="Nome" value="nome" [ordenar]="false">
         <ng-template let-transacao="rowData" #body>
           {{ transacao.nome }}
         </ng-template>
-      </pje-data-column>
+      </vmf-data-column>
 
-      <pje-data-column header="Tipo" value="tipo" [ordenar]="false">
+      <vmf-data-column header="Função" value="funcao" [ordenar]="false">
         <ng-template let-transacao="rowData" #body>
-          {{ transacao.subtipo }}
+          {{ transacao.funcao }}
         </ng-template>
-      </pje-data-column>
+      </vmf-data-column>
 
-      <pje-data-column header="TD" value="td" [ordenar]="false">
+      <vmf-data-column header="TD" value="td" [ordenar]="false">
         <ng-template let-transacao="rowData" #body>
           {{ transacao.td }}
         </ng-template>
-      </pje-data-column>
+      </vmf-data-column>
 
-      <pje-data-column header="TR" value="tr" [ordenar]="false">
+      <vmf-data-column header="TR" value="tr" [ordenar]="false">
         <ng-template let-transacao="rowData" #body>
           {{ transacao.tr }}
         </ng-template>
-      </pje-data-column>
+      </vmf-data-column>
 
-      <pje-data-column
+      <vmf-data-column
         header="Complexidade"
         value="complexidade"
         [ordenar]="false"
@@ -62,25 +62,28 @@
         <ng-template let-transacao="rowData" #body>
           {{ transacao.complexidade }}
         </ng-template>
-      </pje-data-column>
+      </vmf-data-column>
 
-      <pje-data-column header="PF" value="pf" [ordenar]="false">
+      <vmf-data-column header="PF" value="pf" [ordenar]="false">
         <ng-template let-transacao="rowData" #body>
           {{ transacao.pf }}
         </ng-template>
-      </pje-data-column>
+      </vmf-data-column>
 
-      <pje-data-column header="" [ordenar]="false">
+      <vmf-data-column header="" [ordenar]="false">
         <ng-template let-transacao="rowData" #body>
 
-          <app-edit-button (editEmitter)="novoEditar($event)" complemento="Transação" [objeto]="transacao">
+          <app-edit-button *ngIf="!somenteLeitura" [somenteLeitura]="somenteLeitura" (editEmitter)="novoEditar($event)" complemento="Transação" [objeto]="transacao">
           </app-edit-button>
 
-          <app-delete-button (deleteEmitter)="apagar($event)" complemento="Transação" [id]="transacao.id">
+          <app-view-button *ngIf="somenteLeitura" [somenteLeitura]="somenteLeitura" (viewEmitter)="novoEditar($event)" complemento="Transação" [objeto]="transacao">
+          </app-view-button>
+
+          <app-delete-button *ngIf="!somenteLeitura" (deleteEmitter)="apagar($event)" complemento="Transação" [id]="transacao.id">
           </app-delete-button>
 
         </ng-template>
-      </pje-data-column>
-    </pje-data-table>
+      </vmf-data-column>
+    </vmf-data-table>
   </mat-card>
 </mat-card>

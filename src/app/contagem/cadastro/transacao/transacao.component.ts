@@ -1,13 +1,13 @@
-import { AbstractContagemItemService } from './../../contagem-item.service';
 import { GrupoComponent } from './grupo/grupo.component';
 import { TransacaoCadastroComponent } from './cadastro/cadastro.component';
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Contagem } from "../../contagem";
-import { MessageService } from 'pje-componentes';
 import { Transacao } from './transacao';
 import { Grupo } from './grupo/grupo';
 import { AbstractContagemItem, TipoContagemItemEnum } from '../../abstract-contagem-item';
+import { TransacaoService } from './transacao.service';
+import { MessageService } from '../../../shared/Service/message.service';
 
 @Component({
   selector: 'app-contagem-cadastro-transacao',
@@ -17,50 +17,38 @@ import { AbstractContagemItem, TipoContagemItemEnum } from '../../abstract-conta
 export class TransacaoComponent implements OnInit {
   @Input()
   contagem: Contagem;
-  transacaos: Transacao[] = [];
   subTotalPf = 0;
+
   @Output()
-  somaPFTransacaos = new EventEmitter<AbstractContagemItem[]>();
+  salvarContagem = new EventEmitter<String>();
+
+  @Input()
+  somenteLeitura = true;
+
   constructor(
-    public dialog: MatDialog,
-    private transacaoService: AbstractContagemItemService,
-    private msgService: MessageService
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
-    this.updateTableData();
-  }
-
-  pfSubtotalAL(){
-    this.subTotalPf = 0;
-    if(this.contagem && this.contagem.arquivoReferenciado) this.contagem.arquivoReferenciado.forEach(fd => {
-      this.subTotalPf += fd.pf;
-    });
-  }
-
-  updateTableData() {
-    const trans = new Transacao(this.contagem);
-    this.transacaoService.listar(trans).subscribe(response => {
-      this.transacaos = <Transacao[]>response;
-      this.somaPFTransacaos.emit(response);
-      console.log('TRANSACAO[]', response);
-    }, error => {
-      console.log('erro ao recuperar transacao[]', error);
-      this.msgService.error("Ocorreu um erro ao recuperar dados do banco.");
-    });
   }
 
   novoEditar(transacao?: Transacao) {
-    if (!transacao) transacao = new Transacao(this.contagem);
+    if (!transacao) {
+      transacao = new Transacao();
+      this.contagem.transacoes.push(transacao);
+    }
     const dialogRef = this.dialog.open(TransacaoCadastroComponent, {
       width: '600px',
-      data: { transacao: transacao }
+      data: { transacao: transacao, contagem: this.contagem, somenteLeitura: this.somenteLeitura }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-        this.updateTableData();
+      if (result) {
+        this.salvarContagem.emit("Transação incluída/alterada com sucesso!");
+      }
     });
   }
+
 
   gerenciadorGrupo() {
     const grupo = new Grupo(this.contagem);
@@ -71,20 +59,13 @@ export class TransacaoComponent implements OnInit {
   }
 
 
-  apagar(arquivoId: number) {
+  apagar(transacaoId: number) {
     if (confirm('Confirmar. Apagar o registro?') != true) {
       return;
     }
-    this.transacaoService.apagar(arquivoId).subscribe(
-      (msg) => {
-        this.updateTableData();
-        this.msgService.success('Registro apagado com sucesso.');
-      },
-      (erro) => {
-        console.log("Erro ao apagar arquivo", erro)
-        this.msgService.error('Ocorreu um erro ao apagar registro.');
-      }
-    );
+    const i = this.contagem.transacoes.findIndex(t => t.id === transacaoId);
+    this.contagem.transacoes.splice(i, 1);
+    this.salvarContagem.emit("Transação excluída com sucesso!");
   }
 
 }

@@ -1,14 +1,29 @@
-<app-contagem-cadastro-basico *ngIf="contagem" [contagem]="contagem">
+<form
+  exeFormValidationFocusInvalidInput
+  id="ngForm"
+  (ngSubmit)="salvarContagem($event)"
+  #f="ngForm"
+>
+  <app-contagem-cadastro-basico
+    *ngIf="contagem"
+    [contagem]="contagem"
+    [somenteLeitura]="contagem.estado == 'V'"
+  >
+  </app-contagem-cadastro-basico>
 
-</app-contagem-cadastro-basico>
+  <app-contagem-cadastro-arquivo-referenciado
+    [somenteLeitura]="contagem.estado == 'V'"
+    *ngIf="contagem?.id"
+    (salvarContagem)="f.ngSubmit.next($event)"
+    [contagem]="contagem"
+  >
+  </app-contagem-cadastro-arquivo-referenciado>
 
-<app-contagem-cadastro-arquivo-referenciado *ngIf="contagem?.id"
-(somaPFArquivosReferenciados)="atualizaContagemArquivosReferenciados($event)"
- [contagem]="contagem" >
-
-</app-contagem-cadastro-arquivo-referenciado>
-
-<app-contagem-cadastro-transacao *ngIf="contagem?.id"
-(somaPFTransacaos)="atualizaContagemTransacaos($event)"
-[contagem]="contagem">
-</app-contagem-cadastro-transacao>
+  <app-contagem-cadastro-transacao
+    [somenteLeitura]="contagem.estado == 'V'"
+    *ngIf="contagem?.id"
+    (salvarContagem)="f.ngSubmit.next($event)"
+    [contagem]="contagem"
+  >
+  </app-contagem-cadastro-transacao>
+</form>

@@ -1,3 +1,4 @@
+import { Contagem } from './../../contagem';
 import { HttpParams } from '@angular/common/http';
 import { AbstractContagemItem } from '../../abstract-contagem-item';
 import { Tabela } from './tabela';
@@ -12,16 +13,15 @@ export class ArquivoReferenciado extends AbstractContagemItem {
   funcao: FuncaoArquivoReferenciadoEnum;
   isChecked: boolean;
 
-  constructor() {
-    super();
+  constructor(contagem?: Contagem) {
+    super(contagem);
     this.tabelas = [];
-    this.tipo = 'ARQUIVO_REFERENCIADO';
   }
 
   public static toHttpParams(arquivo: ArquivoReferenciado): HttpParams {
     let httpParams = super.toHttpParams(arquivo)
 
-    if (arquivo.tabelas) {
+    if (arquivo.tabelas && arquivo.tabelas[0]) {
       httpParams = httpParams.append('tabelas', arquivo.tabelas.join(', '));
     }
 

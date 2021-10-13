@@ -1,4 +1,5 @@
-import { Ded } from "../ded/ded";
+import { ContagemEstado } from './contagem-estado.enum';
+import { Projeto } from "../projeto/projeto";
 import { Sistema } from "../sistema/sistema";
 import { Sprint } from "../sprint/sprint";
 import { ArquivoReferenciado } from "./cadastro/arquivo-referenciado/arquivo-referenciado";
@@ -8,27 +9,30 @@ import { ContagemEscopoEnum } from "./contagem-escopo.enum";
 
 
 export class Contagem {
-  id?: number;
-  sistema?: Sistema;
-  sprint?: Sprint;
-  ded?: Ded;
-  dataContagem?: Date;
-  contador?: String;
-  escopo?: ContagemEscopoEnum;
-  totalPf?: number;
-  transacaos?: Transacao[];
-  arquivoReferenciado?: ArquivoReferenciado[];
-  grupos?: Grupo[];
+  id: number;
+  sistema: Sistema;
+  sprint: Sprint;
+  projeto: Projeto;
+  dataContagem: Date;
+  contador: String;
+  escopo: ContagemEscopoEnum;
+  totalPontosFuncao: number;
+  transacoes: Transacao[];
+  estado: ContagemEstado;
+  arquivosReferenciados: ArquivoReferenciado[];
+  versao: number;
 
-  constructor(){
-    this.sistema = new Sistema({});
-    this.sprint = new Sprint({});
-    this.ded = new Ded({});
-    this.transacaos = [];
-    this.arquivoReferenciado = [];
-    this.grupos = [];
-    this.totalPf =  0;
+  constructor(id?: number){
+    this.sistema = new Sistema();
+    this.sprint = new Sprint();
+    this.projeto = new Projeto();
+    this.transacoes = [];
+    this.arquivosReferenciados = [];
     this.dataContagem = new Date();
   }
 
+  static GetContagemParent(contagem: Contagem) {
+    const c = new Contagem(contagem.id);
+    return c;
+  }
 }

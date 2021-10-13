@@ -13,24 +13,24 @@ export class SprintService {
   constructor(private httpClient: HttpClient) {
   }
 
-  listar(filtro: Sprint): Observable<Sprint[]> {
-    return this.httpClient.get<Sprint[]>(`${SprintService.URL_API}`, {params: Sprint.toHttpParams(filtro)});
+  listar(filtro?: Sprint): Observable<Sprint[]> {
+    return this.httpClient.get<Sprint[]>(`${SprintService.URL_API}`, {params: Sprint.toHttpParams(filtro || new Sprint())});
   }
 
-  novo(novoSprint: Sprint): Observable<Sprint> {
-    return this.httpClient.post<Sprint>(`${SprintService.URL_API}`, novoSprint);
+  novo(novo: Sprint): Observable<Sprint> {
+    return this.httpClient.post<Sprint>(`${SprintService.URL_API}`, novo);
   }
 
-  ver(sprint_id: number): Observable<Sprint> {
-    return this.httpClient.get<Sprint>(`${SprintService.URL_API}/${sprint_id}`);
+  ver(id: number): Observable<Sprint> {
+    return this.httpClient.get<Sprint>(`${SprintService.URL_API}/${id}`);
   }
 
-  editar(dedModificado: Sprint): Observable<Sprint> {
-    return this.httpClient.put<Sprint>(`${SprintService.URL_API}`, dedModificado);
+  editar(alterado: Sprint): Observable<Sprint> {
+    return this.httpClient.put<Sprint>(`${SprintService.URL_API}`, alterado);
   }
 
-  apagar(sprint_id: number): Observable<any> {
-    return this.httpClient.delete<any>(`${SprintService.URL_API}/${sprint_id}`);
+  apagar(id: number): Observable<any> {
+    return this.httpClient.delete<any>(`${SprintService.URL_API}/${id}`);
   }
 
 }

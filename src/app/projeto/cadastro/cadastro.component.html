@@ -1,0 +1,31 @@
+<mat-card-header>
+  <h1>{{ projeto.id ? 'Editar' : 'Novo'}} Projeto</h1>
+</mat-card-header>
+
+<mat-card-content>
+  <form fxLayout="row wrap">
+    <mat-form-field fxFlex="100">
+      <mat-label>Identificador</mat-label>
+      <input
+        matInput
+        placeholder="Identificador"
+        name="identificador"
+        [(ngModel)]="projeto.identificador"
+      />
+    </mat-form-field>
+
+    <mat-form-field fxFlex="100">
+      <mat-label>Descrição</mat-label>
+      <textarea
+        matInput
+        placeholder="Descrição"
+        name="descricao"
+        [(ngModel)]="projeto.descricao"
+      ></textarea>
+    </mat-form-field>
+  </form>
+</mat-card-content>
+<mat-card-actions mat-dialog-actions align="center">
+  <button mat-raised-button color="primary" (click)="salvar()">Salvar</button>
+  <button mat-raised-button (click)="close()">Cancelar</button>
+</mat-card-actions>

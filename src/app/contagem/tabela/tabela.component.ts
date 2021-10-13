@@ -1,8 +1,8 @@
 import { ContagemEscopoEnum } from './../contagem-escopo.enum';
 import { ContagemService } from '../contagem.service';
 import { Component, OnInit } from "@angular/core";
-import { MessageService } from "pje-componentes";
 import { Contagem } from "../contagem";
+import { MessageService } from '../../shared/Service/message.service';
 
 @Component({
   selector: 'app-contagem-tabela',
@@ -31,8 +31,8 @@ export class ContagemTabelaComponent implements OnInit {
   }
 
   getEscopoInfo(contagem: Contagem){
-    return contagem.escopo == ContagemEscopoEnum.PROJETO ? ' - DED: ' + contagem.ded.numero : contagem.escopo == ContagemEscopoEnum.SPRINT ?
-      " " + contagem.sprint.numero + " - DED: " + contagem.sprint.ded.numero : '';
+    return contagem.escopo == ContagemEscopoEnum.PROJETO ? ' - Projeto: ' + contagem.projeto.identificador : contagem.escopo == ContagemEscopoEnum.SPRINT ?
+      " " + contagem.sprint.numero + " - Projeto: " + contagem.sprint.projeto.identificador : '';
   }
 
   apagar(contagem: number) {

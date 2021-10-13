@@ -1,19 +1,20 @@
-import { ContagemService } from './../../contagem.service';
+import { ContagemService } from "./../../contagem.service";
 import {
   ContagemEscopoDesc,
   ContagemEscopoEnum,
   contagemEscoposArray,
 } from "./../../contagem-escopo.enum";
 import { Component, Input, OnInit } from "@angular/core";
-import { MessageService } from "pje-componentes";
-import { Ded } from "../../../ded/ded";
-import { DedService } from "../../../ded/ded.service";
+import { Projeto } from "../../../projeto/projeto";
+import { ProjetoService } from "../../../projeto/projeto.service";
 import { Sistema } from "../../../sistema/sistema";
 import { SistemaService } from "../../../sistema/sistema.service";
 import { Sprint } from "../../../sprint/sprint";
 import { SprintService } from "../../../sprint/sprints.service";
 import { Contagem } from "../../contagem";
 import { ActivatedRoute, Router } from "@angular/router";
+import { MessageService } from "../../../shared/Service/message.service";
+import { FormBuilder } from "@angular/forms";
 
 @Component({
   selector: "app-contagem-cadastro-basico",
@@ -25,16 +26,18 @@ export class ContagemCadastroBasicoComponent implements OnInit {
   escopoDesc = ContagemEscopoDesc;
   escopos = contagemEscoposArray;
   sistemas: Sistema[] = [];
-  deds: Ded[] = [];
+  projetos: Projeto[] = [];
   sprints: Sprint[] = [];
   @Input()
-  contagem: Contagem = {};
-  selectedDed: Ded;
+  somenteLeitura = true;
+  @Input()
+  contagem: Contagem = new Contagem();
+  selectedProjeto: Projeto;
 
   constructor(
     private sistemaService: SistemaService,
     private msgService: MessageService,
-    private dedService: DedService,
+    private projetoService: ProjetoService,
     private sprintService: SprintService,
     private contagemService: ContagemService,
     private route: ActivatedRoute,
@@ -54,42 +57,70 @@ export class ContagemCadastroBasicoComponent implements OnInit {
         console.log("Erro ao recuperar sistemas", error);
       }
     );
-    this.dedService.listar().subscribe(
+    this.projetoService.listar().subscribe(
       (response) => {
-        console.log("Deds recuperado com sucesso", response);
-        this.deds = response;
+        console.log("Projetos recuperado com sucesso", response);
+        this.projetos = response;
       },
       (error) => {
-        this.msgService.error("Ocorreu um erro ao recuperar lista de deds.");
-        console.log("Erro ao recuperar deds", error);
+        this.msgService.error(
+          "Ocorreu um erro ao recuperar lista de projetos."
+        );
+        console.log("Erro ao recuperar projetos", error);
       }
     );
-  }
-
-  salvar() {
-    if (this.contagem.id) {
-    } else {
-      this.contagemService.salvar(this.contagem).subscribe(
-        (response) => {
-          this.msgService.success("O registro foi salvo com sucesso.");
-          this.router.navigate(['../editar/',response.id], { relativeTo: this.route });
-        },
-        (error) => {
-          this.msgService.error("Ocorreu um erro ao salvar.");
-          console.log("Erro ao salvar", error);
+    if (this.contagem.sprint?.id) {
+      this.contagem.projeto = this.contagem.sprint.projeto;
+      this.sprintService.listar(new Sprint(this.contagem.sprint.projeto)).subscribe(
+        response => {
+          this.sprints = response;
         }
       );
     }
   }
 
-  escopoChange() {
-    this.contagem.ded = new Ded({});
-    this.contagem.sprint = new Sprint({});
+  salvar() {
+    this.contagemService.salvar(this.contagem).subscribe(
+      (response) => {
+        this.contagem = response;
+        this.msgService.success("O registro foi salvo com sucesso.");
+        if (!this.contagem.id) {this.router.navigate(["../editar/", response.id], {
+            relativeTo: this.route,
+          });
+        }
+      },
+      (error) => {
+        this.msgService.error("Ocorreu um erro ao salvar.");
+        console.log("Erro ao salvar", error);
+      }
+    );
   }
 
-  dedChange(ded: Ded) {
+  versionar() {
+    this.contagemService.versionar(this.contagem.id).subscribe(
+      (response) => {
+        this.contagem = response;
+        this.msgService.success("O registro foi salvo com sucesso.");
+        if (!this.contagem.id) {this.router.navigate(["../editar/", response.id], {
+            relativeTo: this.route,
+          });
+        }
+      },
+      (error) => {
+        this.msgService.error("Ocorreu um erro ao salvar.");
+        console.log("Erro ao salvar", error);
+      }
+    );
+  }
+
+  escopoChange() {
+    this.contagem.projeto = new Projeto();
+    this.contagem.sprint = new Sprint();
+  }
+
+  projetoChange(projeto: Projeto) {
     if (this.contagem.escopo === "SPRINT") {
-      this.sprintService.listar({ ded: { id: ded.id } }).subscribe(
+      this.sprintService.listar(new Sprint(projeto)).subscribe(
         (response) => {
           this.sprints = response;
         },

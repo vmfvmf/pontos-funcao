@@ -9,10 +9,9 @@ export enum TipoTransacaoTDEnum {
   ACAO = 'ACAO'
 }
 export class TransacaoTD {
-  id?: number;
-  transacao?: Transacao;
-  coluna?: Coluna;
-  tipo?:TipoTransacaoTDEnum;
+  id: number;
+  transacao: Transacao;
+  coluna: Coluna;
 
   constructor(transacao?: Transacao){
     this.transacao = transacao ? transacao : new Transacao();

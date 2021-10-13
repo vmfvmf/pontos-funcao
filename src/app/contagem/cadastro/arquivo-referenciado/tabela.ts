@@ -31,27 +31,18 @@ export class Tabela {
       return httpParams;
     }
 }
-export interface IColuna{
-  id?: number;
-  nome?: string;
-  tabela?: Tabela;
-  isCheckSelected?: boolean;
-}
 
 export class Coluna {
-  id?: number;
-  nome?: string;
-  tabela?: Tabela;
-  isChecked?: boolean;
+  id: number;
+  nome: string;
+  tabela: Tabela;
+  isChecked: boolean;
 
-  constructor(i: IColuna){
-    this.id = i.id;
-    this.nome = i.nome;
-    this.tabela = i.tabela;
-    this.isChecked = i.isCheckSelected;
+  constructor(nome?: string){
+    this.nome = nome;
   }
 
-  public static toHttpParams(c: IColuna): HttpParams {
+  public static toHttpParams(c: Coluna): HttpParams {
     let httpParams = new HttpParams();
 
       if (c.id !== undefined) {

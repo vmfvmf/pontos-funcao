@@ -20,14 +20,18 @@ export class ContagemService {
 
   salvar(novaContagem: Contagem): Observable<Contagem> {
     if(novaContagem.escopo == ContagemEscopoEnum.SISTEMA){
-      delete novaContagem.ded;
+      delete novaContagem.projeto;
       delete novaContagem.sprint;
     }else if(novaContagem.escopo == ContagemEscopoEnum.PROJETO) {
       delete novaContagem.sprint;
     } else {
-      delete novaContagem.ded;
+      delete novaContagem.projeto;
     }
     return this.httpClient.post<Contagem>(`${ContagemService.URL_API}`, novaContagem);
+  }
+
+  versionar(contagemId: number) : Observable<Contagem> {
+    return this.httpClient.post<Contagem>(`${ContagemService.URL_API}/${contagemId}/versionar`, { });
   }
 
   ver(contagem_id: number): Observable<Contagem> {

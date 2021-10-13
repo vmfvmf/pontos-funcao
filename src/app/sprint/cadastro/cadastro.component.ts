@@ -1,11 +1,11 @@
-import { DedService } from "../../ded/ded.service";
-import { Ded } from "../../ded/ded";
-import { MessageService } from "pje-componentes";
+import { ProjetoService } from "../../projeto/projeto.service";
+import { Projeto } from "../../projeto/projeto";
 import { SprintService } from "../sprints.service";
 
 import { Component, Inject, Input, OnInit } from "@angular/core";
 import { Sprint } from "../sprint";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MessageService } from "../../shared/Service/message.service";
 
 @Component({
   selector: "app-sprint-cadastro",
@@ -14,25 +14,25 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 })
 export class SprintCadastroComponent implements OnInit {
   sprint: Sprint;
-  deds: Ded[];
+  projetos: Projeto[];
 
   constructor(
     private sprintService: SprintService,
     private msgService: MessageService,
-    private dedService: DedService,
+    private projetoService: ProjetoService,
     public dialogRef: MatDialogRef<SprintCadastroComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { sprint: Sprint }
   ) {
-    this.sprint = data.sprint ? data.sprint : new Sprint({});
+    this.sprint = data.sprint ? data.sprint : new Sprint();
   }
 
   ngOnInit(): void {
-    this.dedService.listar().subscribe(
+    this.projetoService.listar().subscribe(
       (response) => {
-        this.deds = response;
+        this.projetos = response;
       },
       (error) => {
-        this.msgService.error("Ocorreu um erro ao carregar deds!");
+        this.msgService.error("Ocorreu um erro ao carregar projetos!");
         console.log(error);
       }
     );

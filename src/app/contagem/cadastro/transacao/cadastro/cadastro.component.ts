@@ -1,20 +1,21 @@
-import { FuncaoTransacaoEnum } from './../../../abstract-contagem-item';
+import { FuncaoTransacaoEnum } from "./../../../abstract-contagem-item";
 import { TransacaoTDService } from "./../transacao-td.service";
-import { AbstractContagemItemService } from "./../../../contagem-item.service";
 import { ArquivoReferenciado } from "./../../arquivo-referenciado/arquivo-referenciado";
 import { Component, Inject, OnInit } from "@angular/core";
 import {
   ComplexidadeEnum,
-  FuncoesTransacao
+  FuncoesTransacao,
 } from "../../../abstract-contagem-item";
 import { Coluna, Tabela } from "../../arquivo-referenciado/tabela";
 import { Transacao } from "../transacao";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { MessageService } from "pje-componentes";
 import { Contagem } from "../../../../contagem/contagem";
 import { Grupo } from "../grupo/grupo";
 import { GrupoService } from "../grupo/grupo.service";
-import { TipoTransacaoTDEnum, TransacaoTD } from "../transacao-td";
+import { TransacaoTD } from "../transacao-td";
+import { ArquivoReferenciadoService } from "../../arquivo-referenciado/arquivo-referenciado.service";
+import { TransacaoService } from "../transacao.service";
+import { MessageService } from "../../../../shared/Service/message.service";
 
 @Component({
   selector: "app-transacao-cadastro",
@@ -22,86 +23,78 @@ import { TipoTransacaoTDEnum, TransacaoTD } from "../transacao-td";
   styleUrls: ["./cadastro.component.scss"],
 })
 export class TransacaoCadastroComponent implements OnInit {
-  contagemItem: Transacao;
+  transacao: Transacao;
   funcoes: string[] = FuncoesTransacao;
   grupos: Grupo[];
   selectedTabelasColunas: Coluna[];
   selectedARIndex = 0;
   selectedTRIndex = 0;
+  contagem: Contagem;
   arquivosReferenciados: ArquivoReferenciado[] = [];
-  tdsToDelete: TransacaoTD[] = [];
-  selectedMsgAcao: String[] = [];
-  msgAcao: String[] = ['ACAO', 'MENSAGEM'];
   aberto = false;
   aberto2 = false;
+  somenteLeitura = true;
 
-  exp1(obj: boolean){
+  exp1(obj: boolean) {
     this.aberto = obj;
   }
-  exp2(obj: boolean){
+  exp2(obj: boolean) {
     this.aberto2 = obj;
   }
 
   constructor(
     public dialogRef: MatDialogRef<TransacaoCadastroComponent>,
     private grupoService: GrupoService,
-    private msgService: MessageService,
-    private contagemItemService: AbstractContagemItemService,
-    private transacaoTDService: TransacaoTDService,
-    @Inject(MAT_DIALOG_DATA) public data: { transacao: Transacao }
+    private arquivoReferenciadoService: ArquivoReferenciadoService,
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      transacao: Transacao;
+      contagem: Contagem;
+      somenteLeitura: boolean;
+    }
   ) {
-    this.contagemItem = data.transacao;
-    this.contagemItem.contagem = { id: data.transacao.contagem.id };
+    this.transacao = data.transacao;
+    this.contagem = data.contagem;
+    this.somenteLeitura = data.somenteLeitura;
+    this.setArquivosReferenciados(data.contagem.arquivosReferenciados);
   }
 
   ngOnInit(): void {
-    const grupo = new Grupo();
-    grupo.contagem = this.contagemItem.contagem;
-    this.grupoService
-      .listar(grupo)
-      .subscribe(
-        (response) => {
-          this.grupos = response;
-        },
-        (error) => {
-          console.log("Erro ao recuperar lista de grupos", error);
-        }
-      );
-    const trans = new Transacao();
-    trans.contagem =  this.contagemItem.contagem;
-    this.contagemItemService
-      .listar(trans)
-      .subscribe(
-        (response) => {
-          this.arquivosReferenciados = <ArquivoReferenciado[]>response;
-          this.contagemItem.transacaoTDs.forEach((tdCol) => {
-            this.arquivosReferenciados.forEach((f) => {
-              f.tabelas.forEach((t) => {
-                t.colunas.forEach((c) => {
-                  if (
-                    tdCol.tipo == 'ARQUIVO_REFERENCIADO' &&
-                    c.id == tdCol.coluna.id
-                  ) {
-                    c.isChecked = true;
-                  }
-                });
-              });
-            });
-          });
-          this.atualizaCheckBoxInterface();
-        },
-        (error) => {
-          console.log(
-            "Erro ao recuperar lista de arquivos referenciados",
-            error
-          );
-        }
-      );
-      this.msgAcao.forEach(msg => {
-        if(this.contagemItem.transacaoTDs.find(td => td.tipo == msg)){
-          this.selectedMsgAcao.push(msg);
-        }
+    this.grupoService.listar(new Grupo(this.contagem)).subscribe(
+      (response) => {
+        this.grupos = response;
+      },
+      (error) => {
+        console.log("Erro ao recuperar lista de grupos", error);
+      }
+    );
+  }
+
+  setArquivosReferenciados(arquivosReferenciados: ArquivoReferenciado[]) {
+    arquivosReferenciados.forEach(element => {
+      const ar = Object.assign(new ArquivoReferenciado(), element) as ArquivoReferenciado;
+      ar.tabelas = [];
+      element.tabelas.forEach(t => {
+        const cols = [];
+        const tab =  Object.assign(new Tabela(), t) as Tabela;
+        t.colunas.forEach(c => cols.push(Object.assign(new Coluna(), c) as Coluna));
+        tab.colunas = cols;
+        ar.tabelas.push(tab);
       });
+      this.arquivosReferenciados.push(ar);
+    });
+    this.transacao.transacaoTDs.forEach((tdCol) => {
+      this.arquivosReferenciados.forEach((arquivo) => {
+        arquivo.tabelas.forEach((t) => {
+          t.colunas.forEach((c) => {
+            if (c.id == tdCol.coluna.id) {
+              c.isChecked = true;
+            }
+          });
+        });
+      });
+    });
+    this.atualizaCheckBoxInterface();
   }
 
   checkFuncaoDadosValue(arquivoReferenciado: ArquivoReferenciado) {
@@ -152,56 +145,47 @@ export class TransacaoCadastroComponent implements OnInit {
   }
 
   salvar() {
-    this.arquivosReferenciados.forEach(ar => {
-      ar.tabelas.forEach(tb => {
-        tb.colunas.forEach(col => {
-          const currTd = this.contagemItem.transacaoTDs.find(transTD => transTD.coluna.id == col.id);
-          if(col.isChecked && !currTd) {
-            const trans = new TransacaoTD(this.contagemItem);
+    this.arquivosReferenciados.forEach((ar) => {
+      ar.tabelas.forEach((tb) => {
+        tb.colunas.forEach((col) => {
+          const currTd = this.transacao.transacaoTDs.find(
+            (transTD) => transTD.coluna.id == col.id
+          );
+          if (col.isChecked && !currTd) {
+            const transacaoId = new Transacao();
+            transacaoId.id = this.transacao.id;
+            const trans = new TransacaoTD(transacaoId);
             trans.coluna = col;
-            this.contagemItem.transacaoTDs.push(trans);
-          }else if(!col.isChecked && currTd){
-            const index = this.contagemItem.transacaoTDs.findIndex(c => c == currTd);
+            this.transacao.transacaoTDs.push(trans);
+          } else if (!col.isChecked && currTd) {
+            const index = this.transacao.transacaoTDs.findIndex(
+              (c) => c == currTd
+            );
             if (index > -1) {
-              this.tdsToDelete.push(this.contagemItem.transacaoTDs[index]);
-              this.contagemItem.transacaoTDs.splice(index, 1);
+              this.transacao.transacaoTDs.splice(index, 1);
             }
           }
-        })
-      })
-    });
-    this.atualizaContagem();
-    this.tdsToDelete.forEach(td => {
-      this.transacaoTDService.apagar(td.id).subscribe(()=> {
-        console.log("apagado td", td);
-      }, error => {
-        console.log("erro ao apagar td", error, td);
+        });
       });
     });
-    this.contagemItemService.salvar(this.contagemItem).subscribe(
-      (response) => {
-        console.log(response);
-        this.msgService.success("Registro salvo com sucesso.");
-        this.dialogRef.close();
-      },
-      (error) => {
-        this.msgService.error("Ocorreu um erro ao salvar registro.");
-        console.log("Erro ao salvar transação", error, this.contagemItem);
-      }
-    );
+    this.atualizaContagem();
+    this.dialogRef.close(this.transacao);
   }
 
   atualizaContagem() {
-    this.contagemItem.td = 0;
-    this.contagemItem.tr = 0;
-    this.selectedMsgAcao.forEach(() => {
-      this.contagemItem.td++;
-    });
+    this.transacao.td = 0;
+    this.transacao.tr = 0;
+    if (this.transacao.acao) {
+      this.transacao.td++;
+    }
+    if (this.transacao.mensagem) {
+      this.transacao.td++;
+    }
     this.arquivosReferenciados.forEach((ar) => {
-      if (ar.isChecked) this.contagemItem.tr++;
+      if (ar.isChecked) this.transacao.tr++;
       ar.tabelas.forEach((t) => {
         t.colunas.forEach((c) => {
-          if (c.isChecked) this.contagemItem.td++;
+          if (c.isChecked) this.transacao.td++;
         });
       });
     });
@@ -210,85 +194,49 @@ export class TransacaoCadastroComponent implements OnInit {
   }
 
   analisaComplexidade() {
-    const transacao = this.contagemItem as Transacao;
-    if (transacao.funcao === FuncaoTransacaoEnum.EE) {
+    if (this.transacao.funcao === FuncaoTransacaoEnum.EE) {
       if (
-        (transacao.td <= 15 && transacao.tr < 2) ||
-        (transacao.td < 5 && transacao.tr == 2)
+        (this.transacao.td <= 15 && this.transacao.tr < 2) ||
+        (this.transacao.td < 5 && this.transacao.tr == 2)
       ) {
-        transacao.complexidade = ComplexidadeEnum.BAIXA;
+        this.transacao.complexidade = ComplexidadeEnum.BAIXA;
       } else if (
-        (transacao.td < 5 && transacao.tr > 2) ||
-        (transacao.td <= 15 && transacao.tr == 2) ||
-        (transacao.td > 15 && transacao.tr < 2)
+        (this.transacao.td < 5 && this.transacao.tr > 2) ||
+        (this.transacao.td <= 15 && this.transacao.tr == 2) ||
+        (this.transacao.td > 15 && this.transacao.tr < 2)
       ) {
-        transacao.complexidade = ComplexidadeEnum.MEDIA;
+        this.transacao.complexidade = ComplexidadeEnum.MEDIA;
       } else {
-        transacao.complexidade = ComplexidadeEnum.ALTA;
+        this.transacao.complexidade = ComplexidadeEnum.ALTA;
       }
     } else if (
-      transacao.funcao == FuncaoTransacaoEnum.CE ||
-      transacao.funcao == FuncaoTransacaoEnum.SE
+      this.transacao.funcao == FuncaoTransacaoEnum.CE ||
+      this.transacao.funcao == FuncaoTransacaoEnum.SE
     ) {
       if (
-        (transacao.td <= 19 && transacao.tr < 2) ||
-        (transacao.td < 6 && transacao.tr < 3)
+        (this.transacao.td <= 19 && this.transacao.tr < 2) ||
+        (this.transacao.td < 6 && this.transacao.tr < 3)
       ) {
-        transacao.complexidade = ComplexidadeEnum.BAIXA;
+        this.transacao.complexidade = ComplexidadeEnum.BAIXA;
       } else if (
-        (transacao.td < 6 && transacao.tr <= 3) ||
-        (transacao.td <= 19 && transacao.tr <= 3) ||
-        (transacao.td > 19 && transacao.tr < 2)
+        (this.transacao.td < 6 && this.transacao.tr <= 3) ||
+        (this.transacao.td <= 19 && this.transacao.tr <= 3) ||
+        (this.transacao.td > 19 && this.transacao.tr < 2)
       ) {
-        transacao.complexidade = ComplexidadeEnum.MEDIA;
+        this.transacao.complexidade = ComplexidadeEnum.MEDIA;
       } else {
-        transacao.complexidade = ComplexidadeEnum.ALTA;
+        this.transacao.complexidade = ComplexidadeEnum.ALTA;
       }
     }
   }
 
   analisaPF() {
-    const transacao = this.contagemItem as Transacao;
-    switch (transacao.funcao) {
-      case FuncaoTransacaoEnum.EE:
-        switch (transacao.complexidade) {
-          case ComplexidadeEnum.BAIXA:
-            transacao.pf = 3;
-            break;
-          case ComplexidadeEnum.MEDIA:
-            transacao.pf = 4;
-            break;
-          case ComplexidadeEnum.ALTA:
-            transacao.pf = 6;
-            break;
-        }
-        break;
-      case FuncaoTransacaoEnum.CE:
-        switch (transacao.complexidade) {
-          case ComplexidadeEnum.BAIXA:
-            transacao.pf = 3;
-            break;
-          case ComplexidadeEnum.MEDIA:
-            transacao.pf = 4;
-            break;
-          case ComplexidadeEnum.ALTA:
-            transacao.pf = 6;
-            break;
-        }
-        break;
-      case FuncaoTransacaoEnum.SE:
-        switch (transacao.complexidade) {
-          case ComplexidadeEnum.BAIXA:
-            transacao.pf = 4;
-            break;
-          case ComplexidadeEnum.MEDIA:
-            transacao.pf = 5;
-            break;
-          case ComplexidadeEnum.ALTA:
-            transacao.pf = 7;
-            break;
-        }
-        break;
-    }
+    const pfValorArray = {
+      EE: { BAIXA: 3, MEDIA: 4, ALTA: 6 },
+      CE: { BAIXA: 3, MEDIA: 4, ALTA: 6 },
+      SE: { BAIXA: 4, MEDIA: 5, ALTA: 7 },
+    };
+    this.transacao.pf =
+      pfValorArray[this.transacao.funcao][this.transacao.complexidade];
   }
 }

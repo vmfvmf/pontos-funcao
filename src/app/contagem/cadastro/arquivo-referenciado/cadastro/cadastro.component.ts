@@ -1,14 +1,14 @@
-import { AbstractContagemItemService } from "./../../../contagem-item.service";
-
+import { ArquivoReferenciadoService } from './../arquivo-referenciado.service';
 import { ArquivoReferenciado, FuncaoArquivoReferenciadoEnum } from "../arquivo-referenciado";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { Coluna, Tabela } from "../tabela";
-import { MessageService } from "pje-componentes";
 import {
   FuncoesArquivoREFERENCIADO,
   ComplexidadeEnum
 } from "../../../abstract-contagem-item";
+import { MessageService } from '../../../../shared/Service/message.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: "app-contagem-cadastro-arquivo-referenciado-cadastro",
@@ -19,18 +19,21 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
   arquivoReferenciado: ArquivoReferenciado = new ArquivoReferenciado();
   funcoes: string[] = FuncoesArquivoREFERENCIADO;
   novaTabela: Tabela = new Tabela();
-  novaColuna: Coluna = new Coluna({});
+  novaColuna: Coluna = new Coluna();
   tabelasExcluir: Tabela[] = [];
   colunasExcluir: Coluna[] = [];
   selectedTabelaIndex: number = 0;
+  somenteLeitura = false;
+  @ViewChild('f') public form: NgForm;
+
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    public data: { arquivoReferenciado: ArquivoReferenciado },
+    public data: { arquivoReferenciado: ArquivoReferenciado, somenteLeitura: boolean },
     public dialogRef: MatDialogRef<ArquivoReferenciadoCadastroComponent>,
-    private msgService: MessageService,
-    private abstractContagemItemService: AbstractContagemItemService
+    private msgService: MessageService
   ) {
     this.arquivoReferenciado = data.arquivoReferenciado;
+    this.somenteLeitura = data.somenteLeitura;
   }
 
   ngOnInit(): void {
@@ -75,63 +78,17 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
     ) {
       this.arquivoReferenciado.tabelas[
         this.selectedTabelaIndex
-      ].colunas.push({
-        nome: this.novaColuna.nome,
-      });
+      ].colunas.push(new Coluna(this.novaColuna.nome));
       this.novaColuna.nome = "";
     }
   }
 
   salvar() {
-    // forkJoin(this.tabelasExcluir.map(t => this.tabelaService.apagar(t.id)))
-    // .subscribe( result => {
-    //   if (result) {
-    //     console.log("tabelas apagadas", result);
-    //   }
-    // });
-
-    // forkJoin(this.colunasExcluir.map(c => this.colunaService.apagar(c.id)))
-    // .subscribe( result => {
-    //   if (result) {
-    //     console.log("colunas apagadas", result);
-    //   }
-    // });
-
+    if (this.form.invalid) {
+      return;
+    }
     this.atualizaContagem();
-
-    this.abstractContagemItemService.salvar(this.arquivoReferenciado).subscribe(
-      (response) => {
-        this.arquivoReferenciado = response as ArquivoReferenciado;
-        this.msgService.success("Registro salvo com sucesso.");
-        console.log("Response novo objeto ContagemItem", response);
-      },
-      (error) => {
-        this.msgService.error("Ocorreu um erro ao salvar!");
-        console.log("Erro novo objeto ContagemItem", error);
-      }
-    );
-  }
-
-  apagarTabela(tabela: Tabela) {
-    const index = this.arquivoReferenciado.tabelas.findIndex(
-      (t) => (t.nome === tabela.nome)
-    );
-    if (index > -1) {
-      if (tabela.id) this.tabelasExcluir.push(tabela);
-      this.arquivoReferenciado.tabelas.splice(index, 1);
-    }
-  }
-
-  apagarColuna(coluna: Coluna) {
-    const index = this.arquivoReferenciado.tabelas[
-      this.selectedTabelaIndex
-    ].colunas.findIndex((c) => (c.nome === coluna.nome));
-    if (index > -1) {
-      if (coluna.id) this.colunasExcluir.push(coluna);
-      this.arquivoReferenciado.tabelas[
-        this.selectedTabelaIndex
-      ].colunas.splice(index, 1);
-    }
+    this.dialogRef.close(this.arquivoReferenciado);
   }
 
   atualizaContagem() {

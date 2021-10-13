@@ -7,57 +7,56 @@
   </mat-card-title>
 
 <div class="conteudo">
-  <!-- ------------------------ TABELA ------------------------------>
   <mat-card class="card-tabela" style="min-width: 800px">
     <mat-card-content>
-      <pje-data-table [totalRegistros]="1" [value]="contagens"
+      <vmf-data-table [totalRegistros]="1" [value]="contagens"
         [tamanhos]="[10, 20, 50, 75, 100]" listrado="true" linhaDivisoraPaginador="true"
         tamanhoPadrao="10" mensagemVazio="Nenhum registro encontrado" nameTabela="Contagens"
         [exibePaginador]="true">
 
-        <pje-data-column header="Escopo" value="escopo" [ordenar]="false">
+        <vmf-data-column header="Escopo" value="escopo" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>
             {{ contagem.escopo + getEscopoInfo(contagem)}}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <!-- <pje-data-column header="DED" value="ded" [ordenar]="false">
+        <!-- <vmf-data-column header="DED" value="ded" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>
             {{ contagem.sprint.ded.numero }} - {{ contagem.sprint.ded.descricao }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="Nº Sprint" value="numero" [ordenar]="false">
+        <vmf-data-column header="Nº Sprint" value="numero" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>
             {{ contagem.sprint.numero }}
           </ng-template>
-        </pje-data-column> -->
+        </vmf-data-column> -->
 
-        <pje-data-column header="Sistema" value="sistema" [ordenar]="false">
+        <vmf-data-column header="Sistema" value="sistema" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>
             {{ contagem.sistema?.nome }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="Contador" value="contador" [ordenar]="false">
+        <vmf-data-column header="Contador" value="contador" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>
             {{ contagem.contador }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="Data contagem" value="dataContagem" [ordenar]="false">
+        <vmf-data-column header="Data contagem" value="dataContagem" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>
             {{ contagem.dataContagem | date:'dd/MM/yyyy' }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="Total PF" value="totalPf" [ordenar]="false">
+        <vmf-data-column header="Total PF" value="totalPf" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>
-            {{ contagem.totalPf }}
+            {{ contagem.totalPontosFuncao }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="" [ordenar]="false">
+        <vmf-data-column header="" [ordenar]="false">
           <ng-template let-contagem="rowData" #body>
 
             <app-edit-button [routerLink]='"editar/" + contagem.id' complemento="Contagem" [objeto]="contagem">
@@ -67,9 +66,9 @@
             </app-delete-button>
 
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-      </pje-data-table>
+      </vmf-data-table>
 
     </mat-card-content>
   </mat-card>

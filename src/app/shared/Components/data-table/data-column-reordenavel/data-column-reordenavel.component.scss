@@ -1,0 +1,76 @@
+
+.botoes-reordenacao {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+
+    &.botoes-vertical {
+        flex-direction: column;
+        justify-content: center;
+        margin-top: 5px;
+        margin-bottom: 5px;
+
+        &.botoes-tamanho-2x {
+            > .mover-para-cima,
+            > .mover-para-baixo {
+                height: 20px;
+            }
+
+            button.mover-para-baixo {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+            }
+        }
+    }
+    &.botoes-horizontal {
+        flex-direction: row;
+    }
+
+    > * {
+        flex-grow: 1;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .drag-handle {
+        z-index: 2;
+    }
+
+    .mover-para-cima i {
+        vertical-align: bottom;
+    }
+    .mover-para-baixo i {
+        vertical-align: baseline;
+    }
+
+    // Botões para alterar ordem das linhas (mover para cima e mover para baixo)
+    button {
+        border: none; // Remove o desenho dos botões (exibindo somente os ícones)
+        background-color: transparent;
+        padding: 0px;
+        cursor: pointer;
+    }
+
+    // Botões para reordenar ficarão em cor mais clara e, ao passar mouse sobre eles, receberão destaque
+    .destaque-cor-hover {
+        color: gray;
+    }
+    .destaque-cor-hover:hover {
+        color: black;
+    }
+    [disabled],
+    [disabled]:hover,
+    [disabled]:active {
+        color: #b4b4b4;
+        cursor: default;
+    }
+
+    // Ícone de "três pontos" (ellipsis), exibido na parte esquerda de cada linha, para permitir reordenação por drag and drop
+    .drag-handle {
+        cursor: -webkit-grab;
+        cursor: grab;
+        display: block;
+    }
+}

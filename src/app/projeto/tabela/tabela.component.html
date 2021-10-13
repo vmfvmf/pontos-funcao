@@ -1,0 +1,48 @@
+<mat-card  style="min-width: 800px">
+  <mat-card-title fxLayoutAlign="space-between center">Gerenciamento de Projetos
+
+    <app-new-button (newEmitter)="novoEditar($event)" complemento="Projeto">
+    </app-new-button>
+
+  </mat-card-title>
+
+  <mat-card class="card-tabela">
+  <mat-card-content>
+    <vmf-data-table
+      [totalRegistros]="1"
+      [value]="projetos"
+      [tamanhos]="[10, 20, 50, 75, 100]"
+      listrado="true"
+      linhaDivisoraPaginador="true"
+      tamanhoPadrao="10"
+      mensagemVazio="Nenhum registro encontrado"
+      nameTabela="Parâmetros Gerais"
+      [exibePaginador]="true"
+    >
+      <vmf-data-column header="Identificador" value="identificador" [ordenar]="false">
+        <ng-template let-projeto="rowData" #body>
+          {{ projeto.identificador }}
+        </ng-template>
+      </vmf-data-column>
+
+      <vmf-data-column header="Descrição" value="descricao" [ordenar]="false">
+        <ng-template let-projeto="rowData" #body>
+          {{ projeto.descricao }}
+        </ng-template>
+      </vmf-data-column>
+
+      <vmf-data-column header="" [ordenar]="false">
+        <ng-template let-projeto="rowData" #body>
+
+          <app-edit-button (editEmitter)="novoEditar($event)" complemento="Projeto" [objeto]="projeto">
+          </app-edit-button>
+
+          <app-delete-button (deleteEmitter)="apagar($event)" complemento="Projeto" [id]="projeto.id">
+          </app-delete-button>
+
+        </ng-template>
+      </vmf-data-column>
+    </vmf-data-table>
+  </mat-card-content>
+  </mat-card>
+</mat-card>

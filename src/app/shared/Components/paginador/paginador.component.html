@@ -1,0 +1,33 @@
+<div class="mat-table-pagination" [class.linha-horizontal]="linhaDivisoraPaginador" align="right">
+  <span *ngIf="!ocultarLabelPagina">Página:</span>
+  <mat-form-field  *ngIf="!ocultarLabelPagina" class="form-select">
+    <mat-select  [(ngModel)]="pagina" (selectionChange)="mudarPagina()" ngDefaultControl>
+        <mat-option *ngFor="let numero of paginas" [value]="numero" >{{numero}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <span *ngIf="!ocultarLabelTamanho">Linhas por página:</span>
+    <mat-form-field *ngIf="!ocultarLabelTamanho" class="form-select">
+      <mat-select [(ngModel)]="registrosPorPagina" (selectionChange)="mudarPagina()" ngDefaultControl>
+          <mat-option *ngFor="let tamanho of tamanhosPaginas" [value]="tamanho" >{{tamanho}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  <span class="total-registros">
+    {{registroInicial}} - {{registroFinal}} de {{totalRegistros}}
+  </span>
+  <span>
+    <button mat-button type="button" (click)="primeiraPagina()" aria-label="Primeiro" [disabled]="!temPaginaAnterior">
+      <i class="fa fa-step-backward" aria-hidden="true"></i>
+    </button>
+    <button mat-button type="button" (click)="paginaAnterior()" aria-label="Anterior" [disabled]="!temPaginaAnterior">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </button>
+
+    <button mat-button type="button" (click)="paginaSeguinte()" aria-label="Próximo" [disabled]="!temProximaPagina">
+      <i class="fa fa-chevron-right" aria-hidden="true"></i>
+    </button>
+
+    <button mat-button type="button" (click)="ultimaPagina()" aria-label="Último" [disabled]="!temProximaPagina">
+      <i class="fa fa-step-forward" aria-hidden="true"></i>
+    </button>
+  </span>
+</div>

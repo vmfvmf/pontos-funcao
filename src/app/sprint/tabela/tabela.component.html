@@ -8,7 +8,7 @@
   </mat-card-title>
   <mat-card class="card-tabela">
     <mat-card-content>
-      <pje-data-table
+      <vmf-data-table
         [totalRegistros]="1"
         [value]="sprints"
         [tamanhos]="[10, 20, 50, 75, 100]"
@@ -19,31 +19,31 @@
         nameTabela="Parâmetros Gerais"
         [exibePaginador]="true"
       >
-        <pje-data-column header="DED" value="ded" [ordenar]="false">
+        <vmf-data-column header="Projeto" value="projeto" [ordenar]="false">
           <ng-template let-sprint="rowData" #body>
-            {{ sprint.ded.numero }} - {{ sprint.ded.descricao }}
+            {{ sprint.projeto.identificador }} - {{ sprint.projeto.descricao }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="Nº Sprint" value="numero" [ordenar]="false">
+        <vmf-data-column header="Nº Sprint" value="numero" [ordenar]="false">
           <ng-template let-sprint="rowData" #body>
             {{ sprint.numero }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="Início" value="inicio" [ordenar]="false">
+        <vmf-data-column header="Início" value="inicio" [ordenar]="false">
           <ng-template let-sprint="rowData" #body>
             {{ sprint.dataInicio | date: "dd/MM/yyyy" }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="Fim" value="fim" [ordenar]="false">
+        <vmf-data-column header="Fim" value="fim" [ordenar]="false">
           <ng-template let-sprint="rowData" #body>
             {{ sprint.dataFim | date: "dd/MM/yyyy" }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column
+        <vmf-data-column
           header="Dias úteis"
           value="diasUteis"
           [ordenar]="false"
@@ -51,9 +51,9 @@
           <ng-template let-sprint="rowData" #body>
             {{ sprint.diasUteis }}
           </ng-template>
-        </pje-data-column>
+        </vmf-data-column>
 
-        <pje-data-column header="" [ordenar]="false">
+        <vmf-data-column header="" [ordenar]="false">
           <ng-template let-sprint="rowData" #body>
 
             <app-edit-button (editEmitter)="novoEditar($event)" complemento="Sprint" [objeto]="sprint">
@@ -63,8 +63,8 @@
             </app-delete-button>
 
           </ng-template>
-        </pje-data-column>
-      </pje-data-table>
+        </vmf-data-column>
+      </vmf-data-table>
     </mat-card-content>
   </mat-card>
 </mat-card>

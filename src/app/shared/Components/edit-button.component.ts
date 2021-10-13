@@ -21,6 +21,9 @@ export class EditButtonComponent implements OnInit {
   @Input()
   objeto: any;
 
+  @Input()
+  somenteLeitura: boolean;
+
   ngOnInit(): void {
   }
 
