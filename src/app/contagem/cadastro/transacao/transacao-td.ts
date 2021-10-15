@@ -1,7 +1,7 @@
 
 import { HttpParams } from "@angular/common/http";
 import { Transacao } from './transacao';
-import { Coluna } from '../arquivo-referenciado/tabela';
+import { Coluna } from '../arquivo-referenciado/coluna';
 
 export enum TipoTransacaoTDEnum {
   ARQUIVO_REFERENCIADO = "ARQUIVO_REFERENCIADO",
@@ -12,9 +12,11 @@ export class TransacaoTD {
   id: number;
   transacao: Transacao;
   coluna: Coluna;
+  criado: Date;
+  modificado: Date;
 
   constructor(transacao?: Transacao){
-    this.transacao = transacao ? transacao : new Transacao();
+    this.transacao = transacao || new Transacao();
   }
 
   public static toHttpParams(iTransacaoTD: TransacaoTD): HttpParams {

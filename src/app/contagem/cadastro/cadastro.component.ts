@@ -1,13 +1,14 @@
-import { Transacao } from './transacao/transacao';
-import { ArquivoReferenciado } from './arquivo-referenciado/arquivo-referenciado';
+import { ContagemCadastroBasicoComponent } from "./cadastro-basico/cadastro-basico.component";
+import { Transacao } from "./transacao/transacao";
+import { ArquivoReferenciado } from "./arquivo-referenciado/arquivo-referenciado";
 
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Contagem } from "../contagem";
 import { ContagemService } from "../contagem.service";
 import { AbstractContagemItem } from "../abstract-contagem-item";
 import { MessageService } from "../../shared/Service/message.service";
-import { NgForm } from '@angular/forms';
+import { NgForm } from "@angular/forms";
 
 @Component({
   selector: "app-contagem-cadastro",
@@ -18,22 +19,43 @@ export class ContagemCadastroComponent implements OnInit {
   contagem: Contagem;
   somaArquivosReferenciados = 0;
   somaTransacoes = 0;
-  @ViewChild('f') public form: NgForm;
+  somenteLeitura = true;
+  versaoComparar: Contagem;
+  @ViewChild("f2") public form2: ContagemCadastroBasicoComponent;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private msgService: MessageService,
     private contagemService: ContagemService
   ) {}
 
-  salvarContagem(resp: {msg: string, item: AbstractContagemItem}) {
-    if(this.form.invalid) {
+  ngOnInit(): void {
+    this.updateData();
+  }
+
+  salvarContagem(resp: { msg: string; item: ArquivoReferenciado | Transacao }) {
+    if (this.form2.form.invalid) {
       return;
     }
     if (resp.item instanceof ArquivoReferenciado) {
-      this.contagem.arquivosReferenciados.push(resp.item);
+      if (resp.item.id) {
+        const i = this.contagem.arquivosReferenciados.findIndex(
+          (arq) => arq.id === resp.item.id
+        );
+        this.contagem.arquivosReferenciados[i] = resp.item;
+      } else {
+        this.contagem.arquivosReferenciados.push(resp.item);
+      }
     } else if (resp.item instanceof Transacao) {
-      this.contagem.transacoes.push(resp.item);
+      if (resp.item.id) {
+        const i = this.contagem.transacoes.findIndex(
+          (trans) => trans.id === resp.item.id
+        );
+        this.contagem.transacoes[i] = resp.item;
+      } else {
+        this.contagem.transacoes.push(resp.item);
+      }
     }
     this.contagemService.salvar(this.contagem).subscribe(
       (response) => {
@@ -49,8 +71,33 @@ export class ContagemCadastroComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
-    this.updateData();
+  criarEsboco() {
+    this.contagemService.criarEsboco(this.contagem.id).subscribe(
+      (response) => {
+        this.router.navigate([`../`, response.id], {
+          relativeTo: this.route,
+        });
+        this.msgService.success("O esboço foi criado com sucesso.");
+      },
+      (error) => {
+        this.msgService.error("Ocorreu um erro ao salvar.");
+        console.log("Erro ao salvar", error);
+      }
+    );
+  }
+
+  versionar() {
+    this.contagemService.versionar(this.contagem.id).subscribe(
+      (response) => {
+        this.contagem = response;
+        this.somenteLeitura = this.contagem.estado === "V";
+        this.msgService.success("A contagem foi versionada com sucesso.");
+      },
+      (error) => {
+        this.msgService.error("Ocorreu um erro ao salvar.");
+        console.log("Erro ao salvar", error);
+      }
+    );
   }
 
   updateData() {
@@ -60,6 +107,7 @@ export class ContagemCadastroComponent implements OnInit {
           (response) => {
             console.log("Contagem recuperada", response);
             this.contagem = response;
+            this.somenteLeitura = this.contagem.estado === "V";
           },
           (error) => {
             this.msgService.error("Ocorreu um erro ao recuperar contagem.");
@@ -70,5 +118,10 @@ export class ContagemCadastroComponent implements OnInit {
         this.contagem = new Contagem();
       }
     });
+  }
+
+  compararVersao(versao: Contagem): void {
+    this.versaoComparar = versao;
+    this.somenteLeitura = true;
   }
 }

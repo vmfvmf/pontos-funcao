@@ -11,6 +11,8 @@ export enum FuncaoArquivoReferenciadoEnum{
 export class ArquivoReferenciado extends AbstractContagemItem {
   tabelas: Tabela[];
   funcao: FuncaoArquivoReferenciadoEnum;
+
+  // USO DO FRONTEND
   isChecked: boolean;
 
   constructor(contagem?: Contagem) {

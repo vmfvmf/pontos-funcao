@@ -31,11 +31,11 @@ export abstract class AbstractContagemItem {
   tr: number;
   complexidade: ComplexidadeEnum;
   pf: number;
-  contado: boolean;
+  criado: Date;
+  modificado: Date;
 
   constructor(contagem?: Contagem){
     this.contagem = contagem? contagem : new Contagem()
-    this.contado = false;
   }
 
   public static toHttpParams(iContagem: AbstractContagemItem): HttpParams {

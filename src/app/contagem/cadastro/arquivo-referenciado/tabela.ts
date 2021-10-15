@@ -1,11 +1,15 @@
 import { HttpParams } from "@angular/common/http";
-import { AbstractContagemItem } from "../../abstract-contagem-item";
+import { Coluna } from "./coluna";
 
 
 export class Tabela {
   id: number;
   nome: string;
   colunas: Coluna[];
+  criado: Date;
+  modificado: Date;
+
+  // APENAS DO FRONTEND
   isChecked: boolean;
 
   constructor(nome?: string){
@@ -32,28 +36,3 @@ export class Tabela {
     }
 }
 
-export class Coluna {
-  id: number;
-  nome: string;
-  tabela: Tabela;
-  isChecked: boolean;
-
-  constructor(nome?: string){
-    this.nome = nome;
-  }
-
-  public static toHttpParams(c: Coluna): HttpParams {
-    let httpParams = new HttpParams();
-
-      if (c.id !== undefined) {
-        httpParams = httpParams.set('id', c.id.toString());
-      }
-      if (c.nome !== undefined) {
-        httpParams = httpParams.set('number', c.nome.toString());
-      }
-      if (c.tabela !== undefined) {
-        httpParams = httpParams.set('tabela.id', c.tabela.id.toString());
-      }
-      return httpParams;
-    }
-}

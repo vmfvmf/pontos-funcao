@@ -10,10 +10,13 @@
   Arquivo Referenciado</mat-card-title
 >
 <form
-  exeFormValidationFocusInvalidInput
-  id="ngForm"
-  (ngSubmit)="salvar()"
-  #f="ngForm"
+validateFocusInvalidInput
+      id="ngForm"
+      #f="ngForm"
+      (ngSubmit)="salvar()"
+      [vmf-read-only]="somenteLeitura"
+      [vmf-read-only-hide]="['incluirTabela', 'deleteTabela', 'incluirColuna', 'deleteColuna']"
+      (keydown.enter)="$event.preventDefault()"
 >
   <mat-card-content fxLayoutGap="20px">
     <mat-form-field>
@@ -21,7 +24,6 @@
       <input
         matInput
         required
-        [disabled]="somenteLeitura"
         placeholder="Nome"
         name="nome"
         #nome="ngModel"
@@ -34,7 +36,6 @@
       <mat-label>Função</mat-label>
       <mat-select
         required
-        [disabled]="somenteLeitura"
         name="funcao"
         #funcao="ngModel"
         [(ngModel)]="arquivoReferenciado.funcao"
@@ -52,27 +53,26 @@
       fxLayoutGap="20px"
       fxLayout="row"
       fxLayoutAlign="start center"
-      ><span>Tabelas</span>
+      ><span *ngIf="arquivoReferenciado.tabelas[0]">Tabelas</span>
 
       <mat-form-field
         appearance="legacy"
         style="font-size: 14px !important"
-        *ngIf="!somenteLeitura"
+        name="incluirTabela"
+        fxLayout="row"
       >
         <mat-label>Incluir tabela</mat-label>
         <input
-          [disabled]="somenteLeitura"
           matInput
           [(ngModel)]="novaTabela.nome"
           (keyup.enter)="incluirTabela()"
           name="novotrnome"
           placeholder="Ex. Tabela Projetos"
         />
-        <mat-icon
+        <mat-icon (click)="incluirTabela()"
           style="cursor: pointer"
           matTooltip="clique aqui para adicionar"
           matSuffix
-          (click)="incluirTabela()"
           >download</mat-icon
         >
       </mat-form-field>
@@ -83,8 +83,9 @@
         <ng-template mat-tab-label>
           {{ t.nome }}
           <app-delete-button
-            *ngIf="index === selectedTabelaIndex && !somenteLeitura"
-            (deleteEmitter)="apagarTabela($event)"
+            name="deleteTabela"
+            *ngIf="index === selectedTabelaIndex"
+            (deleteEmitter)="apagarTabela(t)"
             complemento="Tabela"
             [id]="t"
           >
@@ -94,15 +95,16 @@
           fxLayoutGap="20px"
           fxLayout="row"
           fxLayoutAlign="start center"
-          ><span>Colunas</span>
+          ><span *ngIf="t.colunas[0]">Colunas</span>
           <mat-form-field
             style="font-size: 14px !important"
             appearance="legacy"
-            *ngIf="!somenteLeitura"
+            name="incluirColuna"
           >
             <mat-label>Incluir coluna</mat-label>
             <input
               matInput
+              name="novaColuna"
               [(ngModel)]="novaColuna.nome"
               (keyup.enter)="adicionarColuna()"
               placeholder="Ex. Coluna Nome"
@@ -124,8 +126,8 @@
           >
             <span style="width: 200px">{{ c.nome }}</span>
             <app-delete-button
-              *ngIf="!somenteLeitura"
-              (deleteEmitter)="apagarColuna($event)"
+              name="deleteColuna"
+              (deleteEmitter)="apagarColuna({tabela: t, coluna: c})"
               complemento="Coluna"
               [id]="c"
             >
@@ -135,13 +137,12 @@
       </mat-tab>
     </mat-tab-group>
   </mat-card-content>
-  <mat-card-actions mat-dialog-actions align="center">
+  <mat-card-actions mat-dialog-actions align="center" fxLayoutGap="20px">
     <button
-      *ngIf="!somenteLeitura"
       mat-button
       mat-flat-button
       color="primary"
-      (click)="salvar()"
+      type="submit"
     >
       Salvar
     </button>

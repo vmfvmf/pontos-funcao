@@ -4,7 +4,7 @@ import {
   ContagemEscopoEnum,
   contagemEscoposArray,
 } from "./../../contagem-escopo.enum";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Projeto } from "../../../projeto/projeto";
 import { ProjetoService } from "../../../projeto/projeto.service";
 import { Sistema } from "../../../sistema/sistema";
@@ -14,7 +14,7 @@ import { SprintService } from "../../../sprint/sprints.service";
 import { Contagem } from "../../contagem";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MessageService } from "../../../shared/Service/message.service";
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder, NgForm } from "@angular/forms";
 
 @Component({
   selector: "app-contagem-cadastro-basico",
@@ -28,11 +28,27 @@ export class ContagemCadastroBasicoComponent implements OnInit {
   sistemas: Sistema[] = [];
   projetos: Projeto[] = [];
   sprints: Sprint[] = [];
+  versoes: Contagem[] = [];
+  selectedProjeto: Projeto;
+  versaoComparar: Contagem;
+
+  @ViewChild('f') public form: NgForm;
+
   @Input()
   somenteLeitura = true;
+
   @Input()
   contagem: Contagem = new Contagem();
-  selectedProjeto: Projeto;
+
+  @Output()
+  versionarEmitter: EventEmitter<void> = new EventEmitter();
+
+  @Output()
+  criarEsbocoEmitter: EventEmitter<void> = new EventEmitter();
+
+  @Output()
+  compararVersaoEmitter: EventEmitter<Contagem> = new EventEmitter();
+
 
   constructor(
     private sistemaService: SistemaService,
@@ -69,6 +85,9 @@ export class ContagemCadastroBasicoComponent implements OnInit {
         console.log("Erro ao recuperar projetos", error);
       }
     );
+    this.contagemService.listarVersoes(this.contagem).subscribe(
+      versoes => this.versoes = versoes
+    );
     if (this.contagem.sprint?.id) {
       this.contagem.projeto = this.contagem.sprint.projeto;
       this.sprintService.listar(new Sprint(this.contagem.sprint.projeto)).subscribe(
@@ -77,29 +96,15 @@ export class ContagemCadastroBasicoComponent implements OnInit {
         }
       );
     }
+    this.compararVersaoEmitter.subscribe(versao => this.versaoComparar = versao);
   }
 
   salvar() {
+    if (this.form.invalid) {
+      return;
+    }
     this.contagemService.salvar(this.contagem).subscribe(
       (response) => {
-        this.contagem = response;
-        this.msgService.success("O registro foi salvo com sucesso.");
-        if (!this.contagem.id) {this.router.navigate(["../editar/", response.id], {
-            relativeTo: this.route,
-          });
-        }
-      },
-      (error) => {
-        this.msgService.error("Ocorreu um erro ao salvar.");
-        console.log("Erro ao salvar", error);
-      }
-    );
-  }
-
-  versionar() {
-    this.contagemService.versionar(this.contagem.id).subscribe(
-      (response) => {
-        this.contagem = response;
         this.msgService.success("O registro foi salvo com sucesso.");
         if (!this.contagem.id) {this.router.navigate(["../editar/", response.id], {
             relativeTo: this.route,

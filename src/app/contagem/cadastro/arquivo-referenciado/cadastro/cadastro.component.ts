@@ -2,13 +2,14 @@ import { ArquivoReferenciadoService } from './../arquivo-referenciado.service';
 import { ArquivoReferenciado, FuncaoArquivoReferenciadoEnum } from "../arquivo-referenciado";
 import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { Coluna, Tabela } from "../tabela";
+import { Tabela } from "../tabela";
 import {
   FuncoesArquivoREFERENCIADO,
   ComplexidadeEnum
 } from "../../../abstract-contagem-item";
 import { MessageService } from '../../../../shared/Service/message.service';
 import { NgForm } from '@angular/forms';
+import { Coluna } from '../coluna';
 
 @Component({
   selector: "app-contagem-cadastro-arquivo-referenciado-cadastro",
@@ -47,7 +48,7 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
       !this.novaTabela.nome
     ) {
       this.msgService.error(
-        "Preencha o nome, subtipo e tabela antes de adicionar tabela."
+        "Preencha o nome, função e tabela antes de adicionar tabela."
       );
       return;
     }
@@ -83,8 +84,26 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
     }
   }
 
+  apagarTabela(tabela: Tabela) {
+    const i = this.arquivoReferenciado.tabelas.findIndex(tab => tab.id === tabela.id);
+    this.arquivoReferenciado.tabelas.splice(i, 1);
+  }
+
+  apagarColuna(dados: {tabela: Tabela, coluna: Coluna}) {
+    const i = dados.tabela.colunas.findIndex(col => col.id === dados.coluna.id);
+    dados.tabela.colunas.splice(i, 1);
+  }
+
   salvar() {
     if (this.form.invalid) {
+      return;
+    }
+    if (!this.arquivoReferenciado.tabelas[0]) {
+      this.msgService.error("Adicione uma tabela e uma coluna para salvar.");
+      return;
+    }
+    if (this.arquivoReferenciado.tabelas.find(tab => !tab.colunas[0])) {
+      this.msgService.error("Não são permitidas tabelas sem colunas, adicione colunas para todas tabelas ou exclua as tabelas sem colunas.");
       return;
     }
     this.atualizaContagem();

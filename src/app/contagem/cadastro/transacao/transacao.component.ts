@@ -8,6 +8,7 @@ import { Grupo } from './grupo/grupo';
 import { AbstractContagemItem, TipoContagemItemEnum } from '../../abstract-contagem-item';
 import { TransacaoService } from './transacao.service';
 import { MessageService } from '../../../shared/Service/message.service';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-contagem-cadastro-transacao',
@@ -20,22 +21,27 @@ export class TransacaoComponent implements OnInit {
   subTotalPf = 0;
 
   @Output()
-  salvarContagem = new EventEmitter<String>();
+  salvarContagem = new EventEmitter<{msg: String, item?: Transacao}>();
 
   @Input()
   somenteLeitura = true;
+
+  @Input()
+  transacoesComparar: Transacao[] = [];
 
   constructor(
     public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
+    of(this.transacoesComparar).subscribe(tsAlterados => {
+
+    });
   }
 
   novoEditar(transacao?: Transacao) {
     if (!transacao) {
       transacao = new Transacao();
-      this.contagem.transacoes.push(transacao);
     }
     const dialogRef = this.dialog.open(TransacaoCadastroComponent, {
       width: '600px',
@@ -44,7 +50,7 @@ export class TransacaoComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.salvarContagem.emit("Transação incluída/alterada com sucesso!");
+        this.salvarContagem.emit({msg: "Transação incluída/alterada com sucesso!", item: result});
       }
     });
   }
@@ -65,7 +71,7 @@ export class TransacaoComponent implements OnInit {
     }
     const i = this.contagem.transacoes.findIndex(t => t.id === transacaoId);
     this.contagem.transacoes.splice(i, 1);
-    this.salvarContagem.emit("Transação excluída com sucesso!");
+    this.salvarContagem.emit({msg: "Transação excluída com sucesso!"});
   }
 
 }

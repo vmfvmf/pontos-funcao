@@ -1,9 +1,12 @@
-mat-selection-list {
-  max-height: 200px;
-  flex-grow: 1;
+.overflow {
+  height: 100px;
   overflow: auto;
 }
 
 .mat-card-title{
   font-family: 'Open Sans', Arial, Verdana, sans-serif !important;
+}
+
+.margin5 {
+  margin-right: 5px !important;
 }

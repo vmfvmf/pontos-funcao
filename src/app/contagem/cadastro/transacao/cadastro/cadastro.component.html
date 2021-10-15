@@ -8,110 +8,128 @@
   }}
   Transação</mat-card-title
 >
-<mat-card-content>
-  <div fxLayout="row" fxLayoutGap="20px">
-    <mat-form-field class="example-full-width">
-      <mat-label>Nome</mat-label>
-      <input
-        [disabled]="somenteLeitura"
-        matInput
-        placeholder="Nome"
-        name="nome"
-        [(ngModel)]="transacao.nome"
-      />
-    </mat-form-field>
+<form
+validateFocusInvalidInput
+      id="ngForm"
+      #f="ngForm"
+      (ngSubmit)="salvar()"
+      [vmf-read-only]="somenteLeitura"
+      (keydown.enter)="$event.preventDefault()"
+>
+  <mat-card-content>
+    <div fxLayout="row" fxLayoutGap="20px">
+      <mat-form-field class="example-full-width">
+        <mat-label>Nome</mat-label>
+        <input
+          required
+          #nome="ngModel"
+          matInput
+          placeholder="Nome"
+          name="nome"
+          [(ngModel)]="transacao.nome"
+        />
+        <mat-error *ngIf="nome.invalid">O nome é obrigatório.</mat-error>
+      </mat-form-field>
 
-    <mat-form-field style="width: 100px">
-      <mat-label>Tipo</mat-label>
-      <mat-select
-        [disabled]="somenteLeitura"
-        name="subtipo"
-        [(ngModel)]="transacao.funcao"
-      >
-        <mat-option *ngFor="let funcao of funcoes" [value]="funcao">{{
-          funcao
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field class="example-full-width">
-      <mat-label>Grupo</mat-label>
-      <mat-select
-        [disabled]="somenteLeitura"
-        name="grupo"
-        [(ngModel)]="transacao.grupo.id"
-      >
-        <mat-option *ngFor="let grupo of grupos" [value]="grupo.id">{{
-          grupo.nome
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-
-  <div fxLayout="column" style="margin-top: 20px; margin-bottom: 20px">
-    <mat-checkbox [disabled]="somenteLeitura" [(ngModel)]="transacao.acao">
-      Ação é disparada pelo usuário
-    </mat-checkbox>
-    <mat-checkbox [disabled]="somenteLeitura" [(ngModel)]="transacao.mensagem">
-      Exibe mensagem de confirmação
-    </mat-checkbox>
-  </div>
-
-  <mat-card-title>Arquivos referenciados</mat-card-title>
-
-  <mat-tab-group [(selectedIndex)]="selectedARIndex">
-    <mat-tab *ngFor="let arquivoReferenciado of arquivosReferenciados">
-      <ng-template mat-tab-label>
-        <mat-checkbox
-          [disabled]="somenteLeitura"
-          (change)="checkFuncaoDadosValue(arquivoReferenciado)"
-          [(ngModel)]="arquivoReferenciado.isChecked"
+      <mat-form-field style="width: 100px">
+        <mat-label>Função</mat-label>
+        <mat-select
+          required
+          #funcao="ngModel"
+          name="funcao"
+          [(ngModel)]="transacao.funcao"
         >
-        </mat-checkbox>
-        {{ arquivoReferenciado.nome }}
-      </ng-template>
-      <mat-divider></mat-divider>
-      <mat-card-header>
-        <h2>Tabelas do arquivo referenciado {{ arquivoReferenciado.nome }}</h2>
-      </mat-card-header>
-      <mat-tab-group [(selectedIndex)]="selectedTRIndex">
-        <mat-tab *ngFor="let tabela of arquivoReferenciado.tabelas">
-          <ng-template mat-tab-label fxLayoutGap="20px">
-            <mat-checkbox
-              [disabled]="somenteLeitura"
-              (change)="checkTabelasValue(tabela)"
-              [(ngModel)]="tabela.isChecked"
-            >
-            </mat-checkbox>
-            {{ tabela.nome }}
-          </ng-template>
-          <mat-divider></mat-divider>
-          <h2>Colunas da tabela {{ tabela.nome }}</h2>
-          <div fxLayoutGap="20px">
-            <mat-checkbox
-              [disabled]="somenteLeitura"
-              (change)="atualizaCheckBoxInterface()"
-              [(ngModel)]="col.isChecked"
-              *ngFor="let col of tabela.colunas"
-            >
-              {{ col.nome }}
-            </mat-checkbox>
-          </div>
-        </mat-tab>
-      </mat-tab-group>
-    </mat-tab>
-  </mat-tab-group>
-</mat-card-content>
+          <mat-option *ngFor="let funcao of funcoes" [value]="funcao">{{
+            funcao
+          }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="funcao.invalid">A função é obrigatória.</mat-error>
+      </mat-form-field>
 
-<mat-card-actions mat-dialog-actions align="center">
-  <button
-    *ngIf="!somenteLeitura"
-    mat-button
-    mat-flat-button
-    color="primary"
-    (click)="salvar()"
-  >
-    Salvar
-  </button>
-  <app-close-cancel-button [somenteLeitura]="somenteLeitura"></app-close-cancel-button>
-</mat-card-actions>
+      <mat-form-field class="example-full-width">
+        <mat-label>Grupo</mat-label>
+        <mat-select
+          name="grupo"
+          [(ngModel)]="transacao.grupo.id"
+        >
+          <mat-option *ngFor="let grupo of grupos" [value]="grupo.id">{{
+            grupo.nome
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="column" style="margin-top: 20px; margin-bottom: 20px">
+      <mat-checkbox name="ckboxColAcao" [disabled]="somenteLeitura" [(ngModel)]="transacao.acao">
+        Ação é disparada pelo usuário
+      </mat-checkbox>
+      <mat-checkbox
+        name="ckboxColMsg"
+        [(ngModel)]="transacao.mensagem"
+      >
+        Exibe mensagem de confirmação
+      </mat-checkbox>
+    </div>
+
+    <mat-card-title>Arquivos referenciados</mat-card-title>
+
+    <mat-tab-group [(selectedIndex)]="selectedARIndex">
+      <mat-tab *ngFor="let arquivoReferenciado of arquivosReferenciados">
+
+        <ng-template mat-tab-label>
+          <mat-checkbox
+            class="margin5"
+            (change)="checkFuncaoDadosValue(arquivoReferenciado)"
+            [(ngModel)]="arquivoReferenciado.isChecked"
+            [name]="'ckboxAR' + arquivoReferenciado.id"
+          >
+          </mat-checkbox>
+          {{ arquivoReferenciado.nome }}
+        </ng-template>
+
+        <mat-card-header>
+          <h2>
+            Tabelas do arquivo referenciado {{ arquivoReferenciado.nome }}
+          </h2>
+        </mat-card-header>
+        <mat-tab-group [(selectedIndex)]="selectedTRIndex">
+          <mat-tab *ngFor="let tabela of arquivoReferenciado.tabelas">
+
+            <ng-template mat-tab-label>
+              <mat-checkbox
+                class="margin5"
+                (change)="checkTabelasValue(tabela)"
+                [(ngModel)]="tabela.isChecked"
+                [name]="'ckboxTab' + tabela.id"
+              >
+              </mat-checkbox>
+              {{ tabela.nome }}
+            </ng-template>
+
+            <h2>Colunas da tabela {{ tabela.nome }}</h2>
+
+            <div class="overflow" fxLayoutGap="30px">
+              <mat-checkbox
+                (change)="atualizaCheckBoxInterface()"
+                [(ngModel)]="col.isChecked"
+                *ngFor="let col of tabela.colunas"
+                [name]="'ckboxCol' + col.id"
+              >
+                {{ col.nome }}
+              </mat-checkbox>
+            </div>
+
+          </mat-tab>
+        </mat-tab-group>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+  <mat-card-actions mat-dialog-actions align="center" fxLayoutGap="20px">
+    <button mat-button mat-flat-button color="primary">
+      Salvar
+    </button>
+    <app-close-cancel-button
+      [somenteLeitura]="somenteLeitura"
+    ></app-close-cancel-button>
+  </mat-card-actions>
+</form>

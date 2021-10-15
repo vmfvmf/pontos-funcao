@@ -1,12 +1,13 @@
 import { FuncaoTransacaoEnum } from "./../../../abstract-contagem-item";
 import { TransacaoTDService } from "./../transacao-td.service";
 import { ArquivoReferenciado } from "./../../arquivo-referenciado/arquivo-referenciado";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import {
   ComplexidadeEnum,
   FuncoesTransacao,
 } from "../../../abstract-contagem-item";
-import { Coluna, Tabela } from "../../arquivo-referenciado/tabela";
+import { Tabela } from "../../arquivo-referenciado/tabela";
+import { Coluna } from "../../arquivo-referenciado/coluna";
 import { Transacao } from "../transacao";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { Contagem } from "../../../../contagem/contagem";
@@ -16,6 +17,7 @@ import { TransacaoTD } from "../transacao-td";
 import { ArquivoReferenciadoService } from "../../arquivo-referenciado/arquivo-referenciado.service";
 import { TransacaoService } from "../transacao.service";
 import { MessageService } from "../../../../shared/Service/message.service";
+import { NgForm } from "@angular/forms";
 
 @Component({
   selector: "app-transacao-cadastro",
@@ -31,21 +33,13 @@ export class TransacaoCadastroComponent implements OnInit {
   selectedTRIndex = 0;
   contagem: Contagem;
   arquivosReferenciados: ArquivoReferenciado[] = [];
-  aberto = false;
-  aberto2 = false;
   somenteLeitura = true;
 
-  exp1(obj: boolean) {
-    this.aberto = obj;
-  }
-  exp2(obj: boolean) {
-    this.aberto2 = obj;
-  }
+  @ViewChild('f') public form: NgForm;
 
   constructor(
     public dialogRef: MatDialogRef<TransacaoCadastroComponent>,
     private grupoService: GrupoService,
-    private arquivoReferenciadoService: ArquivoReferenciadoService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       transacao: Transacao;
@@ -145,6 +139,9 @@ export class TransacaoCadastroComponent implements OnInit {
   }
 
   salvar() {
+    if (this.form.invalid) {
+      return;
+    }
     this.arquivosReferenciados.forEach((ar) => {
       ar.tabelas.forEach((tb) => {
         tb.colunas.forEach((col) => {

@@ -9,11 +9,10 @@ export class FormValidationFocusInvalidInputDirective {
 
   @HostListener('ngSubmit', ['$event.target'])
   onSubmit(): void {
-    if (!this.ngForm.valid) {
+    if (this.ngForm.invalid) {
       let controlComErro;
       for (const key of Object.keys(this.ngForm.controls)) {
         this.ngForm.controls[key].markAsTouched();
-        this.ngForm.controls[key].disable();
         if (this.ngForm.controls[key].hasError('required') && !controlComErro) {
           controlComErro = key;
         }

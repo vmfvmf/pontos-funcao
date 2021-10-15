@@ -17,16 +17,14 @@ export class ArquivoReferenciadoComponent implements OnInit {
   contagem: Contagem;
 
   @Output()
-  salvarContagem = new EventEmitter<{msg: String, item?: AbstractContagemItem}>();
+  salvarContagem = new EventEmitter<{msg: String, item?: ArquivoReferenciado}>();
 
   @Input()
   somenteLeitura = true;
 
   subTotalPf = 0;
   constructor(
-    public dialog: MatDialog,
-    private arquivoReferenciadoService: ArquivoReferenciadoService,
-    private msgService: MessageService
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -50,7 +48,8 @@ export class ArquivoReferenciadoComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.salvarContagem.emit({msg: "Arquivo referenciado adicionado com sucesso!", item: result});
+        const itm = Object.assign(new ArquivoReferenciado, result);
+        this.salvarContagem.emit({msg: "Arquivo referenciado adicionado com sucesso!", item: itm});
       }
     });
   }

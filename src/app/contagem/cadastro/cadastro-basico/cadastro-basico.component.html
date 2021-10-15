@@ -1,13 +1,16 @@
 <mat-card>
   <mat-card-title
     >{{
-      contagem.id && somenteLeitura
+      contagem.id && somenteLeitura && versaoComparar
+        ? "Comparar com outra versão de "
+        : contagem.id && somenteLeitura
         ? "Visualizar"
         : contagem.id
         ? "Editar"
         : "Nova"
     }}
     Contagem
+
     <span
       style="
         padding: 2px;
@@ -20,11 +23,20 @@
   </mat-card-title>
 
   <mat-card-content fxLayout="column" fxLayoutGap="20px">
+    <form
+      exeFormValidationFocusInvalidInput
+      id="ngForm"
+      (ngSubmit)="salvar()"
+      #f="ngForm"
+      [vmf-read-only]="somenteLeitura"
+      [vmf-read-only-ignores]="['criarEsboco', 'versoesAnteriores', 'sistema', 'escopo', 'projeto', 'sprint']"
+    >
       <div fxLayout="row" fxLayoutGap="20px">
         <mat-form-field class="example-full-width">
           <mat-label>Escopo</mat-label>
           <mat-select
-            [disabled]="somenteLeitura"
+          [disabled]="contagem.id"
+            required
             name="escopo"
             #escopo="ngModel"
             [(ngModel)]="contagem.escopo"
@@ -34,7 +46,9 @@
               escopoDesc[escopo]
             }}</mat-option>
           </mat-select>
-          <mat-error *ngIf="escopo.invalid">O escopo é obrigatório.</mat-error>
+          <mat-error *ngIf="escopo.errors?.required"
+            >O escopo é obrigatório.</mat-error
+          >
         </mat-form-field>
 
         <mat-form-field
@@ -43,7 +57,8 @@
         >
           <mat-label>Projeto</mat-label>
           <mat-select
-            [disabled]="somenteLeitura"
+            required
+            [disabled]="contagem.id"
             name="projeto"
             #projeto="ngModel"
             [(ngModel)]="contagem.projeto.id"
@@ -53,6 +68,9 @@
               projeto.identificador
             }}</mat-option>
           </mat-select>
+          <mat-error *ngIf="projeto.errors?.required"
+            >O escopo é obrigatório.</mat-error
+          >
         </mat-form-field>
 
         <mat-form-field
@@ -61,8 +79,9 @@
         >
           <mat-label>Sprint</mat-label>
           <mat-select
+            required
+            [disabled]="contagem.id"
             #sprint="ngModel"
-            [disabled]="somenteLeitura"
             name="sprint"
             [(ngModel)]="contagem.sprint.id"
           >
@@ -70,24 +89,22 @@
               sprint.numero
             }}</mat-option>
           </mat-select>
+          <mat-error *ngIf="sprint.errors?.required"
+            >O sprint é obrigatório.</mat-error
+          >
         </mat-form-field>
       </div>
 
       <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start center">
-        <!-- <mat-form-field fxFlex="100">
-        <input matInput #script placeholder="Valor" required maxlength="200" formControlName="valor"
-          [(ngModel)]="parametroGeralDto.valor">
-        <mat-error *ngIf="parametroGeralFrm.get('valor').errors?.required">Campo obrigatório.</mat-error>
-      </mat-form-field> -->
-
         <mat-form-field
           *ngIf="contagem && contagem.sistema"
           class="example-full-width"
         >
           <mat-label>Sistema</mat-label>
           <mat-select
+            required
+            [disabled]="contagem.id"
             #sistema="ngModel"
-            [disabled]="somenteLeitura"
             name="sistema"
             [(ngModel)]="contagem.sistema.id"
           >
@@ -95,24 +112,37 @@
               sistema.nome
             }}</mat-option>
           </mat-select>
+          <mat-error *ngIf="sistema.errors?.required"
+            >O sistema é obrigatório.</mat-error
+          >
         </mat-form-field>
 
         <mat-form-field class="example-full-width">
           <mat-label>Contador</mat-label>
           <input
-            [disabled]="somenteLeitura"
+            required
+            [ngClass]="{'mat-alterado': versaoComparar && contagem.contador != versaoComparar.contador}"
+            color="alterado"
             matInput
             #contador="ngModel"
             placeholder="Contador"
             name="contador"
             [(ngModel)]="contagem.contador"
           />
+          <mat-error *ngIf="contador.errors?.required"
+            >O contador é obrigatório.</mat-error
+          >
+          <mat-hint *ngIf="versaoComparar && contagem.contador != versaoComparar.contador">
+            {{versaoComparar.contador}}
+          </mat-hint>
         </mat-form-field>
 
-        <mat-form-field class="example-full-width" appearance="fill">
-          <mat-label>Data contagem</mat-label>
-          <input
-            [disabled]="somenteLeitura"
+        <mat-form-field class="example-full-width"
+        appearance="fill">
+        <mat-label>Data contagem</mat-label>
+        <input
+        [ngClass]="{'mat-alterado': versaoComparar && contagem.dataContagem != versaoComparar.dataContagem}"
+        required
             matInput
             #dataContagem="ngModel"
             [matDatepicker]="picker"
@@ -122,24 +152,58 @@
           <mat-datepicker-toggle
             matSuffix
             [for]="picker"
-            *ngIf="!somenteLeitura"
           >
             <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
           </mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="dataContagem.errors?.required"
+            >A data da contagem é obrigatória.</mat-error
+          >
+          <mat-hint *ngIf="versaoComparar && contagem.dataContagem != versaoComparar.dataContagem">
+            {{versaoComparar.dataContagem | date:'dd/MM/yyyy' }}
+          </mat-hint>
         </mat-form-field>
       </div>
-      <mat-card-actions *ngIf="!somenteLeitura">
+      <mat-card-actions align="center" fxLayoutGap="20px">
         <button mat-button mat-flat-button color="primary">Salvar</button>
 
         <button
-          mat-button
+          mat-button type="button"
+          *ngIf="contagem.id"
           mat-flat-button
           color="primary"
-          (click)="versionar()"
+          (click)="versionarEmitter.next()"
         >
           Versionar
         </button>
+
+        <button
+          mat-button type="button"
+          name="criarEsboco"
+          *ngIf="contagem.id && contagem.estado == 'V' && contagem.ultimaVersao"
+          mat-flat-button
+          color="primary"
+          (click)="criarEsbocoEmitter.next()"
+        >
+          Criar esboço
+        </button>
+
+        <mat-form-field class="example-full-width" *ngIf="versoes[0]">
+          <mat-label>Versões anteriores</mat-label>
+          <mat-select
+            required
+            name="versoesAnteriores"
+            (selectionChange)="compararVersaoEmitter.next($event.value)"
+          >
+            <mat-option *ngFor="let versao of versoes" [value]="versao">{{
+              versao.versao
+            }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="escopo.errors?.required"
+            >O escopo é obrigatório.</mat-error
+          >
+        </mat-form-field>
       </mat-card-actions>
+    </form>
   </mat-card-content>
 </mat-card>

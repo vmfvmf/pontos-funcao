@@ -17,7 +17,7 @@ export class Transacao extends AbstractContagemItem {
     super();
     this.grupo = new Grupo();
     this.transacaoTDs = [];
-    this.contagem = contagem ? contagem : new Contagem();
+    this.contagem = contagem || new Contagem();
   }
 
   public static toHttpParams(transacao: Transacao): HttpParams {

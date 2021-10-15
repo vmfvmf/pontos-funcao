@@ -1,29 +1,27 @@
-<form
-  exeFormValidationFocusInvalidInput
-  id="ngForm"
-  (ngSubmit)="salvarContagem($event)"
-  #f="ngForm"
+<app-contagem-cadastro-basico
+  *ngIf="contagem"
+  #f2
+  [contagem]="contagem"
+  (versionarEmitter)="versionar()"
+  (criarEsbocoEmitter)="criarEsboco()"
+  (compararVersaoEmitter)="compararVersao($event)"
+  [somenteLeitura]="somenteLeitura"
 >
-  <app-contagem-cadastro-basico
-    *ngIf="contagem"
-    [contagem]="contagem"
-    [somenteLeitura]="contagem.estado == 'V'"
-  >
-  </app-contagem-cadastro-basico>
+</app-contagem-cadastro-basico>
 
-  <app-contagem-cadastro-arquivo-referenciado
-    [somenteLeitura]="contagem.estado == 'V'"
-    *ngIf="contagem?.id"
-    (salvarContagem)="f.ngSubmit.next($event)"
-    [contagem]="contagem"
-  >
-  </app-contagem-cadastro-arquivo-referenciado>
+<app-contagem-cadastro-arquivo-referenciado
+  [(somenteLeitura)]="somenteLeitura"
+  *ngIf="contagem?.id"
+  (salvarContagem)="salvarContagem($event)"
+  [contagem]="contagem"
+  [transacoesComparar]="contagem.transacoes"
+>
+</app-contagem-cadastro-arquivo-referenciado>
 
-  <app-contagem-cadastro-transacao
-    [somenteLeitura]="contagem.estado == 'V'"
-    *ngIf="contagem?.id"
-    (salvarContagem)="f.ngSubmit.next($event)"
-    [contagem]="contagem"
-  >
-  </app-contagem-cadastro-transacao>
-</form>
+<app-contagem-cadastro-transacao
+  [(somenteLeitura)]="somenteLeitura"
+  *ngIf="contagem?.id"
+  (salvarContagem)="salvarContagem($event)"
+  [contagem]="contagem"
+>
+</app-contagem-cadastro-transacao>

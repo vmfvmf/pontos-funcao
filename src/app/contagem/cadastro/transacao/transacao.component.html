@@ -1,8 +1,9 @@
-<mat-card >
+<mat-card>
   <mat-card-title fxLayoutAlign="space-between center">
     <span>Transações</span>
     <div>
-      <mat-icon *ngIf="!somenteLeitura"
+      <mat-icon
+        *ngIf="!somenteLeitura"
         style="cursor: pointer; color: blueviolet"
         (click)="gerenciadorGrupo()"
         matTooltip="Gerenciador de grupos"
@@ -10,80 +11,108 @@
         class="material-icons md-24"
         >group_work</mat-icon
       >
-      <app-new-button *ngIf="!somenteLeitura" (newEmitter)="novoEditar()" complemento="Contagem">
+      <app-new-button
+        *ngIf="!somenteLeitura"
+        (newEmitter)="novoEditar()"
+        complemento="Contagem"
+      >
       </app-new-button>
     </div>
   </mat-card-title>
 
   <mat-card class="card-tabela" style="min-width: 800px">
-    <vmf-data-table [vmf-read-only]="contagem.estado == 'V'"
-      [totalRegistros]="1"
-      [value]="contagem.transacoes"
-      listrado="true"
-      mensagemVazio="Nenhum registro encontrado"
-      nameTabela="Transações"
-      [exibePaginador]="false"
-    >
-      <vmf-data-column header="Grupo" value="nome" [ordenar]="false">
-        <ng-template let-transacao="rowData" #body>
-          {{ transacao.grupo?.nome }}
-        </ng-template>
-      </vmf-data-column>
-
-      <vmf-data-column header="Nome" value="nome" [ordenar]="false">
-        <ng-template let-transacao="rowData" #body>
-          {{ transacao.nome }}
-        </ng-template>
-      </vmf-data-column>
-
-      <vmf-data-column header="Função" value="funcao" [ordenar]="false">
-        <ng-template let-transacao="rowData" #body>
-          {{ transacao.funcao }}
-        </ng-template>
-      </vmf-data-column>
-
-      <vmf-data-column header="TD" value="td" [ordenar]="false">
-        <ng-template let-transacao="rowData" #body>
-          {{ transacao.td }}
-        </ng-template>
-      </vmf-data-column>
-
-      <vmf-data-column header="TR" value="tr" [ordenar]="false">
-        <ng-template let-transacao="rowData" #body>
-          {{ transacao.tr }}
-        </ng-template>
-      </vmf-data-column>
-
-      <vmf-data-column
-        header="Complexidade"
-        value="complexidade"
-        [ordenar]="false"
+      <vmf-data-table
+        [totalRegistros]="1"
+        [value]="contagem.transacoes"
+        listrado="true"
+        mensagemVazio="Nenhum registro encontrado"
+        nameTabela="Transações"
+        [exibePaginador]="false"
       >
-        <ng-template let-transacao="rowData" #body>
-          {{ transacao.complexidade }}
-        </ng-template>
-      </vmf-data-column>
+        <vmf-data-column header="Grupo" value="nome" [ordenar]="false">
+          <ng-template let-transacao="rowData" #body>
+            <mat-form-field appearance="fill">
+              <input
+                [ngClass]="{'mat-alterado': transacao.grupo.alterado }"
+                matInput
+                [value]="transacao.grupo?.nome"
+                disabled
+                style="color: black"
+              />
+              <mat-hint *ngIf="transacao.grupo.alterado">{{transacao.grupo.alterado}}</mat-hint>
+            </mat-form-field>
+          </ng-template>
+        </vmf-data-column>
 
-      <vmf-data-column header="PF" value="pf" [ordenar]="false">
-        <ng-template let-transacao="rowData" #body>
-          {{ transacao.pf }}
-        </ng-template>
-      </vmf-data-column>
+        <vmf-data-column header="Nome" value="nome" [ordenar]="false">
+          <ng-template let-transacao="rowData" #body>
+            {{ transacao.nome }}
+          </ng-template>
+        </vmf-data-column>
 
-      <vmf-data-column header="" [ordenar]="false">
-        <ng-template let-transacao="rowData" #body>
+        <vmf-data-column header="Função" value="funcao" [ordenar]="false">
+          <ng-template let-transacao="rowData" #body>
+            {{ transacao.funcao }}
+          </ng-template>
+        </vmf-data-column>
 
-          <app-edit-button *ngIf="!somenteLeitura" [somenteLeitura]="somenteLeitura" (editEmitter)="novoEditar($event)" complemento="Transação" [objeto]="transacao">
-          </app-edit-button>
+        <vmf-data-column header="TD" value="td" [ordenar]="false">
+          <ng-template let-transacao="rowData" #body>
+            {{ transacao.td }}
+          </ng-template>
+        </vmf-data-column>
 
-          <app-view-button *ngIf="somenteLeitura" [somenteLeitura]="somenteLeitura" (viewEmitter)="novoEditar($event)" complemento="Transação" [objeto]="transacao">
-          </app-view-button>
+        <vmf-data-column header="TR" value="tr" [ordenar]="false">
+          <ng-template let-transacao="rowData" #body>
+            {{ transacao.tr }}
+          </ng-template>
+        </vmf-data-column>
 
-          <app-delete-button *ngIf="!somenteLeitura" (deleteEmitter)="apagar($event)" complemento="Transação" [id]="transacao.id">
-          </app-delete-button>
+        <vmf-data-column
+          header="Complexidade"
+          value="complexidade"
+          [ordenar]="false"
+        >
+          <ng-template let-transacao="rowData" #body>
+            {{ transacao.complexidade }}
+          </ng-template>
+        </vmf-data-column>
 
-        </ng-template>
-      </vmf-data-column>
-    </vmf-data-table>
+        <vmf-data-column header="PF" value="pf" [ordenar]="false">
+          <ng-template let-transacao="rowData" #body>
+            {{ transacao.pf }}
+          </ng-template>
+        </vmf-data-column>
+
+        <vmf-data-column header="" [ordenar]="false">
+          <ng-template let-transacao="rowData" #body>
+            <app-edit-button
+              *ngIf="!somenteLeitura"
+              [somenteLeitura]="somenteLeitura"
+              (editEmitter)="novoEditar($event)"
+              complemento="Transação"
+              [objeto]="transacao"
+            >
+            </app-edit-button>
+
+            <app-view-button
+              *ngIf="somenteLeitura"
+              [somenteLeitura]="somenteLeitura"
+              (viewEmitter)="novoEditar($event)"
+              complemento="Transação"
+              [objeto]="transacao"
+            >
+            </app-view-button>
+
+            <app-delete-button
+              *ngIf="!somenteLeitura"
+              (deleteEmitter)="apagar($event)"
+              complemento="Transação"
+              [id]="transacao.id"
+            >
+            </app-delete-button>
+          </ng-template>
+        </vmf-data-column>
+      </vmf-data-table>
   </mat-card>
 </mat-card>

@@ -6,6 +6,7 @@ import { ArquivoReferenciado } from "./cadastro/arquivo-referenciado/arquivo-ref
 import { Grupo } from "./cadastro/transacao/grupo/grupo";
 import { Transacao } from "./cadastro/transacao/transacao";
 import { ContagemEscopoEnum } from "./contagem-escopo.enum";
+import { HttpParams } from '@angular/common/http';
 
 
 export class Contagem {
@@ -21,8 +22,12 @@ export class Contagem {
   estado: ContagemEstado;
   arquivosReferenciados: ArquivoReferenciado[];
   versao: number;
+  ultimaVersao: boolean;
+  criado: Date;
+  modificado: Date;
 
   constructor(id?: number){
+    this.id = id;
     this.sistema = new Sistema();
     this.sprint = new Sprint();
     this.projeto = new Projeto();
@@ -34,5 +39,26 @@ export class Contagem {
   static GetContagemParent(contagem: Contagem) {
     const c = new Contagem(contagem.id);
     return c;
+  }
+
+  public static toHttpParams(contagem: Contagem): HttpParams {
+    let httpParams = new HttpParams();
+
+    if (contagem.sistema) {
+      httpParams = httpParams.append('sistema.id', contagem.sistema.id.toString());
+    }
+
+    if (contagem.sprint) {
+      httpParams = httpParams.append('sprint.id', contagem.sprint.id.toString());
+    }
+
+    if (contagem.projeto) {
+      httpParams = httpParams.append('projeto.id', contagem.projeto.id.toString());
+    }
+
+    if (contagem.versao) {
+      httpParams = httpParams.append('versao', contagem.versao.toString());
+    }
+    return httpParams;
   }
 }

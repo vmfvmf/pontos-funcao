@@ -1,3 +1,4 @@
+import { FormsModule } from '@angular/forms';
 import { FormValidationFocusInvalidInputDirective } from './Directives/form-validation-error-focus.directive';
 import { CloseCancelButtonComponent } from './Components/close-cancel-button.component';
 import { ViewButtonComponent } from './Components/view-button.component';
@@ -13,11 +14,15 @@ import { DeleteButtonComponent } from "./Components/delete-button.component";
 import { NgModule } from "@angular/core";
 import { EditButtonComponent } from "./Components/edit-button.component";
 import { NewButtonComponent } from "./Components/new-button.component";
+import { VmfFormComponent } from './Components/vmf-form.component';
+import { InputCompares } from './Directives/entity-comparator.directive';
 
 @NgModule({
-  imports: [AngularMaterialModule, CommonModule ],
+  imports: [AngularMaterialModule, CommonModule, FormsModule ],
   providers: [LoaderSpinnerService, MessageService],
   declarations: [
+    InputCompares,
+    VmfFormComponent,
     CloseCancelButtonComponent,
     ViewButtonComponent,
     EditButtonComponent,
@@ -28,6 +33,8 @@ import { NewButtonComponent } from "./Components/new-button.component";
     FormValidationFocusInvalidInputDirective
   ],
   exports: [
+    InputCompares,
+    VmfFormComponent,
     CloseCancelButtonComponent,
     ViewButtonComponent,
     EditButtonComponent,
