@@ -30,7 +30,7 @@ export class ContagemCadastroBasicoComponent implements OnInit {
   sprints: Sprint[] = [];
   versoes: Contagem[] = [];
   selectedProjeto: Projeto;
-  versaoComparar: Contagem;
+  versaoComparar: boolean;
 
   @ViewChild('f') public form: NgForm;
 
@@ -96,7 +96,6 @@ export class ContagemCadastroBasicoComponent implements OnInit {
         }
       );
     }
-    this.compararVersaoEmitter.subscribe(versao => this.versaoComparar = versao);
   }
 
   salvar() {

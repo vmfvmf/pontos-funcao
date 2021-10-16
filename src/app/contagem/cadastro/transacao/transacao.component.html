@@ -31,7 +31,7 @@
       >
         <vmf-data-column header="Grupo" value="nome" [ordenar]="false">
           <ng-template let-transacao="rowData" #body>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="fill" >
               <input
                 [ngClass]="{'mat-alterado': transacao.grupo.alterado }"
                 matInput

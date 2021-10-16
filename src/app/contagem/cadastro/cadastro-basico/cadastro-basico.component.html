@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-title
     >{{
-      contagem.id && somenteLeitura && versaoComparar
+      contagem.id && somenteLeitura && contagem.compararVersao
         ? "Comparar com outra versão de "
         : contagem.id && somenteLeitura
         ? "Visualizar"
@@ -11,15 +11,22 @@
     }}
     Contagem
 
-    <span
-      style="
-        padding: 2px;
-        border-radius: 10px;
-        float: right;
-        background-color: #ffee96;
-      "
-      >Total: {{ contagem.totalPontosFuncao }} PF</span
-    >
+    <mat-form-field appearance="fill" style="float: right; width: 150px; text-align: right; ">
+      <mat-label style="font-size: medium;">Total Pontos Função</mat-label>
+      <input
+        [ngClass]="{'mat-alterado': contagem.alteradoTotalPontosFuncao }"
+        matInput disabled style="font-size: medium;"
+        placeholder="totalPontosFuncao"
+        name="totalPontosFuncao"
+        [(ngModel)]="contagem.totalPontosFuncao"
+      />
+      <div>
+        <mat-hint  style="font-size: small;" *ngIf="contagem.alteradoTotalPontosFuncao">
+          {{ contagem.alteradoTotalPontosFuncao }}
+        </mat-hint>
+      </div>
+    </mat-form-field>
+
   </mat-card-title>
 
   <mat-card-content fxLayout="column" fxLayoutGap="20px">
@@ -121,8 +128,7 @@
           <mat-label>Contador</mat-label>
           <input
             required
-            [ngClass]="{'mat-alterado': versaoComparar && contagem.contador != versaoComparar.contador}"
-            color="alterado"
+            [ngClass]="{'mat-alterado': contagem.alteradoContador}"
             matInput
             #contador="ngModel"
             placeholder="Contador"
@@ -132,8 +138,8 @@
           <mat-error *ngIf="contador.errors?.required"
             >O contador é obrigatório.</mat-error
           >
-          <mat-hint *ngIf="versaoComparar && contagem.contador != versaoComparar.contador">
-            {{versaoComparar.contador}}
+          <mat-hint *ngIf="contagem.alteradoContador">
+            {{ contagem.alteradoContador }}
           </mat-hint>
         </mat-form-field>
 
@@ -141,7 +147,7 @@
         appearance="fill">
         <mat-label>Data contagem</mat-label>
         <input
-        [ngClass]="{'mat-alterado': versaoComparar && contagem.dataContagem != versaoComparar.dataContagem}"
+        [ngClass]="{'mat-alterado': contagem.alteradoDataContagem }"
         required
             matInput
             #dataContagem="ngModel"
@@ -159,8 +165,8 @@
           <mat-error *ngIf="dataContagem.errors?.required"
             >A data da contagem é obrigatória.</mat-error
           >
-          <mat-hint *ngIf="versaoComparar && contagem.dataContagem != versaoComparar.dataContagem">
-            {{versaoComparar.dataContagem | date:'dd/MM/yyyy' }}
+          <mat-hint *ngIf="contagem.alteradoDataContagem">
+            {{ contagem.alteradoDataContagem | date:'dd/MM/yyyy' }}
           </mat-hint>
         </mat-form-field>
       </div>

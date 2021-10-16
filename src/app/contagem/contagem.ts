@@ -26,6 +26,11 @@ export class Contagem {
   criado: Date;
   modificado: Date;
 
+  compararVersao: boolean;
+  alteradoContador: string;
+	alteradoDataContagem: Date;;
+	alteradoTotalPontosFuncao: number;;
+
   constructor(id?: number){
     this.id = id;
     this.sistema = new Sistema();

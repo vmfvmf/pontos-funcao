@@ -21,6 +21,7 @@ export class ContagemCadastroComponent implements OnInit {
   somaTransacoes = 0;
   somenteLeitura = true;
   versaoComparar: Contagem;
+
   @ViewChild("f2") public form2: ContagemCadastroBasicoComponent;
 
   constructor(
@@ -121,7 +122,9 @@ export class ContagemCadastroComponent implements OnInit {
   }
 
   compararVersao(versao: Contagem): void {
-    this.versaoComparar = versao;
-    this.somenteLeitura = true;
+    this.contagemService.compararVersao(this.contagem.id, versao.id).subscribe(contagemComparada => {
+      this.somenteLeitura = true;
+       this.contagem = contagemComparada
+    });
   }
 }

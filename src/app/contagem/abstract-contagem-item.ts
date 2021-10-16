@@ -1,5 +1,7 @@
+import { FuncaoArquivoReferenciadoEnum } from './cadastro/arquivo-referenciado/arquivo-referenciado';
 import { HttpParams } from "@angular/common/http";
 import { Contagem } from "./contagem";
+import { ContagemDadoSituacao } from './contagem-dado-situacao.enum';
 
 
 export enum TipoContagemItemEnum{
@@ -33,34 +35,46 @@ export abstract class AbstractContagemItem {
   pf: number;
   criado: Date;
   modificado: Date;
+  funcao: FuncaoArquivoReferenciadoEnum | FuncaoTransacaoEnum;
+
+  // PROPRIEDADES DE COMPARAÇÃO
+  alteradoDadoContagem: ContagemDadoSituacao;
+	alteradoTd: number;
+	alteradoTr: number;
+	alteradoComplexidade: ComplexidadeEnum;
+	alteradoPf: number;
+	alteradoFuncao: FuncaoTransacaoEnum | FuncaoArquivoReferenciadoEnum;
 
   constructor(contagem?: Contagem){
     this.contagem = contagem? contagem : new Contagem()
   }
 
-  public static toHttpParams(iContagem: AbstractContagemItem): HttpParams {
+  public static toHttpParams(contagem: AbstractContagemItem): HttpParams {
     let httpParams = new HttpParams();
 
-      if (iContagem.id !== undefined) {
-        httpParams = httpParams.set('id', iContagem.id.toString());
+      if (contagem.id !== undefined) {
+        httpParams = httpParams.set('id', contagem.id.toString());
       }
-      if (iContagem.contagem !== undefined && iContagem.contagem.id !== undefined) {
-        httpParams = httpParams.set('contagem.id', iContagem.contagem.id.toString());
+      if (contagem.contagem !== undefined && contagem.contagem.id !== undefined) {
+        httpParams = httpParams.set('contagem.id', contagem.contagem.id.toString());
       }
-      if (iContagem.nome !== undefined) {
-        httpParams = httpParams.set('nome', iContagem.nome.toString());
+      if (contagem.nome !== undefined) {
+        httpParams = httpParams.set('nome', contagem.nome.toString());
       }
-      if (iContagem.td !== undefined) {
-        httpParams = httpParams.set('td', iContagem.td.toString());
+      if (contagem.funcao !== undefined) {
+        httpParams = httpParams.set('funcao', contagem.funcao.toString());
       }
-      if (iContagem.tr !== undefined) {
-        httpParams = httpParams.set('tr', iContagem.tr.toString());
+      if (contagem.td !== undefined) {
+        httpParams = httpParams.set('td', contagem.td.toString());
       }
-      if (iContagem.pf !== undefined) {
-        httpParams = httpParams.set('pf', iContagem.pf.toString());
+      if (contagem.tr !== undefined) {
+        httpParams = httpParams.set('tr', contagem.tr.toString());
       }
-      if (iContagem.complexidade !== undefined) {
-        httpParams = httpParams.set('complexidade', iContagem.complexidade.toString());
+      if (contagem.pf !== undefined) {
+        httpParams = httpParams.set('pf', contagem.pf.toString());
+      }
+      if (contagem.complexidade !== undefined) {
+        httpParams = httpParams.set('complexidade', contagem.complexidade.toString());
       }
       return httpParams;
     }

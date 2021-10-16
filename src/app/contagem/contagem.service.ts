@@ -43,6 +43,10 @@ export class ContagemService {
     return this.httpClient.get<Contagem>(`${ContagemService.URL_API}/${contagemId}/versionar`);
   }
 
+  compararVersao(idVersaoAtual: number, idVersaoAnterior: number) {
+    return this.httpClient.get<Contagem>(`${ContagemService.URL_API}/${idVersaoAtual}/comparar-versao-anterior/${idVersaoAnterior}`);
+  }
+
   criarEsboco(contagemId: number) : Observable<Contagem> {
     return this.httpClient.get<Contagem>(`${ContagemService.URL_API}/${contagemId}/criar_novo_esboco_incremento_versao`);
   }

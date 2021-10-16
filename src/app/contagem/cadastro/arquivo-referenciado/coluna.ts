@@ -1,4 +1,5 @@
 import { HttpParams } from "@angular/common/http";
+import { ContagemDadoSituacao } from "../../contagem-dado-situacao.enum";
 
 export class Coluna {
   id: number;
@@ -8,6 +9,10 @@ export class Coluna {
 
   // APENAS DO FRONTEND
   isChecked: boolean;
+
+  // DADOS QUE FORAM ALTERADOS, USADOS EM COMPARAÇÃO
+  alteradoDadoContagem: ContagemDadoSituacao;
+	alteradoNome: string;
 
   constructor(nome?: string){
     this.nome = nome;

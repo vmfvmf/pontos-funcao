@@ -9,9 +9,13 @@ import { HttpParams } from '@angular/common/http';
 export class Transacao extends AbstractContagemItem {
   grupo: Grupo;
   transacaoTDs: TransacaoTD[];
-  funcao: FuncaoTransacaoEnum;
   acao: boolean;
   mensagem: boolean;
+
+  // DADOS QUE FORAM ALTERADOS, USADOS EM COMPARAÇÃO
+  alteradoGrupo: Grupo;
+	alteradoAcao: boolean;
+	alteradoMensagem: boolean;
 
   constructor(contagem?: Contagem){
     super();
