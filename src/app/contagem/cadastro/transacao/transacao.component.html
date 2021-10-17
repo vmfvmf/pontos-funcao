@@ -28,43 +28,50 @@
         mensagemVazio="Nenhum registro encontrado"
         nameTabela="Transações"
         [exibePaginador]="false"
+        [trClass]="getTrClass.bind(this)"
       >
-        <vmf-data-column header="Grupo" value="nome" [ordenar]="false">
+        <vmf-data-column header="Grupo" value="grupo" [ordenar]="false">
           <ng-template let-transacao="rowData" #body>
-            <mat-form-field appearance="fill" >
-              <input
-                [ngClass]="{'mat-alterado': transacao.grupo.alterado }"
-                matInput
-                [value]="transacao.grupo?.nome"
-                disabled
-                style="color: black"
-              />
-              <mat-hint *ngIf="transacao.grupo.alterado">{{transacao.grupo.alterado}}</mat-hint>
-            </mat-form-field>
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': transacao.alteradoGrupo?.nome}">{{ transacao.grupo?.nome }}</span>
+              <mat-hint *ngIf="transacao.alteradoGrupo?.nome">{{ transacao.alteradoGrupo?.nome }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 
         <vmf-data-column header="Nome" value="nome" [ordenar]="false">
           <ng-template let-transacao="rowData" #body>
-            {{ transacao.nome }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': transacao.alteradoNome}">{{ transacao.nome }}</span>
+              <mat-hint *ngIf="transacao.alteradoNome">{{ transacao.alteradoNome }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 
         <vmf-data-column header="Função" value="funcao" [ordenar]="false">
           <ng-template let-transacao="rowData" #body>
-            {{ transacao.funcao }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': transacao.alteradoFuncao}">{{ transacao.funcao }}</span>
+              <mat-hint *ngIf="transacao.alteradoFuncao">{{ transacao.alteradoFuncao }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 
         <vmf-data-column header="TD" value="td" [ordenar]="false">
           <ng-template let-transacao="rowData" #body>
-            {{ transacao.td }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': transacao.alteradoTd != undefined}">{{ transacao.td }}</span>
+              <mat-hint *ngIf="transacao.alteradoTd != undefined">{{ transacao.alteradoTd }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 
         <vmf-data-column header="TR" value="tr" [ordenar]="false">
           <ng-template let-transacao="rowData" #body>
-            {{ transacao.tr }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': transacao.alteradoTr != undefined}">{{ transacao.tr }}</span>
+              <mat-hint *ngIf="transacao.alteradoTr != undefined">{{ transacao.alteradoTr }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 
@@ -74,13 +81,19 @@
           [ordenar]="false"
         >
           <ng-template let-transacao="rowData" #body>
-            {{ transacao.complexidade }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': transacao.alteradoComplexidade}">{{ transacao.complexidade }}</span>
+              <mat-hint *ngIf="transacao.alteradoComplexidade">{{ transacao.alteradoComplexidade }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 
         <vmf-data-column header="PF" value="pf" [ordenar]="false">
           <ng-template let-transacao="rowData" #body>
-            {{ transacao.pf }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': transacao.alteradoPf != undefined}">{{ transacao.pf }}</span>
+              <mat-hint *ngIf="transacao.alteradoPf != undefined">{{ transacao.alteradoPf }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 

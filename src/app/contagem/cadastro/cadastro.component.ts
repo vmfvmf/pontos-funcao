@@ -2,13 +2,12 @@ import { ContagemCadastroBasicoComponent } from "./cadastro-basico/cadastro-basi
 import { Transacao } from "./transacao/transacao";
 import { ArquivoReferenciado } from "./arquivo-referenciado/arquivo-referenciado";
 
+import {Location} from '@angular/common';
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Contagem } from "../contagem";
 import { ContagemService } from "../contagem.service";
-import { AbstractContagemItem } from "../abstract-contagem-item";
 import { MessageService } from "../../shared/Service/message.service";
-import { NgForm } from "@angular/forms";
 
 @Component({
   selector: "app-contagem-cadastro",
@@ -26,6 +25,7 @@ export class ContagemCadastroComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private location: Location,
     private route: ActivatedRoute,
     private msgService: MessageService,
     private contagemService: ContagemService
@@ -103,7 +103,12 @@ export class ContagemCadastroComponent implements OnInit {
 
   updateData() {
     this.route.params.subscribe((params) => {
-      if (params["contagemId"]) {
+      if (params["contagemId"] && params["versaoId"]) {
+        this.contagemService.compararVersaoAnterior(+params["contagemId"], +params["versaoId"]).subscribe(contagemComparada => {
+          this.somenteLeitura = true;
+           this.contagem = contagemComparada;
+        });
+      } else if (params["contagemId"]) {
         this.contagemService.ver(+params["contagemId"]).subscribe(
           (response) => {
             console.log("Contagem recuperada", response);
@@ -118,13 +123,6 @@ export class ContagemCadastroComponent implements OnInit {
       } else {
         this.contagem = new Contagem();
       }
-    });
-  }
-
-  compararVersao(versao: Contagem): void {
-    this.contagemService.compararVersao(this.contagem.id, versao.id).subscribe(contagemComparada => {
-      this.somenteLeitura = true;
-       this.contagem = contagemComparada
     });
   }
 }

@@ -10,23 +10,6 @@
         : "Nova"
     }}
     Contagem
-
-    <mat-form-field appearance="fill" style="float: right; width: 150px; text-align: right; ">
-      <mat-label style="font-size: medium;">Total Pontos Função</mat-label>
-      <input
-        [ngClass]="{'mat-alterado': contagem.alteradoTotalPontosFuncao }"
-        matInput disabled style="font-size: medium;"
-        placeholder="totalPontosFuncao"
-        name="totalPontosFuncao"
-        [(ngModel)]="contagem.totalPontosFuncao"
-      />
-      <div>
-        <mat-hint  style="font-size: small;" *ngIf="contagem.alteradoTotalPontosFuncao">
-          {{ contagem.alteradoTotalPontosFuncao }}
-        </mat-hint>
-      </div>
-    </mat-form-field>
-
   </mat-card-title>
 
   <mat-card-content fxLayout="column" fxLayoutGap="20px">
@@ -100,6 +83,20 @@
             >O sprint é obrigatório.</mat-error
           >
         </mat-form-field>
+
+        <mat-form-field appearance="fill" style="width: 120px;">
+          <mat-label>Total Pontos Função</mat-label>
+          <input align="end" style="text-align: right"
+            [ngClass]="{'mat-alterado': contagem.alteradoTotalPontosFuncao }"
+            matInput disabled
+            placeholder="totalPontosFuncao"
+            name="totalPontosFuncao"
+            [(ngModel)]="contagem.totalPontosFuncao"
+          />
+          <mat-hint align="end" *ngIf="contagem.alteradoTotalPontosFuncao">
+            {{ contagem.alteradoTotalPontosFuncao }}
+          </mat-hint>
+        </mat-form-field>
       </div>
 
       <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="start center">
@@ -143,7 +140,7 @@
           </mat-hint>
         </mat-form-field>
 
-        <mat-form-field class="example-full-width"
+        <mat-form-field style="width: 120px;"
         appearance="fill">
         <mat-label>Data contagem</mat-label>
         <input
@@ -199,9 +196,9 @@
           <mat-select
             required
             name="versoesAnteriores"
-            (selectionChange)="compararVersaoEmitter.next($event.value)"
+            (selectionChange)="compararVersao($event)"
           >
-            <mat-option *ngFor="let versao of versoes" [value]="versao">{{
+            <mat-option *ngFor="let versao of versoes" [value]="versao.id">{{
               versao.versao
             }}</mat-option>
           </mat-select>

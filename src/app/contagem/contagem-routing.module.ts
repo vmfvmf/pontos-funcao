@@ -27,6 +27,20 @@ const routes: Routes = [
     data: {
       perfisAcesso: [PerfisSistema.ADMINISTRADOR]
     }
+  },
+  {
+    path: ':contagemId/comparar-versao-anterior/:versaoId',
+    component: ContagemCadastroComponent,
+    data: {
+      perfisAcesso: [PerfisSistema.ADMINISTRADOR]
+    }
+  },
+  {
+    path: 'visualizar/:contagemId',
+    component: ContagemCadastroComponent,
+    data: {
+      perfisAcesso: [PerfisSistema.ADMINISTRADOR]
+    }
   }
 ];
 

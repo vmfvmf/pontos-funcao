@@ -9,6 +9,7 @@ import { AbstractContagemItem, TipoContagemItemEnum } from '../../abstract-conta
 import { TransacaoService } from './transacao.service';
 import { MessageService } from '../../../shared/Service/message.service';
 import { of } from 'rxjs';
+import { ContagemDadoSituacao } from '../../contagem-dado-situacao.enum';
 
 @Component({
   selector: 'app-contagem-cadastro-transacao',
@@ -26,17 +27,11 @@ export class TransacaoComponent implements OnInit {
   @Input()
   somenteLeitura = true;
 
-  @Input()
-  transacoesComparar: Transacao[] = [];
-
   constructor(
     public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
-    of(this.transacoesComparar).subscribe(tsAlterados => {
-
-    });
   }
 
   novoEditar(transacao?: Transacao) {
@@ -74,4 +69,8 @@ export class TransacaoComponent implements OnInit {
     this.salvarContagem.emit({msg: "Transação excluída com sucesso!"});
   }
 
+  getTrClass(transacao: Transacao) {
+    return transacao.alteradoDadoContagem === ContagemDadoSituacao.ALTERADO ? 'yellow' :
+    transacao.alteradoDadoContagem === ContagemDadoSituacao.NOVO ? 'green' : '';
+  }
 }

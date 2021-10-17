@@ -1,6 +1,6 @@
 import { ArquivoReferenciadoService } from './../arquivo-referenciado.service';
 import { ArquivoReferenciado, FuncaoArquivoReferenciadoEnum } from "../arquivo-referenciado";
-import { Component, Inject, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { Tabela } from "../tabela";
 import {
@@ -11,6 +11,11 @@ import { MessageService } from '../../../../shared/Service/message.service';
 import { NgForm } from '@angular/forms';
 import { Coluna } from '../coluna';
 
+
+interface ColunaField {
+  id: number;
+  coluna: { value: string; type: string; disable: boolean; visible: boolean; placeholder: string };
+}
 @Component({
   selector: "app-contagem-cadastro-arquivo-referenciado-cadastro",
   templateUrl: "./cadastro.component.html",
@@ -19,19 +24,22 @@ import { Coluna } from '../coluna';
 export class ArquivoReferenciadoCadastroComponent implements OnInit {
   arquivoReferenciado: ArquivoReferenciado = new ArquivoReferenciado();
   funcoes: string[] = FuncoesArquivoREFERENCIADO;
-  novaTabela: Tabela = new Tabela();
-  novaColuna: Coluna = new Coluna();
   tabelasExcluir: Tabela[] = [];
   colunasExcluir: Coluna[] = [];
   selectedTabelaIndex: number = 0;
   somenteLeitura = false;
   @ViewChild('f') public form: NgForm;
 
+  public mainForm: {
+    colunaFields: ColunaField[];
+  };
+
   constructor(
     @Inject(MAT_DIALOG_DATA)
     public data: { arquivoReferenciado: ArquivoReferenciado, somenteLeitura: boolean },
     public dialogRef: MatDialogRef<ArquivoReferenciadoCadastroComponent>,
-    private msgService: MessageService
+    private msgService: MessageService,
+    private ref: ChangeDetectorRef
   ) {
     this.arquivoReferenciado = data.arquivoReferenciado;
     this.somenteLeitura = data.somenteLeitura;
@@ -41,47 +49,32 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
     this.atualizaContagem();
   }
 
-  incluirTabela() {
-    if (
-      !this.arquivoReferenciado.nome ||
-      !this.arquivoReferenciado.funcao ||
-      !this.novaTabela.nome
-    ) {
-      this.msgService.error(
-        "Preencha o nome, função e tabela antes de adicionar tabela."
-      );
-      return;
-    }
+  incluirTabela() { new Tabela()
+    this.arquivoReferenciado.tabelas.push(new Tabela());
+    this.selectedTabelaIndex = this.arquivoReferenciado.tabelas.length;
+    this.ref.detectChanges();
+  }
+
+  validarTabela(tabela: Tabela) {
     if (
       this.arquivoReferenciado.tabelas
         .map((t) => t.nome)
-        .includes(this.novaTabela.nome)
+        .includes(tabela.nome)
     ) {
-      this.msgService.error("Já  existe uma tabela com este nome");
+      this.msgService.error("Existe tabelas nome repetido");
       this.selectedTabelaIndex = this.arquivoReferenciado.tabelas.findIndex(
-        (t) => t.nome === this.novaTabela.nome
+        (t) => t.nome === tabela.nome
       );
-      this.novaTabela.nome = "";
-      return;
+      return false;
     }
-    const newTable = new Tabela(this.novaTabela.nome);
-    this.arquivoReferenciado.tabelas.push(newTable);
-    this.selectedTabelaIndex = this.arquivoReferenciado.tabelas.length;
-    this.novaTabela.nome = "";
+    return true;
   }
 
-  adicionarColuna() {
-    if (
-      this.novaColuna.nome.length > 0 &&
-      this.arquivoReferenciado.tabelas[
-        this.selectedTabelaIndex
-      ].colunas.findIndex((c) => c.nome == this.novaColuna.nome) == -1
-    ) {
-      this.arquivoReferenciado.tabelas[
-        this.selectedTabelaIndex
-      ].colunas.push(new Coluna(this.novaColuna.nome));
-      this.novaColuna.nome = "";
-    }
+  incluirColuna(index?: number) {
+    this.arquivoReferenciado.tabelas[
+      index || this.selectedTabelaIndex
+    ].colunas.push(new Coluna());
+    this.ref.detectChanges();
   }
 
   apagarTabela(tabela: Tabela) {
@@ -98,6 +91,19 @@ export class ArquivoReferenciadoCadastroComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
+
+    let existeTabelaDuplicada = false;
+    this.arquivoReferenciado.tabelas.forEach(tab => {
+      if (this.arquivoReferenciado.tabelas.filter(pred => pred.nome === tab.nome && pred.id !== tab.id)[0]) {
+        this.msgService.error("Foram cadastradas tabelas com o mesmo nome no arquivo lógico, por favor corrija.");
+        existeTabelaDuplicada = true;
+        return;
+      }
+    });
+    if (existeTabelaDuplicada) {
+      return;
+    }
+
     if (!this.arquivoReferenciado.tabelas[0]) {
       this.msgService.error("Adicione uma tabela e uma coluna para salvar.");
       return;

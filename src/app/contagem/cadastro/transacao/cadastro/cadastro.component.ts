@@ -83,6 +83,8 @@ export class TransacaoCadastroComponent implements OnInit {
           t.colunas.forEach((c) => {
             if (c.id == tdCol.coluna.id) {
               c.isChecked = true;
+              c.tdNovo = arquivo.tdNovo = t.tdNovo = (tdCol.alteradoDadoContagem == 'NOVO');
+              c.tdExcluido = arquivo.tdExcluido = t.tdExcluido = (tdCol.alteradoDadoContagem == 'EXCLUIDO');
             }
           });
         });
@@ -149,9 +151,7 @@ export class TransacaoCadastroComponent implements OnInit {
             (transTD) => transTD.coluna.id == col.id
           );
           if (col.isChecked && !currTd) {
-            const transacaoId = new Transacao();
-            transacaoId.id = this.transacao.id;
-            const trans = new TransacaoTD(transacaoId);
+            const trans = new TransacaoTD();
             trans.coluna = col;
             this.transacao.transacaoTDs.push(trans);
           } else if (!col.isChecked && currTd) {

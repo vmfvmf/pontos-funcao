@@ -39,6 +39,7 @@ export abstract class AbstractContagemItem {
 
   // PROPRIEDADES DE COMPARAÇÃO
   alteradoDadoContagem: ContagemDadoSituacao;
+  alteradoNome: string;
 	alteradoTd: number;
 	alteradoTr: number;
 	alteradoComplexidade: ComplexidadeEnum;

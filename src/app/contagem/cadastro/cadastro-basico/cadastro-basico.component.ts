@@ -46,10 +46,6 @@ export class ContagemCadastroBasicoComponent implements OnInit {
   @Output()
   criarEsbocoEmitter: EventEmitter<void> = new EventEmitter();
 
-  @Output()
-  compararVersaoEmitter: EventEmitter<Contagem> = new EventEmitter();
-
-
   constructor(
     private sistemaService: SistemaService,
     private msgService: MessageService,
@@ -57,7 +53,7 @@ export class ContagemCadastroBasicoComponent implements OnInit {
     private sprintService: SprintService,
     private contagemService: ContagemService,
     private route: ActivatedRoute,
-    private router: Router
+    public router: Router
   ) {}
 
   ngOnInit(): void {
@@ -135,5 +131,9 @@ export class ContagemCadastroBasicoComponent implements OnInit {
         }
       );
     }
+  }
+
+  compararVersao($event) {
+    this.router.navigate([`/contagens/${this.contagem.id}/comparar-versao-anterior/${$event.value}`]);
   }
 }

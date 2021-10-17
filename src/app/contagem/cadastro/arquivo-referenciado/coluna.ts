@@ -9,6 +9,8 @@ export class Coluna {
 
   // APENAS DO FRONTEND
   isChecked: boolean;
+  tdNovo: boolean;
+  tdExcluido: boolean;
 
   // DADOS QUE FORAM ALTERADOS, USADOS EM COMPARAÇÃO
   alteradoDadoContagem: ContagemDadoSituacao;

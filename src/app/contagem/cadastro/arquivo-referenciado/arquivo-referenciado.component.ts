@@ -6,6 +6,7 @@ import { ArquivoReferenciado } from './arquivo-referenciado';
 import { ArquivoReferenciadoCadastroComponent } from './cadastro/cadastro.component';
 import { AbstractContagemItem } from '../../abstract-contagem-item';
 import { MessageService } from '../../../shared/Service/message.service';
+import { ContagemDadoSituacao } from '../../contagem-dado-situacao.enum';
 
 @Component({
   selector: 'app-contagem-cadastro-arquivo-referenciado',
@@ -22,7 +23,6 @@ export class ArquivoReferenciadoComponent implements OnInit {
   @Input()
   somenteLeitura = true;
 
-  subTotalPf = 0;
   constructor(
     public dialog: MatDialog
   ) { }
@@ -30,12 +30,6 @@ export class ArquivoReferenciadoComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  pfSubtotalAL(){
-    this.subTotalPf = 0;
-    if(this.contagem && this.contagem.arquivosReferenciados) this.contagem.arquivosReferenciados.forEach(ar => {
-      this.subTotalPf += ar.pf;
-    });
-  }
 
   novoEditar(arquivoReferenciado?: ArquivoReferenciado) {
     if (!arquivoReferenciado) {
@@ -68,5 +62,10 @@ export class ArquivoReferenciadoComponent implements OnInit {
     const i = this.contagem.arquivosReferenciados.findIndex(ar => ar.id === arquivoId);
     this.contagem.arquivosReferenciados.splice(i, 1);
     this.salvarContagem.emit({msg: "Arquivo referenciado excluído com sucesso!"});
+  }
+
+  getTrClass(arquivo: ArquivoReferenciado) {
+    return arquivo.alteradoDadoContagem === ContagemDadoSituacao.ALTERADO ? 'yellow' :
+    arquivo.alteradoDadoContagem === ContagemDadoSituacao.NOVO ? 'green' : undefined;
   }
 }

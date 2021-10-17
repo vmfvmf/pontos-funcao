@@ -54,3 +54,44 @@ span.mat-form-field-required-marker {
 }
 
 .mat-tab-body {padding-top: 20px;}
+
+.yellow {
+  background-color: lightyellow;
+}
+
+.green {
+  background-color: lightgreen;
+}
+
+mat-select.mat-alterado ~ span > label,
+mat-select.mat-alterado div,
+mat-checkbox.mat-alterado span,
+input.mat-alterado ~ span > label,
+input.mat-input-element.mat-alterado {
+  color: orange !important;
+}
+
+mat-select.mat-novo ~ span > label,
+mat-select.mat-novo div,
+mat-checkbox.mat-novo span,
+input.mat-novo ~ span > label,
+input.mat-input-element.mat-novo {
+  color: green !important;
+}
+
+mat-select.mat-excluido ~ span > label,
+mat-select.mat-excluido div,
+mat-checkbox.mat-excluido span,
+input.mat-excluido ~ span > label,
+input.mat-input-element.mat-excluido {
+  color: red !important;
+}
+
+app-contagem-cadastro-arquivo-referenciado-cadastro .mat-tab-label {
+  height: 70px;
+  padding-bottom: 30px;
+}
+
+.orange {
+  color: orange;
+}

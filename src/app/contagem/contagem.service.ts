@@ -43,7 +43,7 @@ export class ContagemService {
     return this.httpClient.get<Contagem>(`${ContagemService.URL_API}/${contagemId}/versionar`);
   }
 
-  compararVersao(idVersaoAtual: number, idVersaoAnterior: number) {
+  compararVersaoAnterior(idVersaoAtual: number, idVersaoAnterior: number) {
     return this.httpClient.get<Contagem>(`${ContagemService.URL_API}/${idVersaoAtual}/comparar-versao-anterior/${idVersaoAnterior}`);
   }
 

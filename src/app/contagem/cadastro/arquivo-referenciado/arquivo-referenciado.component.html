@@ -7,34 +7,46 @@
   <mat-card-content>
     <mat-card class="card-tabela">
       <vmf-data-table
-        [totalRegistros]="1"
+        [totalRegistros]="contagem.arquivosReferenciados.length"
         [value]="contagem.arquivosReferenciados"
-        listrado="true"
         mensagemVazio="Nenhum registro encontrado"
         nameTabela="Arquivos Referenciados"
         [exibePaginador]="false"
+        [trClass]="getTrClass.bind(this)"
       >
-        <vmf-data-column header="Nome" value="nome" [ordenar]="false">
+        <vmf-data-column header="Nome" value="nome" [ordenar]="false" >
           <ng-template let-arquivoReferenciado="rowData" #body>
-            {{ arquivoReferenciado.nome }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': arquivoReferenciado.alteradoNome}">{{ arquivoReferenciado.nome }}</span>
+              <mat-hint *ngIf="arquivoReferenciado.alteradoNome">{{ arquivoReferenciado.alteradoNome }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 
         <vmf-data-column header="Função" value="funcao" [ordenar]="false">
           <ng-template let-arquivoReferenciado="rowData" #body>
-            {{ arquivoReferenciado.funcao }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': arquivoReferenciado.alteradoFuncao}">{{ arquivoReferenciado.funcao }}</span>
+              <mat-hint *ngIf="arquivoReferenciado.alteradoFuncao">{{ arquivoReferenciado.alteradoFuncao }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 
         <vmf-data-column header="TD" value="td" [ordenar]="false">
           <ng-template let-arquivoReferenciado="rowData" #body>
-            {{ arquivoReferenciado.td }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': arquivoReferenciado.alteradoTd}">{{ arquivoReferenciado.td }}</span>
+              <mat-hint *ngIf="arquivoReferenciado.alteradoTd">{{ arquivoReferenciado.alteradoTd }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 
         <vmf-data-column header="TR" value="tr" [ordenar]="false">
           <ng-template let-arquivoReferenciado="rowData" #body>
-            {{ arquivoReferenciado.tr }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': arquivoReferenciado.alteradoTr}">{{ arquivoReferenciado.tr }}</span>
+              <mat-hint *ngIf="arquivoReferenciado.alteradoTr">{{ arquivoReferenciado.alteradoTr }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 
@@ -44,13 +56,19 @@
           [ordenar]="false"
         >
           <ng-template let-arquivoReferenciado="rowData" #body>
-            {{ arquivoReferenciado.complexidade }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': arquivoReferenciado.alteradoComplexidade}">{{ arquivoReferenciado.complexidade }}</span>
+              <mat-hint *ngIf="arquivoReferenciado.alteradoComplexidade">{{ arquivoReferenciado.alteradoComplexidade }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 
         <vmf-data-column header="PF" value="pf" [ordenar]="false">
           <ng-template let-arquivoReferenciado="rowData" #body>
-            {{ arquivoReferenciado.pf }}
+            <div fxLayout="column">
+              <span [ngClass]="{'orange': arquivoReferenciado.alteradoPf}">{{ arquivoReferenciado.pf }}</span>
+              <mat-hint *ngIf="arquivoReferenciado.alteradoPf">{{ arquivoReferenciado.alteradoPf }}</mat-hint>
+            </div>
           </ng-template>
         </vmf-data-column>
 

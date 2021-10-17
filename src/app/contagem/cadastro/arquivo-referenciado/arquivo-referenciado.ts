@@ -2,6 +2,7 @@ import { Contagem } from './../../contagem';
 import { HttpParams } from '@angular/common/http';
 import { AbstractContagemItem } from '../../abstract-contagem-item';
 import { Tabela } from './tabela';
+import { ContagemDadoSituacao } from '../../contagem-dado-situacao.enum';
 
 export enum FuncaoArquivoReferenciadoEnum{
   AIE = "AIE",
@@ -10,14 +11,15 @@ export enum FuncaoArquivoReferenciadoEnum{
 
 export class ArquivoReferenciado extends AbstractContagemItem {
   tabelas: Tabela[];
-  funcao: FuncaoArquivoReferenciadoEnum;
 
   // USO DO FRONTEND
   isChecked: boolean;
+  tdNovo: boolean;
+  tdExcluido: boolean;
 
   constructor(contagem?: Contagem) {
     super(contagem);
-    this.tabelas = [];
+    this.tabelas = [new Tabela()];
   }
 
   public static toHttpParams(arquivo: ArquivoReferenciado): HttpParams {

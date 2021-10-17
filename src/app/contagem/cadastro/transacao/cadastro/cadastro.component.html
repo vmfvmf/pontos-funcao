@@ -22,6 +22,7 @@ validateFocusInvalidInput
         <mat-label>Nome</mat-label>
         <input
           required
+          [ngClass]="{'mat-alterado': transacao.alteradoNome, 'mat-novo' : transacao.alteradoDadoContagem == 'NOVO'}"
           #nome="ngModel"
           matInput
           placeholder="Nome"
@@ -29,12 +30,16 @@ validateFocusInvalidInput
           [(ngModel)]="transacao.nome"
         />
         <mat-error *ngIf="nome.invalid">O nome é obrigatório.</mat-error>
+        <mat-hint *ngIf="transacao.alteradoNome">
+          {{ transacao.alteradoNome }}
+        </mat-hint>
       </mat-form-field>
 
       <mat-form-field style="width: 100px">
         <mat-label>Função</mat-label>
         <mat-select
           required
+          [ngClass]="{'mat-alterado': transacao.alteradoFuncao, 'mat-novo' : transacao.alteradoDadoContagem == 'NOVO'}"
           #funcao="ngModel"
           name="funcao"
           [(ngModel)]="transacao.funcao"
@@ -44,31 +49,47 @@ validateFocusInvalidInput
           }}</mat-option>
         </mat-select>
         <mat-error *ngIf="funcao.invalid">A função é obrigatória.</mat-error>
+        <mat-hint *ngIf="transacao.alteradoFuncao">
+          {{ transacao.alteradoFuncao }}
+        </mat-hint>
       </mat-form-field>
 
       <mat-form-field class="example-full-width">
         <mat-label>Grupo</mat-label>
         <mat-select
           name="grupo"
+          [ngClass]="{'mat-alterado': transacao.alteradoGrupo, 'mat-novo' : transacao.alteradoDadoContagem == 'NOVO'}"
           [(ngModel)]="transacao.grupo.id"
         >
           <mat-option *ngFor="let grupo of grupos" [value]="grupo.id">{{
             grupo.nome
           }}</mat-option>
         </mat-select>
+        <mat-hint *ngIf="transacao.alteradoGrupo">
+          {{ transacao.alteradoGrupo.nome }}
+        </mat-hint>
       </mat-form-field>
     </div>
 
     <div fxLayout="column" style="margin-top: 20px; margin-bottom: 20px">
-      <mat-checkbox name="ckboxColAcao" [disabled]="somenteLeitura" [(ngModel)]="transacao.acao">
-        Ação é disparada pelo usuário
+      <mat-checkbox name="ckboxColAcao"
+      [ngClass]="{'mat-alterado': transacao.alteradoAcao != undefined, 'mat-novo' : transacao.alteradoDadoContagem == 'NOVO'}"
+      [disabled]="somenteLeitura" [(ngModel)]="transacao.acao">
+        Ação disparada pelo usuário
       </mat-checkbox>
+      <mat-hint *ngIf="transacao.alteradoAcao  != undefined">
+        {{ transacao.alteradoAcao ? 'Marcado' : 'Desmarcado'}}
+      </mat-hint>
       <mat-checkbox
         name="ckboxColMsg"
+        [ngClass]="{'mat-alterado': transacao.alteradoMensagem != undefined, 'mat-novo' : transacao.alteradoDadoContagem == 'NOVO'}"
         [(ngModel)]="transacao.mensagem"
       >
         Exibe mensagem de confirmação
       </mat-checkbox>
+      <mat-hint *ngIf="transacao.alteradoMensagem != undefined">
+        {{ transacao.alteradoMensagem ? 'Marcado' : 'Desmarcado' }}
+      </mat-hint>
     </div>
 
     <mat-card-title>Arquivos referenciados</mat-card-title>
@@ -79,12 +100,14 @@ validateFocusInvalidInput
         <ng-template mat-tab-label>
           <mat-checkbox
             class="margin5"
+            [ngClass]="{'mat-alterado' : arquivoReferenciado.tdNovo && arquivoReferenciado.tdExcluido,
+                'mat-novo' : arquivoReferenciado.tdNovo, 'mat-excluido' : arquivoReferenciado.tdExcluido}"
             (change)="checkFuncaoDadosValue(arquivoReferenciado)"
             [(ngModel)]="arquivoReferenciado.isChecked"
             [name]="'ckboxAR' + arquivoReferenciado.id"
           >
-          </mat-checkbox>
           {{ arquivoReferenciado.nome }}
+          </mat-checkbox>
         </ng-template>
 
         <mat-card-header>
@@ -101,9 +124,11 @@ validateFocusInvalidInput
                 (change)="checkTabelasValue(tabela)"
                 [(ngModel)]="tabela.isChecked"
                 [name]="'ckboxTab' + tabela.id"
+                [ngClass]="{'mat-alterado' : tabela.tdNovo && tabela.tdExcluido,
+                'mat-novo' : tabela.tdNovo, 'mat-excluido' : tabela.tdExcluido}"
               >
-              </mat-checkbox>
               {{ tabela.nome }}
+              </mat-checkbox>
             </ng-template>
 
             <h2>Colunas da tabela {{ tabela.nome }}</h2>
@@ -114,6 +139,7 @@ validateFocusInvalidInput
                 [(ngModel)]="col.isChecked"
                 *ngFor="let col of tabela.colunas"
                 [name]="'ckboxCol' + col.id"
+                [ngClass]="{'mat-novo' : col.tdNovo, 'mat-excluido' : col.tdExcluido}"
               >
                 {{ col.nome }}
               </mat-checkbox>

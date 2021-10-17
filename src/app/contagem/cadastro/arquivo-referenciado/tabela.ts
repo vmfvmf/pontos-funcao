@@ -12,6 +12,8 @@ export class Tabela {
 
   // APENAS DO FRONTEND
   isChecked: boolean;
+  tdNovo: boolean;
+  tdExcluido: boolean;
 
   // DADOS QUE FORAM ALTERADOS, USADOS EM COMPARAÇÃO
   alteradoDadoContagem: ContagemDadoSituacao;
@@ -20,7 +22,7 @@ export class Tabela {
 
   constructor(nome?: string){
     this.nome = nome;
-    this.colunas = [];
+    this.colunas = [new Coluna()];
     this.isChecked = this.isChecked;
   }
   public static toHttpParams(iTabela: Tabela): HttpParams {
